@@ -11,8 +11,8 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170816155547_AddedLeagues")]
-    partial class AddedLeagues
+    [Migration("20170817034516_Init_2")]
+    partial class Init_2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,36 @@ namespace Climb.Migrations
                     b.ToTable("League");
                 });
 
+            modelBuilder.Entity("Climb.Models.Season", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Season");
+                });
+
+            modelBuilder.Entity("Climb.Models.Set", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Player1ID");
+
+                    b.Property<int>("Player2ID");
+
+                    b.Property<DateTime>("UpdatedDate");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Player1ID");
+
+                    b.HasIndex("Player2ID");
+
+                    b.ToTable("Set");
+                });
+
             modelBuilder.Entity("Climb.Models.User", b =>
                 {
                     b.Property<int>("ID")
@@ -70,12 +100,25 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Climb.Models.Set", b =>
+                {
+                    b.HasOne("Climb.Models.User", "Player1")
+                        .WithMany()
+                        .HasForeignKey("Player1ID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Climb.Models.User", "Player2")
+                        .WithMany()
+                        .HasForeignKey("Player2ID")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

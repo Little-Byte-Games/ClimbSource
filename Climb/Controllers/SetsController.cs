@@ -9,22 +9,23 @@ using Climb.Models;
 
 namespace Climb.Controllers
 {
-    public class UsersController : Controller
+    public class SetsController : Controller
     {
         private readonly ClimbContext _context;
 
-        public UsersController(ClimbContext context)
+        public SetsController(ClimbContext context)
         {
             _context = context;
         }
 
-        // GET: User
+        // GET: Sets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.User.ToListAsync());
+            var climbContext = _context.Set.Include(s => s.Player1).Include(s => s.Player2);
+            return View(await climbContext.ToListAsync());
         }
 
-        // GET: User/Details/5
+        // GET: Sets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,38 +33,45 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User.Include(u => u.P1Sets).Include(u => u.P2Sets).SingleOrDefaultAsync(m => m.ID == id);
-            if (user == null)
+            var sset = await _context.Set
+                .Include(s => s.Player1)
+                .Include(s => s.Player2)
+                .SingleOrDefaultAsync(m => m.ID == id);
+            if (sset == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(sset);
         }
 
-        // GET: User/Create
+        // GET: Sets/Create
         public IActionResult Create()
         {
+            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID");
+            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID");
             return View();
         }
 
-        // POST: User/Create
+        // POST: Sets/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Username")] User user)
+        public async Task<IActionResult> Create([Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set sset)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                _context.Add(sset);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", sset.Player1ID);
+            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", sset.Player2ID);
+            return View(sset);
         }
 
-        // GET: User/Edit/5
+        // GET: Sets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -71,22 +79,24 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(m => m.ID == id);
-            if (user == null)
+            var sset = await _context.Set.SingleOrDefaultAsync(m => m.ID == id);
+            if (sset == null)
             {
                 return NotFound();
             }
-            return View(user);
+            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", sset.Player1ID);
+            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", sset.Player2ID);
+            return View(sset);
         }
 
-        // POST: User/Edit/5
+        // POST: Sets/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Username")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set sset)
         {
-            if (id != user.ID)
+            if (id != sset.ID)
             {
                 return NotFound();
             }
@@ -95,12 +105,12 @@ namespace Climb.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(sset);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.ID))
+                    if (!SetExists(sset.ID))
                     {
                         return NotFound();
                     }
@@ -111,10 +121,12 @@ namespace Climb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", sset.Player1ID);
+            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", sset.Player2ID);
+            return View(sset);
         }
 
-        // GET: User/Delete/5
+        // GET: Sets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -122,30 +134,32 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User
+            var sset = await _context.Set
+                .Include(s => s.Player1)
+                .Include(s => s.Player2)
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (user == null)
+            if (sset == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(sset);
         }
 
-        // POST: User/Delete/5
+        // POST: Sets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.User.SingleOrDefaultAsync(m => m.ID == id);
-            _context.User.Remove(user);
+            var sset = await _context.Set.SingleOrDefaultAsync(m => m.ID == id);
+            _context.Set.Remove(sset);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool SetExists(int id)
         {
-            return _context.User.Any(e => e.ID == id);
+            return _context.Set.Any(e => e.ID == id);
         }
     }
 }

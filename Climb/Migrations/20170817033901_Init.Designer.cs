@@ -11,8 +11,8 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170816160226_AddedSeasons")]
-    partial class AddedSeasons
+    [Migration("20170817033901_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,6 +61,18 @@ namespace Climb.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Season");
+                });
+
+            modelBuilder.Entity("Climb.Models.Set", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("UpdatedDate");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Set");
                 });
 
             modelBuilder.Entity("Climb.Models.User", b =>
