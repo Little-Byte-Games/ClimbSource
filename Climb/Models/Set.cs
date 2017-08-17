@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Climb.Models
 {
@@ -11,11 +11,10 @@ namespace Climb.Models
         public int Player2ID { get; set; }
         public DateTime UpdatedDate { get; set; }
 
-        //[ForeignKey("Player1ID")]
         [InverseProperty("P1Sets")]
         public User Player1 { get; set; }
-        //[ForeignKey("Player2ID")]
         [InverseProperty("P2Sets")]
         public User Player2 { get; set; }
+        public ICollection<Match> Matches { get; set; }
     }
 }
