@@ -1,1 +1,3 @@
-﻿// Write your JavaScript code.
+﻿function addMatch() {
+    alert("Hello");
+}

@@ -9,7 +9,7 @@ namespace Climb.Models
         public int ID { get; set; }
         public int Player1ID { get; set; }
         public int Player2ID { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         [InverseProperty("P1Sets")]
         public User Player1 { get; set; }
