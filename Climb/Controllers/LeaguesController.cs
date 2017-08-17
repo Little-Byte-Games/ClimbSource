@@ -19,7 +19,7 @@ namespace Climb.Controllers
         // GET: League
         public async Task<IActionResult> Index()
         {
-            var climbContext = _context.League.Include(l => l.Game).Include(l => l.User);
+            var climbContext = _context.League.Include(l => l.Game).Include(l => l.Admin);
             return View(await climbContext.ToListAsync());
         }
 
@@ -33,7 +33,7 @@ namespace Climb.Controllers
 
             var league = await _context.League
                 .Include(l => l.Game)
-                .Include(l => l.User)
+                .Include(l => l.Admin)
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (league == null)
             {
@@ -65,7 +65,7 @@ namespace Climb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.UserID);
+            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
             return View(league);
         }
 
@@ -83,7 +83,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
             ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.UserID);
+            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
             return View(league);
         }
 
@@ -120,7 +120,7 @@ namespace Climb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.UserID);
+            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
             return View(league);
         }
 
@@ -134,7 +134,7 @@ namespace Climb.Controllers
 
             var league = await _context.League
                 .Include(l => l.Game)
-                .Include(l => l.User)
+                .Include(l => l.Admin)
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (league == null)
             {

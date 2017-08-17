@@ -37,17 +37,17 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AdminID");
+
                     b.Property<int>("GameID");
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("UserID");
-
                     b.HasKey("ID");
 
-                    b.HasIndex("GameID");
+                    b.HasIndex("AdminID");
 
-                    b.HasIndex("UserID");
+                    b.HasIndex("GameID");
 
                     b.ToTable("League");
                 });
@@ -136,14 +136,14 @@ namespace Climb.Migrations
 
             modelBuilder.Entity("Climb.Models.League", b =>
                 {
+                    b.HasOne("Climb.Models.User", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Climb.Models.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
