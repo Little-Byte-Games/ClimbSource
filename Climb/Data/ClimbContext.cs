@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Climb.Models;
 
 namespace Climb.Models
 {
@@ -24,5 +25,7 @@ namespace Climb.Models
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
+
+        public DbSet<Climb.Models.RankEvent> RankEvent { get; set; }
     }
 }
