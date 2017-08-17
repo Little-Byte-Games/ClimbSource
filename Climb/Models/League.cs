@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Climb.Models
 {
@@ -12,5 +13,6 @@ namespace Climb.Models
         public Game Game { get; set; }
         [ForeignKey(nameof(AdminID))]
         public User Admin { get; set; }
+        public HashSet<User> Members { get; set; }
     }
 }
