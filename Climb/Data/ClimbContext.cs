@@ -27,5 +27,7 @@ namespace Climb.Models
         }
 
         public DbSet<Climb.Models.RankEvent> RankEvent { get; set; }
+
+        public DbSet<Climb.Models.LeagueUser> LeagueUser { get; set; }
     }
 }

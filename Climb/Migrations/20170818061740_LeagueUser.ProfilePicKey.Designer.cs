@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20170818061740_LeagueUser.ProfilePicKey")]
+    partial class LeagueUserProfilePicKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,7 +178,7 @@ namespace Climb.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.User", "User")
-                        .WithMany("LeagueUsers")
+                        .WithMany()
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

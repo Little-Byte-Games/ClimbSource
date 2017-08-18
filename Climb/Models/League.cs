@@ -13,6 +13,6 @@ namespace Climb.Models
         public Game Game { get; set; }
         [ForeignKey(nameof(AdminID))]
         public User Admin { get; set; }
-        public HashSet<User> Members { get; set; }
+        public HashSet<LeagueUser> Members { get; set; }
     }
 }
