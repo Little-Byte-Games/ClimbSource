@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System.Collections.Generic;
+using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -158,6 +159,62 @@ namespace Climb.Controllers
         private bool LeagueExists(int id)
         {
             return _context.League.Any(e => e.ID == id);
+        }
+
+        public class LeagueUserList
+        {
+            public readonly League league;
+            public readonly IEnumerable<User> potentialMembers;
+            public readonly IEnumerable<LeagueUser> members;
+
+            public LeagueUserList(League league, IEnumerable<User> potentialMembers, IEnumerable<LeagueUser> members)
+            {
+                this.league = league;
+                this.potentialMembers = potentialMembers ?? new List<User>();
+                this.members = members ?? new List<LeagueUser>();
+            }
+        }
+
+        public async Task<IActionResult> Join(int id)
+        {
+            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
+            var leagueUsers = await _context.LeagueUser.Where(u => u.LeagueID == id).Include(l => l.User).ToListAsync();
+            var users = await _context.User.Where(u => leagueUsers.All(lu => lu.UserID != u.ID)).ToListAsync();
+
+            return View(new LeagueUserList(league, users, leagueUsers));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Join(int leagueID, int userID)
+        {
+            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == leagueID);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.User.SingleOrDefaultAsync(u => u.ID == userID);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.UserID == userID);
+            if(leagueUser != null)
+            {
+                return BadRequest();
+            }
+
+            leagueUser = new LeagueUser
+            {
+                Elo = 2000,
+                League = league,
+                User = user
+            };
+            await _context.AddAsync(leagueUser);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Join));
         }
     }
 }
