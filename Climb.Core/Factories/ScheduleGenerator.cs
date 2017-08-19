@@ -27,30 +27,25 @@ namespace Climb.Core
         }
     }
 
-    public class Schedule
-    {
-        public readonly List<Round> rounds = new List<Round>();
-    }
-
     public static class ScheduleGenerator
     {
         public const int Bye = -1;
 
-        public static Schedule Generate(int rounds, ICollection<int> users)
+        public static List<Round> Generate(int roundCount, ICollection<int> users)
         {
             var participants = GetParticipants(users);
 
-            int fullSeasonSegments = rounds / (participants.Count - 1);
-            int partialRounds = rounds % (participants.Count - 1);
+            int fullSeasonSegments = roundCount / (participants.Count - 1);
+            int partialRounds = roundCount % (participants.Count - 1);
 
-            var schedule = new Schedule();
+            var rounds = new List<Round>();
             for (int i = 0; i < fullSeasonSegments; i++)
             {
-                schedule.rounds.AddRange(GenerateRounds(participants.Count - 1, participants));
+                rounds.AddRange(GenerateRounds(participants.Count - 1, participants));
             }
-            schedule.rounds.AddRange(GenerateRounds(partialRounds, participants));
+            rounds.AddRange(GenerateRounds(partialRounds, participants));
 
-            return schedule;
+            return rounds;
         }
 
         private static List<int> GetParticipants(ICollection<int> users)
@@ -77,7 +72,7 @@ namespace Climb.Core
                 var secondHalf = participants.GetRange(halfCount, halfCount);
                 secondHalf.Reverse();
 
-                var round = new Round(DateTime.Now);
+                var round = new Round(DateTime.Now.AddDays(7 * i));
                 for (int j = 0; j < halfCount; j++)
                 {
                     var set = new Set(firstHalf[j], secondHalf[j]);

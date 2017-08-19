@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -219,32 +220,66 @@ namespace Climb.Controllers
             return RedirectToAction(nameof(Join), new { id = seasonID });
         }
 
+        public class StartViewData
+        {
+            public readonly Season season;
+            public readonly Dictionary<DateTime, HashSet<Set>> sets;
+
+            public StartViewData(Season season)
+            {
+                this.season = season;
+
+                sets = new Dictionary<DateTime, HashSet<Set>>();
+                
+                foreach (var set in season.Sets)
+                {
+                    set.Player1 = season.Participants.FirstOrDefault(p => p.ID == set.Player1ID);
+                    set.Player2 = season.Participants.FirstOrDefault(p => p.ID == set.Player2ID);
+                    HashSet<Set> round;
+                    if(!sets.TryGetValue(set.DueDate, out round))
+                    {
+                        round = new HashSet<Set>();
+                        sets.Add(set.DueDate, round);
+                    }
+                    round.Add(set);
+                }
+            }
+        }
+
         public async Task<IActionResult> Start(int id)
         {
-            var season = await _context.Season.Include(s => s.Participants).Include(s => s.Sets).SingleOrDefaultAsync(s => s.ID == id);
+            var season = await _context.Season.Include(s => s.Sets)
+                .Include(s => s.Participants).ThenInclude(u => u.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+
             if (season == null)
             {
                 return NotFound();
             }
 
-            return View(season);
+            var viewData = new StartViewData(season);
+            return View(viewData);
         }
 
         [HttpPost]
         [ActionName("Start")]
         public async Task<IActionResult> StartPost(int id)
         {
-            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == id);
+            var season = await _context.Season.Include(s => s.Sets).Include(s => s.Participants).ThenInclude(u => u.User).SingleOrDefaultAsync(s => s.ID == id);
             if (season == null)
             {
                 return NotFound();
             }
 
+            if (season.Sets != null)
+            {
+                _context.RemoveRange(season.Sets); 
+            }
             season.Sets = new HashSet<Set>();
 
             var participants = season.Participants.Select(u => u.ID).ToList();
-            var schedule = ScheduleGenerator.Generate(10, participants);
-            foreach(var round in schedule.rounds)
+            var rounds = ScheduleGenerator.Generate(10, participants);
+            foreach(var round in rounds)
             {
                 foreach(var setData in round.sets)
                 {
@@ -273,7 +308,7 @@ namespace Climb.Controllers
             _context.Update(season);
             await _context.SaveChangesAsync();
 
-            return View(season);
+            return RedirectToAction(nameof(Start), new {id});
         }
     }
 }

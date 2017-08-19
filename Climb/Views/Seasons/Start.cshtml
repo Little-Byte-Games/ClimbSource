@@ -1,34 +1,47 @@
-﻿@model Season
+﻿@using System.ComponentModel.DataAnnotations
+@model Climb.Controllers.SeasonsController.StartViewData
 
 @{
 	ViewData["Title"] = "Start";
 }
 
 <h2>Join</h2>
-<h3>Season @Model.Index</h3>
+<h3>Season @Model.season.Index</h3>
 
-@if(Model.Sets == null || Model.Sets.Count == 0)
+@if(Model.sets == null || Model.sets.Count == 0)
 {
-	if(Model.Participants == null || Model.Participants.Count == 0)
+	if(Model.season.Participants == null || Model.season.Participants.Count == 0)
 	{
 		<span>Need participants</span>
 	}
 	else
 	{
 		<form asp-action="Start" method="post">
-			<input type="hidden" name="id" value="@Model.ID"/>
+			<input type="hidden" name="id" value="@Model.season.ID"/>
 			<input type="submit" value="Start"/>
 		</form>
 	}
 }
 else
 {
+	<form asp-action="Start" method="post">
+		<input type="hidden" name="id" value="@Model.season.ID"/>
+		<input type="submit" value="Regenerate"/>
+	</form>
+
 	<ul>
-		@foreach(var set in Model.Sets)
+		@{var i = 0;}
+		@foreach(var round in Model.sets)
 		{
-			string player1 = set.Player1ID?.ToString() ?? "BYE";
-			string player2 = set.Player2ID?.ToString() ?? "BYE";
-			<li>@player1 v @player2</li>
+			var roundNumber = i + 1;
+			++i;
+			<h4>Round @roundNumber (@round.Key)</h4>
+			foreach(var set in round.Value)
+			{
+				var player1 = set.Player1?.User?.Username ?? "BYE";
+				var player2 = set.Player2?.User?.Username ?? "BYE";
+				<span>@player1 v @player2</span><br/>
+			}
 		}
 	</ul>
 }
