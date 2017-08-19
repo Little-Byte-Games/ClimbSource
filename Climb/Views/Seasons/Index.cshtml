@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Climb.Models.Season>
+﻿@using System
+@model System.Collections.Generic.IEnumerable<Season>
 @{
 	ViewData["Title"] = "Index";
 }
@@ -34,7 +35,15 @@
 					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
 					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
 					<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-					<a asp-action="Join" asp-route-id="@item.ID">Join</a>
+					
+					@if(item.StartDate > DateTime.UtcNow)
+					{
+						<a asp-action="Join" asp-route-id="@item.ID">Join</a>
+					}
+					else
+					{
+						<span>Join</span>
+					}
 				</td>
 			</tr>
 			}
