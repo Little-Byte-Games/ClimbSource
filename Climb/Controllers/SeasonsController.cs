@@ -52,7 +52,7 @@ namespace Climb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID", "LeagueID")] Season season)
+        public async Task<IActionResult> Create([Bind("ID", "LeagueID, StartDate")] Season season)
         {
             if (ModelState.IsValid)
             {

@@ -15,6 +15,7 @@
 			<th>
 				@Html.DisplayNameFor(model => model.LeagueID)
 			</th>
+			<th>@Html.DisplayNameFor(model => model.StartDate)</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -28,6 +29,7 @@
 				<td>
 					@Html.DisplayFor(modelItem => item.LeagueID)
 				</td>
+				<td>@Html.DisplayFor(modelItem => item.StartDate)</td>
 				<td>
 					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
 					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
