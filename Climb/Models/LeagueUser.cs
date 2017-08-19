@@ -7,6 +7,7 @@
         public int LeagueID { get; set; }
         public int Elo { get; set; }
         public string ProfilePicKey { get; set; }
+        public bool HasLeft { get; set; }
 
         public User User { get; set; }
         public League League { get; set; }

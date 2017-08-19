@@ -178,7 +178,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Join(int id)
         {
             var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
-            var leagueUsers = await _context.LeagueUser.Where(u => u.LeagueID == id).Include(l => l.User).ToListAsync();
+            var leagueUsers = await _context.LeagueUser.Where(u => u.LeagueID == id && !u.HasLeft).Include(l => l.User).ToListAsync();
             var users = await _context.User.Where(u => leagueUsers.All(lu => lu.UserID != u.ID)).ToListAsync();
 
             return View(new LeagueUserList(league, users, leagueUsers));
@@ -202,19 +202,38 @@ namespace Climb.Controllers
             var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.UserID == userID);
             if(leagueUser != null)
             {
-                return BadRequest();
+                leagueUser.HasLeft = false;
+                _context.Update(leagueUser);
+            }
+            else
+            {
+                leagueUser = new LeagueUser
+                {
+                    Elo = 2000,
+                    League = league,
+                    User = user
+                };
+                await _context.AddAsync(leagueUser);
             }
 
-            leagueUser = new LeagueUser
-            {
-                Elo = 2000,
-                League = league,
-                User = user
-            };
-            await _context.AddAsync(leagueUser);
+            
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Join));
+            return RedirectToAction(nameof(Join), new { id = leagueID });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Leave(int leagueID, int userID)
+        {
+            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == leagueID && u.UserID == userID);
+            if(leagueUser != null)
+            {
+                leagueUser.HasLeft = true;
+                _context.Update(leagueUser);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Join), new {id = leagueID});
         }
     }
 }

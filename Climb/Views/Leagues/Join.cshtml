@@ -11,7 +11,11 @@
 	{
 		<li>
 			@user.User.Username
-			<button>Leave</button>
+			<form asp-action="Leave" method="post">
+				<input type="hidden" name="leagueID" value="@Model.league.ID" />
+				<input type="hidden" name="userID" value="@user.User.ID" />
+				<input type="submit" value="Leave" />
+			</form>
 		</li>
 	}
 </ul>
