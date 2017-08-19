@@ -22,8 +22,16 @@ namespace Climb.Models
         {
             foreach(var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
-                relationship.DeleteBehavior = DeleteBehavior.SetNull;
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
+
+            //foreach(var property in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetProperties()))
+            //{
+            //    if(property.IsForeignKey() && property.IsNullable)
+            //    {
+            //        property.
+            //    }
+            //}
         }
 
         public DbSet<Climb.Models.RankEvent> RankEvent { get; set; }

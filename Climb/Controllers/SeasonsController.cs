@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Core;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
@@ -20,7 +22,7 @@ namespace Climb.Controllers
         // GET: Seasons
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Season.ToListAsync());
+            return View(await _context.Season.Include(s => s.Participants).ToListAsync());
         }
 
         // GET: Seasons/Details/5
@@ -215,6 +217,63 @@ namespace Climb.Controllers
             _context.Update(season);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Join), new { id = seasonID });
+        }
+
+        public async Task<IActionResult> Start(int id)
+        {
+            var season = await _context.Season.Include(s => s.Participants).Include(s => s.Sets).SingleOrDefaultAsync(s => s.ID == id);
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            return View(season);
+        }
+
+        [HttpPost]
+        [ActionName("Start")]
+        public async Task<IActionResult> StartPost(int id)
+        {
+            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == id);
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            season.Sets = new HashSet<Set>();
+
+            var participants = season.Participants.Select(u => u.ID).ToList();
+            var schedule = ScheduleGenerator.Generate(10, participants);
+            foreach(var round in schedule.rounds)
+            {
+                foreach(var setData in round.sets)
+                {
+                    int? player1 = setData.player1;
+                    if(player1 == ScheduleGenerator.Bye)
+                    {
+                        player1 = null;
+                    }
+                    int? player2 = setData.player2;
+                    if (player2 == ScheduleGenerator.Bye)
+                    {
+                        player2 = null;
+                    }
+
+                    var set = new Set
+                    {
+                        DueDate = round.dueDate,
+                        Player1ID = player1,
+                        Player2ID = player2,
+                    };
+                    season.Sets.Add(set);
+                }
+            }
+
+            _context.UpdateRange(season.Sets);
+            _context.Update(season);
+            await _context.SaveChangesAsync();
+
+            return View(season);
         }
     }
 }

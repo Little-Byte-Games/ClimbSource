@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20170819070854_Set.LeagueUser")]
+    partial class SetLeagueUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,9 +146,9 @@ namespace Climb.Migrations
 
                     b.Property<DateTime>("DueDate");
 
-                    b.Property<int?>("Player1ID");
+                    b.Property<int>("Player1ID");
 
-                    b.Property<int?>("Player2ID");
+                    b.Property<int>("Player2ID");
 
                     b.Property<int?>("SeasonID");
 

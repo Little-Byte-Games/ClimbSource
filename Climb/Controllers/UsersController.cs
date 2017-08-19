@@ -32,7 +32,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var user = await _context.User.Include(u => u.P1Sets).Include(u => u.P2Sets).SingleOrDefaultAsync(m => m.ID == id);
+            var user = await _context.User.SingleOrDefaultAsync(m => m.ID == id);
             if (user == null)
             {
                 return NotFound();

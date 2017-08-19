@@ -25,4 +25,8 @@
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Climb.Core\Climb.Core.csproj" />
+  </ItemGroup>
+
 </Project>

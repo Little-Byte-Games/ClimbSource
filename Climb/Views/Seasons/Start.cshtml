@@ -1,0 +1,34 @@
+﻿@model Season
+
+@{
+	ViewData["Title"] = "Start";
+}
+
+<h2>Join</h2>
+<h3>Season @Model.Index</h3>
+
+@if(Model.Sets == null || Model.Sets.Count == 0)
+{
+	if(Model.Participants == null || Model.Participants.Count == 0)
+	{
+		<span>Need participants</span>
+	}
+	else
+	{
+		<form asp-action="Start" method="post">
+			<input type="hidden" name="id" value="@Model.ID"/>
+			<input type="submit" value="Start"/>
+		</form>
+	}
+}
+else
+{
+	<ul>
+		@foreach(var set in Model.Sets)
+		{
+			string player1 = set.Player1ID?.ToString() ?? "BYE";
+			string player2 = set.Player2ID?.ToString() ?? "BYE";
+			<li>@player1 v @player2</li>
+		}
+	</ul>
+}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Climb.Migrations
 {
-    public partial class RestrictToSetNull : Migration
+    public partial class SeasonSets_2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,6 +50,10 @@ namespace Climb.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Set_User_Player2ID",
+                table: "Set");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Set_Season_SeasonID",
                 table: "Set");
 
             migrationBuilder.AddForeignKey(
@@ -137,6 +141,14 @@ namespace Climb.Migrations
                 table: "Set",
                 column: "Player2ID",
                 principalTable: "User",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Set_Season_SeasonID",
+                table: "Set",
+                column: "SeasonID",
+                principalTable: "Season",
                 principalColumn: "ID",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -187,13 +199,17 @@ namespace Climb.Migrations
                 name: "FK_Set_User_Player2ID",
                 table: "Set");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Set_Season_SeasonID",
+                table: "Set");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_League_User_AdminID",
                 table: "League",
                 column: "AdminID",
                 principalTable: "User",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_League_Game_GameID",
@@ -201,7 +217,7 @@ namespace Climb.Migrations
                 column: "GameID",
                 principalTable: "Game",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_LeagueUser_League_LeagueID",
@@ -209,7 +225,7 @@ namespace Climb.Migrations
                 column: "LeagueID",
                 principalTable: "League",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_LeagueUser_Season_SeasonID",
@@ -217,7 +233,7 @@ namespace Climb.Migrations
                 column: "SeasonID",
                 principalTable: "Season",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_LeagueUser_User_UserID",
@@ -225,7 +241,7 @@ namespace Climb.Migrations
                 column: "UserID",
                 principalTable: "User",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Match_Set_SetID",
@@ -233,7 +249,7 @@ namespace Climb.Migrations
                 column: "SetID",
                 principalTable: "Set",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RankEvent_League_LeagueID",
@@ -241,7 +257,7 @@ namespace Climb.Migrations
                 column: "LeagueID",
                 principalTable: "League",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RankEvent_Set_SetID",
@@ -249,7 +265,7 @@ namespace Climb.Migrations
                 column: "SetID",
                 principalTable: "Set",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Season_League_LeagueID",
@@ -257,7 +273,7 @@ namespace Climb.Migrations
                 column: "LeagueID",
                 principalTable: "League",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Set_User_Player1ID",
@@ -265,7 +281,7 @@ namespace Climb.Migrations
                 column: "Player1ID",
                 principalTable: "User",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Set_User_Player2ID",
@@ -273,7 +289,15 @@ namespace Climb.Migrations
                 column: "Player2ID",
                 principalTable: "User",
                 principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Set_Season_SeasonID",
+                table: "Set",
+                column: "SeasonID",
+                principalTable: "Season",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.SetNull);
         }
     }
 }

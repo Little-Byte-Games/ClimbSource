@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20170819063409_Season.Sets_2")]
+    partial class SeasonSets_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,11 +144,9 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("DueDate");
+                    b.Property<int>("Player1ID");
 
-                    b.Property<int?>("Player1ID");
-
-                    b.Property<int?>("Player2ID");
+                    b.Property<int>("Player2ID");
 
                     b.Property<int?>("SeasonID");
 
@@ -238,12 +237,12 @@ namespace Climb.Migrations
 
             modelBuilder.Entity("Climb.Models.Set", b =>
                 {
-                    b.HasOne("Climb.Models.LeagueUser", "Player1")
+                    b.HasOne("Climb.Models.User", "Player1")
                         .WithMany("P1Sets")
                         .HasForeignKey("Player1ID")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Climb.Models.LeagueUser", "Player2")
+                    b.HasOne("Climb.Models.User", "Player2")
                         .WithMany("P2Sets")
                         .HasForeignKey("Player2ID")
                         .OnDelete(DeleteBehavior.Restrict);
