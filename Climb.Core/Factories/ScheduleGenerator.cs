@@ -31,7 +31,7 @@ namespace Climb.Core
     {
         public const int Bye = -1;
 
-        public static List<Round> Generate(int roundCount, ICollection<int> users)
+        public static List<Round> Generate(int roundCount, ICollection<int> users, DateTime startDate)
         {
             var participants = GetParticipants(users);
 
@@ -39,11 +39,15 @@ namespace Climb.Core
             int partialRounds = roundCount % (participants.Count - 1);
 
             var rounds = new List<Round>();
+            IEnumerable<Round> createdRounds;
             for (int i = 0; i < fullSeasonSegments; i++)
             {
-                rounds.AddRange(GenerateRounds(participants.Count - 1, participants));
+                createdRounds = GenerateRounds(participants.Count - 1, participants, ref startDate);
+                rounds.AddRange(createdRounds);
             }
-            rounds.AddRange(GenerateRounds(partialRounds, participants));
+
+            createdRounds = GenerateRounds(partialRounds, participants, ref startDate);
+            rounds.AddRange(createdRounds);
 
             return rounds;
         }
@@ -59,7 +63,7 @@ namespace Climb.Core
             return participants;
         }
 
-        private static IEnumerable<Round> GenerateRounds(int roundCount, List<int> participants)
+        private static IEnumerable<Round> GenerateRounds(int roundCount, List<int> participants, ref DateTime startDate)
         {
             var rounds = new List<Round>();
 
@@ -72,10 +76,13 @@ namespace Climb.Core
                 var secondHalf = participants.GetRange(halfCount, halfCount);
                 secondHalf.Reverse();
 
-                var round = new Round(DateTime.Now.AddDays(7 * i));
+                startDate = startDate.AddDays(7);
+                var round = new Round(startDate);
                 for (int j = 0; j < halfCount; j++)
                 {
-                    var set = new Set(firstHalf[j], secondHalf[j]);
+                    var player1 = firstHalf[j];
+                    var player2 = secondHalf[j];
+                    var set = new Set(player1, player2);
                     round.sets.Add(set);
                 }
 

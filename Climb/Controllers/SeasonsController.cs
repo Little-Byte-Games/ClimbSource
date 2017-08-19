@@ -223,13 +223,13 @@ namespace Climb.Controllers
         public class StartViewData
         {
             public readonly Season season;
-            public readonly Dictionary<DateTime, HashSet<Set>> sets;
+            public readonly SortedDictionary<DateTime, HashSet<Set>> sets;
 
             public StartViewData(Season season)
             {
                 this.season = season;
 
-                sets = new Dictionary<DateTime, HashSet<Set>>();
+                sets = new SortedDictionary<DateTime, HashSet<Set>>();
                 
                 foreach (var set in season.Sets)
                 {
@@ -278,7 +278,7 @@ namespace Climb.Controllers
             season.Sets = new HashSet<Set>();
 
             var participants = season.Participants.Select(u => u.ID).ToList();
-            var rounds = ScheduleGenerator.Generate(10, participants);
+            var rounds = ScheduleGenerator.Generate(10, participants, season.StartDate);
             foreach(var round in rounds)
             {
                 foreach(var setData in round.sets)

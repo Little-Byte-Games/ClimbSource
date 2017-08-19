@@ -35,7 +35,7 @@ else
 		{
 			var roundNumber = i + 1;
 			++i;
-			<h4>Round @roundNumber (@round.Key)</h4>
+			<h4>Round @roundNumber (@round.Key.ToShortDateString())</h4>
 			foreach(var set in round.Value)
 			{
 				var player1 = set.Player1?.User?.Username ?? "BYE";
