@@ -7,6 +7,7 @@
 <h2>Join</h2>
 <h3>Season @Model.season.Index</h3>
 
+<p>Starts on @Model.season.StartDate.ToShortDateString()</p>
 <h5>Members</h5>
 <ul>
 	@foreach(var user in Model.season.Participants)
