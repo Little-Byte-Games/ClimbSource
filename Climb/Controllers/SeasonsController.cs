@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System.Collections.Generic;
+using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -30,8 +31,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var season = await _context.Season
-                .SingleOrDefaultAsync(m => m.ID == id);
+            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(m => m.ID == id);
             if (season == null)
             {
                 return NotFound();
@@ -148,6 +148,73 @@ namespace Climb.Controllers
         private bool SeasonExists(int id)
         {
             return _context.Season.Any(e => e.ID == id);
+        }
+
+        public class JoinList
+        {
+            public readonly Season season;
+            public readonly IEnumerable<LeagueUser> nonparticipants;
+
+            public JoinList(Season season, IEnumerable<LeagueUser> nonparticipants)
+            {
+                this.season = season;
+                this.nonparticipants = nonparticipants;
+            }
+        }
+
+        public async Task<IActionResult> Join(int id)
+        {
+            var season = await _context.Season.Include(s => s.Participants).ThenInclude(u => u.User).SingleOrDefaultAsync(s => s.ID == id);
+            if(season == null)
+            {
+                return NotFound();
+            }
+
+            var nonparticipants = await _context.LeagueUser.Where(u => !season.Participants.Contains(u)).Include(l => l.User).ToListAsync();
+
+            return View(new JoinList(season, nonparticipants));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Join(int seasonID, int userID)
+        {
+            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == seasonID);
+            if(season == null)
+            {
+                return NotFound();
+            }
+
+            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.ID == userID);
+            if(leagueUser == null)
+            {
+                return NotFound();
+            }
+
+            season.Participants.Add(leagueUser);
+            _context.Update(season);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Join), new { id = seasonID });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Leave(int seasonID, int userID)
+        {
+            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == seasonID);
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.ID == userID && u.LeagueID == season.LeagueID);
+            if (leagueUser == null)
+            {
+                return NotFound();
+            }
+
+            season.Participants.Remove(leagueUser);
+            _context.Update(season);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Join), new { id = seasonID });
         }
     }
 }

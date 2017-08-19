@@ -1,0 +1,38 @@
+﻿@model Climb.Controllers.SeasonsController.JoinList
+
+@{
+	ViewData["Title"] = "Join";
+}
+
+<h2>Join</h2>
+<h3>Season @Model.season.Index</h3>
+
+<h5>Members</h5>
+<ul>
+	@foreach(var user in Model.season.Participants)
+	{
+		<li>
+			@user.User.Username
+			<form asp-action="Leave" method="post">
+				<input type="hidden" name="seasonID" value="@Model.season.ID" />
+				<input type="hidden" name="userID" value="@user.ID" />
+				<input type="submit" value="Leave" />
+			</form>
+		</li>
+	}
+</ul>
+
+<h5>Non-Members</h5>
+<ul>
+	@foreach(var user in Model.nonparticipants)
+	{
+		<li>
+			@user.User.Username
+			<form asp-action="Join" method="post">
+				<input type="hidden" name="seasonID" value="@Model.season.ID"/>
+				<input type="hidden" name="userID" value="@user.ID"/>
+				<input type="submit" value="Join"/>
+			</form>
+		</li>
+	}
+</ul>

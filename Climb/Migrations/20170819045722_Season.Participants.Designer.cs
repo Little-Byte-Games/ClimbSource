@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20170819045722_Season.Participants")]
+    partial class SeasonParticipants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,12 +176,12 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.User", "Admin")
                         .WithMany()
                         .HasForeignKey("AdminID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.LeagueUser", b =>
@@ -188,17 +189,17 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.League", "League")
                         .WithMany("Members")
                         .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Season")
                         .WithMany("Participants")
                         .HasForeignKey("SeasonID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.User", "User")
                         .WithMany("LeagueUsers")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.Match", b =>
@@ -206,7 +207,7 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Set", "Set")
                         .WithMany("Matches")
                         .HasForeignKey("SetID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.RankEvent", b =>
@@ -214,12 +215,12 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.League", "League")
                         .WithMany()
                         .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Set", "Set")
                         .WithMany()
                         .HasForeignKey("SetID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.Season", b =>
@@ -227,7 +228,7 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.League", "League")
                         .WithMany("Seasons")
                         .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.Set", b =>
@@ -235,12 +236,12 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.User", "Player1")
                         .WithMany("P1Sets")
                         .HasForeignKey("Player1ID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.User", "Player2")
                         .WithMany("P2Sets")
                         .HasForeignKey("Player2ID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,6 @@
-﻿namespace Climb.Models
+﻿using System.Collections.Generic;
+
+namespace Climb.Models
 {
     public class LeagueUser
     {
