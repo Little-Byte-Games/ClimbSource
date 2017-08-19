@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Climb.Controllers
 {
@@ -42,6 +43,7 @@ namespace Climb.Controllers
         // GET: Seasons/Create
         public IActionResult Create()
         {
+            ViewData["LeagueID"] = new SelectList(_context.League, "ID", "ID");
             return View();
         }
 
@@ -50,10 +52,12 @@ namespace Climb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID")] Season season)
+        public async Task<IActionResult> Create([Bind("ID", "LeagueID")] Season season)
         {
             if (ModelState.IsValid)
             {
+                var count = await _context.Season.Where(s => s.LeagueID == season.LeagueID).CountAsync();
+                season.Index = count;
                 _context.Add(season);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

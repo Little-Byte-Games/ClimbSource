@@ -14,5 +14,6 @@ namespace Climb.Models
         [ForeignKey(nameof(AdminID))]
         public User Admin { get; set; }
         public HashSet<LeagueUser> Members { get; set; }
+        public HashSet<Season> Seasons { get; set; }
     }
 }
