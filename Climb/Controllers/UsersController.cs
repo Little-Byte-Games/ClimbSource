@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Climb.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Climb.Models;
 
 namespace Climb.Controllers
 {
@@ -146,6 +144,34 @@ namespace Climb.Controllers
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.ID == id);
+        }
+
+        public class AvailableSetsViewData
+        {
+            public readonly User user;
+            public readonly List<Set> sets;
+
+            public AvailableSetsViewData(User user, List<Set> sets)
+            {
+                this.user = user;
+                this.sets = sets;
+            }
+        }
+
+        public async Task<IActionResult> AvailableSets(int id)
+        {
+            var user = await _context.User.Include(u => u.LeagueUsers).SingleOrDefaultAsync(u => u.ID == id);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var query = _context.Set.Include(s => s.Player1).ThenInclude(u => u.User);
+            query = query.Include(s => s.Player2).ThenInclude(u => u.User);
+            var sets = await query.Where(s => user.LeagueUsers.Any(u => u.ID == s.Player1ID || u.ID == s.Player2ID)).ToListAsync();
+
+            var viewData = new AvailableSetsViewData(user, sets);
+            return View(viewData);
         }
     }
 }

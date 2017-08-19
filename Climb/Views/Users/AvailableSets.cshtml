@@ -1,0 +1,20 @@
+﻿@model Climb.Controllers.UsersController.AvailableSetsViewData
+
+@{
+    ViewData["Title"] = "Available Sets";
+}
+
+<h2>Available Sets</h2>
+
+<h4>@Model.user.Username</h4>
+<hr />
+@foreach(var set in Model.sets)
+{
+	var player1 = set.Player1?.User?.Username ?? "BYE";
+	var player2 = set.Player2?.User?.Username ?? "BYE";
+	<span>@player1 v @player2</span><br/>
+}
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
