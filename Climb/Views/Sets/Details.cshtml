@@ -7,29 +7,45 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Set</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.UpdatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UpdatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Player1)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Player1.ID)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Player2)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Player2.ID)
-        </dd>
-    </dl>
+	<h4>Set</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.UpdatedDate)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.UpdatedDate)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Player1)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Player1.ID)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Player2)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Player2.ID)
+		</dd>
+	</dl>
 </div>
+
+
+<form asp-action="AddMatch">
+	<input type="hidden" name="setID" value="@Model.ID" />
+	<div class="form-group">
+		<input type="submit" value="Add Match" class="btn btn-default" />
+	</div>
+</form>
+
+@*<button asp-action="AddMatch" asp-route-setID="@Model.ID">Add Match</button>*@
+
+@foreach(var match in Model.Matches)
+{
+	@Html.Partial("../Matches/MatchForm", match);
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>

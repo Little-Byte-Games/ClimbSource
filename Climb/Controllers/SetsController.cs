@@ -34,6 +34,7 @@ namespace Climb.Controllers
             var set = await _context.Set
                 .Include(s => s.Player1)
                 .Include(s => s.Player2)
+                .Include(s => s.Matches)
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (set == null)
             {
@@ -160,10 +161,25 @@ namespace Climb.Controllers
             return _context.Set.Any(e => e.ID == id);
         }
 
-        public IActionResult AddMatches(Set set)
+        public async Task<IActionResult> AddMatches(int id)
         {
-            //var set = await _context.Set.SingleOrDefaultAsync(m => m.ID == id);
+            var set = await _context.Set.Include(s => s.Player1).ThenInclude(u => u.User).Include(s => s.Player2).ThenInclude(u => u.User).SingleOrDefaultAsync(m => m.ID == id);
             return View("../Matches/Create", new SetMatch(set));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddMatch(int setID)
+        {
+            var set = await _context.Set.Include(s => s.Matches).SingleAsync(s => s.ID == setID);
+            var match = new Match
+            {
+                Index = set.Matches.Count
+            };
+            set.Matches.Add(match);
+            _context.Update(set);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new {id = setID });
         }
     }
 
