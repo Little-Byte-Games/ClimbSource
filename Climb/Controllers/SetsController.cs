@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -180,6 +181,37 @@ namespace Climb.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Details), new {id = setID });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Submit(int setID, IEnumerable<Match> matches)
+        {
+            var set = await _context.Set.Include(s => s.Matches).SingleOrDefaultAsync(s => s.ID == setID);
+
+            var addedNewMatch = false;
+            foreach(var match in matches)
+            {
+                var oldMatch = set.Matches.SingleOrDefault(m => match.ID == m.ID);
+                if(oldMatch == null)
+                {
+                    set.Matches.Add(match);
+                    addedNewMatch = true;
+                    _context.Update(match);
+                }
+                else
+                {
+                    _context.Entry(oldMatch).CurrentValues.SetValues(match);
+                }
+            }
+
+            if(addedNewMatch)
+            {
+                _context.Update(set);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 

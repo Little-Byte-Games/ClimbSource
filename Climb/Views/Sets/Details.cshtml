@@ -41,10 +41,40 @@
 
 @*<button asp-action="AddMatch" asp-route-setID="@Model.ID">Add Match</button>*@
 
-@foreach(var match in Model.Matches)
-{
-	@Html.Partial("../Matches/MatchForm", match);
-}
+<form asp-action="Submit">
+	<input type="hidden" name="setID" value="@Model.ID" />
+	
+	@{ int i = 0;}
+	@foreach(var match in Model.Matches)
+	{
+	@*@Html.Partial("../Matches/MatchForm", match);*@
+
+		<tr>
+			<td>
+				@{ var index = match.Index + 1;}
+				<h4>Match @index</h4>
+				<input type="number" value="@match.ID" name="[@i].ID"/>
+				<input type="number" value="@match.Index" name="[@i].Index"/>
+				<input type="number" value="@match.Player1Score" name="[@i].Player1Score"/>
+				<input type="number" value="@match.Player2Score" name="[@i].Player2Score"/>
+				@{ ++i;}
+			</td>
+		</tr>
+	}
+	<br/>
+	<div class="form-group">
+		<input type="submit" value="Submit" class="btn btn-default"/>
+	</div>
+</form>
+
+@*<button onclick="submitSet()">Submit</button>*@
+
+@*<form asp-action="Submit">
+	<input type="hidden" name="setID" value="@Model.ID" />
+	<div class="form-group">
+		<input type="submit" value="Submit" class="btn btn-default" />
+	</div>
+</form>*@
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
