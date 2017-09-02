@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Climb.Models;
+using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
@@ -184,18 +186,19 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(int setID, IEnumerable<Match> matches)
+        public async Task<IActionResult> Submit(int setID, IList<Match> matches)
         {
-            var set = await _context.Set.Include(s => s.Matches).SingleOrDefaultAsync(s => s.ID == setID);
+            var set = await _context.Set.Include(s => s.Matches)
+                .Include(s => s.Player1)
+                .Include(s => s.Player2)
+                .SingleOrDefaultAsync(s => s.ID == setID);
 
-            var addedNewMatch = false;
             foreach(var match in matches)
             {
                 var oldMatch = set.Matches.SingleOrDefault(m => match.ID == m.ID);
                 if(oldMatch == null)
                 {
                     set.Matches.Add(match);
-                    addedNewMatch = true;
                     _context.Update(match);
                 }
                 else
@@ -204,10 +207,20 @@ namespace Climb.Controllers
                 }
             }
 
-            if(addedNewMatch)
-            {
-                _context.Update(set);
-            }
+            // TODO: Inflate k-factor
+
+
+            const int startingElo = 2000;
+            set.Player1.Elo = set.Player1.Elo == 0 ? startingElo : set.Player1.Elo;
+            set.Player2.Elo = set.Player2.Elo == 0 ? startingElo : set.Player2.Elo;
+
+            // TODO: Update elo
+            var player1Won = matches.Count(m => m.Player1Score > m.Player2Score) >= matches.Count(m => m.Player2Score > m.Player1Score);
+            var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Elo, set.Player2.Elo, player1Won);
+            set.Player1.Elo = newElo.Item1;
+            set.Player2.Elo = newElo.Item2;
+
+            _context.Update(set);
 
             await _context.SaveChangesAsync();
 
