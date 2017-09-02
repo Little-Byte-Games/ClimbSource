@@ -1,0 +1,35 @@
+﻿@model Climb.ViewModels.CompeteIndexViewModel
+
+@{
+	ViewBag.Title = "Compete";
+	Layout = "_Layout";
+}
+
+<h2>Compete</h2>
+
+<h3>View as User</h3>
+<form asp-action="Index">
+	<select name="userID" type="">
+		@foreach(var user in Model.users)
+		{
+			<option value="@user.ID">@user.Username</option>
+		}
+	</select>
+	<div class="form-group">
+		<input type="submit" value="Select" class="btn btn-default"/>
+	</div>
+</form>
+
+<h2>Hello @Model.user.Username</h2>
+
+<h3>Sets</h3>
+@foreach(var set in Model.sets)
+{
+	var seasonIndex = set.Season.Index + 1;
+	var player1 = set.Player1?.User?.Username ?? "BYE";
+	var player2 = set.Player2?.User?.Username ?? "BYE";
+
+	<h4>League: @set.Season.League.Name | Season: @seasonIndex | Due Date: @set.DueDate.ToShortDateString()</h4>
+	<span>@player1 v @player2</span>
+	<hr/>
+}
