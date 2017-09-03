@@ -173,7 +173,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var nonparticipants = await _context.LeagueUser.Where(u => !season.Participants.Contains(u)).Include(l => l.User).ToListAsync();
+            var nonparticipants = await _context.LeagueUser.Where(u => u.LeagueID == season.LeagueID && !season.Participants.Contains(u)).Include(l => l.User).ToListAsync();
 
             return View(new JoinList(season, nonparticipants));
         }
