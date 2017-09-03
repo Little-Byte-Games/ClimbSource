@@ -25,6 +25,8 @@ namespace Climb.Models
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
+
+
             //foreach(var property in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetProperties()))
             //{
             //    if(property.IsForeignKey() && property.IsNullable)

@@ -23,18 +23,6 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Season",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Season", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -75,28 +63,93 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Season",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Index = table.Column<int>(type: "int", nullable: false),
+                    LeagueID = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Season", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Season_League_LeagueID",
+                        column: x => x.LeagueID,
+                        principalTable: "League",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LeagueUser",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Elo = table.Column<int>(type: "int", nullable: false),
+                    HasLeft = table.Column<bool>(type: "bit", nullable: false),
+                    LeagueID = table.Column<int>(type: "int", nullable: false),
+                    ProfilePicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SeasonID = table.Column<int>(type: "int", nullable: true),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeagueUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_League_LeagueID",
+                        column: x => x.LeagueID,
+                        principalTable: "League",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_Season_SeasonID",
+                        column: x => x.SeasonID,
+                        principalTable: "Season",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_User_UserID",
+                        column: x => x.UserID,
+                        principalTable: "User",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Set",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Player1ID = table.Column<int>(type: "int", nullable: false),
-                    Player2ID = table.Column<int>(type: "int", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Player1ID = table.Column<int>(type: "int", nullable: true),
+                    Player2ID = table.Column<int>(type: "int", nullable: true),
+                    SeasonID = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Set", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Set_User_Player1ID",
+                        name: "FK_Set_LeagueUser_Player1ID",
                         column: x => x.Player1ID,
-                        principalTable: "User",
+                        principalTable: "LeagueUser",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Set_User_Player2ID",
+                        name: "FK_Set_LeagueUser_Player2ID",
                         column: x => x.Player2ID,
-                        principalTable: "User",
+                        principalTable: "LeagueUser",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Set_Season_SeasonID",
+                        column: x => x.SeasonID,
+                        principalTable: "Season",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -107,6 +160,7 @@ namespace Climb.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Index = table.Column<int>(type: "int", nullable: false),
                     Player1Score = table.Column<int>(type: "int", nullable: false),
                     Player2Score = table.Column<int>(type: "int", nullable: false),
                     SetID = table.Column<int>(type: "int", nullable: true)
@@ -161,6 +215,21 @@ namespace Climb.Migrations
                 column: "GameID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LeagueUser_LeagueID",
+                table: "LeagueUser",
+                column: "LeagueID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeagueUser_SeasonID",
+                table: "LeagueUser",
+                column: "SeasonID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeagueUser_UserID",
+                table: "LeagueUser",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Match_SetID",
                 table: "Match",
                 column: "SetID");
@@ -176,6 +245,11 @@ namespace Climb.Migrations
                 column: "SetID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Season_LeagueID",
+                table: "Season",
+                column: "LeagueID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Set_Player1ID",
                 table: "Set",
                 column: "Player1ID");
@@ -184,6 +258,11 @@ namespace Climb.Migrations
                 name: "IX_Set_Player2ID",
                 table: "Set",
                 column: "Player2ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Set_SeasonID",
+                table: "Set",
+                column: "SeasonID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -195,19 +274,22 @@ namespace Climb.Migrations
                 name: "RankEvent");
 
             migrationBuilder.DropTable(
+                name: "Set");
+
+            migrationBuilder.DropTable(
+                name: "LeagueUser");
+
+            migrationBuilder.DropTable(
                 name: "Season");
 
             migrationBuilder.DropTable(
                 name: "League");
 
             migrationBuilder.DropTable(
-                name: "Set");
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "Game");
-
-            migrationBuilder.DropTable(
-                name: "User");
         }
     }
 }
