@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Climb.Models;
 
 namespace Climb.Data
@@ -43,6 +44,23 @@ namespace Climb.Data
                 new League{Admin = users[2], Name = "Local SFV", Game = games[1]},
             };
             context.League.AddRange(leagues);
+            context.SaveChanges();
+
+            foreach(var league in leagues)
+            {
+                foreach (var user in users)
+                {
+                    var leagueUser = new LeagueUser { User = user, League = league };
+                    context.LeagueUser.Add(leagueUser);
+                }
+            }
+            context.SaveChanges();
+
+            foreach(var league in leagues)
+            {
+                var season = new Season { League = league, Index = 0, StartDate = DateTime.Today.AddDays(7), Participants = league.Members};
+                context.Season.Add(season);
+            }
             context.SaveChanges();
         }
     }
