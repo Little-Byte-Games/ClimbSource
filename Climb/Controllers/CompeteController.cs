@@ -28,7 +28,7 @@ namespace Climb.Controllers
                 .Include(s => s.Player2).ThenInclude(u => u.User)
                 .Where(s => s.Player1.UserID == userID || s.Player2.UserID == userID).ToListAsync();
 
-            var viewModel = new CompeteIndexViewModel(user, new ReadOnlyCollection<User>(users), new ReadOnlyCollection<Set>(sets));
+            var viewModel = new CompeteIndexViewModel(user, new ReadOnlyCollection<User>(users), sets);
             return View(viewModel);
         }
     }

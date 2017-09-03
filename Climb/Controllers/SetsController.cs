@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Climb.Core;
@@ -35,8 +36,8 @@ namespace Climb.Controllers
             }
 
             var set = await _context.Set
-                .Include(s => s.Player1)
-                .Include(s => s.Player2)
+                .Include(s => s.Player1).ThenInclude(p => p.User)
+                .Include(s => s.Player2).ThenInclude(p => p.User)
                 .Include(s => s.Matches)
                 .SingleOrDefaultAsync(m => m.ID == id);
             if (set == null)
@@ -193,6 +194,7 @@ namespace Climb.Controllers
                 .Include(s => s.Player2)
                 .SingleOrDefaultAsync(s => s.ID == setID);
 
+            set.UpdatedDate = DateTime.Now;
             foreach(var match in matches)
             {
                 var oldMatch = set.Matches.SingleOrDefault(m => match.ID == m.ID);
@@ -214,7 +216,6 @@ namespace Climb.Controllers
             set.Player1.Elo = set.Player1.Elo == 0 ? startingElo : set.Player1.Elo;
             set.Player2.Elo = set.Player2.Elo == 0 ? startingElo : set.Player2.Elo;
 
-            // TODO: Update elo
             var player1Won = matches.Count(m => m.Player1Score > m.Player2Score) >= matches.Count(m => m.Player2Score > m.Player1Score);
             var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Elo, set.Player2.Elo, player1Won);
             set.Player1.Elo = newElo.Item1;
