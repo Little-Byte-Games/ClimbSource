@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Climb.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Climb.Models;
+using Newtonsoft.Json;
 using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
@@ -190,8 +193,8 @@ namespace Climb.Controllers
         public async Task<IActionResult> Submit(int setID, IList<Match> matches)
         {
             var set = await _context.Set.Include(s => s.Matches)
-                .Include(s => s.Player1)
-                .Include(s => s.Player2)
+                .Include(s => s.Player1).ThenInclude(p => p.User)
+                .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == setID);
 
             set.UpdatedDate = DateTime.Now;
@@ -216,7 +219,9 @@ namespace Climb.Controllers
             set.Player1.Elo = set.Player1.Elo == 0 ? startingElo : set.Player1.Elo;
             set.Player2.Elo = set.Player2.Elo == 0 ? startingElo : set.Player2.Elo;
 
-            var player1Won = matches.Count(m => m.Player1Score > m.Player2Score) >= matches.Count(m => m.Player2Score > m.Player1Score);
+            int p1Wins = matches.Count(m => m.Player1Score > m.Player2Score);
+            int p2Wins = matches.Count(m => m.Player2Score > m.Player1Score);
+            var player1Won = p1Wins >= p2Wins;
             var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Elo, set.Player2.Elo, player1Won);
             set.Player1.Elo = newElo.Item1;
             set.Player2.Elo = newElo.Item2;
@@ -224,6 +229,11 @@ namespace Climb.Controllers
             _context.Update(set);
 
             await _context.SaveChangesAsync();
+
+            var client = new HttpClient();
+            const string requestUri = @"https://hooks.slack.com/services/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";
+            var message = new { text = $"{set.Player1.User.Username} ({p1Wins}) v {set.Player2.User.Username} ({p2Wins})" };
+            await client.PostAsync(requestUri, new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json"));
 
             return RedirectToAction(nameof(Index));
         }
