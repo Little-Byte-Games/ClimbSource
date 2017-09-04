@@ -14,5 +14,7 @@ namespace Climb.Models
         public HashSet<Set> Sets { get; set; }
 
         public League League { get; set; }
+
+        public string DisplayName => $"Season {Index + 1}";
     }
 }

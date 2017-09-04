@@ -1,0 +1,50 @@
+﻿@model Climb.ViewModels.CompeteScheduleViewModel
+
+@{
+	ViewBag.Title = "Schedule";
+	Layout = "_Layout";
+}
+
+<h2>Schedule</h2>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-3" style="border: black solid 2px">
+			<h3>Leagues</h3>
+			<div class="btn-group-vertical">
+				@foreach (var league in Model.leagues)
+				{
+					var buttonClass = "btn btn-primary";
+					if (league.ID == Model.leagueID)
+					{
+						buttonClass += " active";
+					}
+
+					<a asp-action="Schedule" asp-route-userID="4" asp-route-leagueID="@league.ID" class="@buttonClass" role="button">@league.Name</a>
+				}
+			</div>
+		</div>
+
+		<div class="col-xs-9" style="border: black solid 2px">
+			<h3>Seasons</h3>
+			@{ var selectedSeason = Model.seasons.Single(s => s.ID == Model.seasonID); }
+			<div class="dropdown">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">@selectedSeason.DisplayName <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					@foreach(var season in Model.seasons)
+					{
+						<li><a asp-action="Schedule" asp-route-userID="4" asp-route-leagueID="@season.LeagueID" asp-route-seasonID="@season.ID">@season.DisplayName</a></li>
+					}
+				</ul>
+			</div>
+			
+			<h4>Sets</h4>
+			<ul>
+				@foreach(var set in selectedSeason.Sets)
+				{
+					<li>@set.Player1ID v @set.Player2ID</li>
+				}
+			</ul>
+		</div>
+	</div>
+</div>
