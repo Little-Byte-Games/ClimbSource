@@ -1,0 +1,33 @@
+﻿@model League
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div align="center">
+	<h2>Home</h2>
+	<br/>
+	<h3>@Model.Name</h3>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-3">
+			<h4>Seasons</h4>
+		</div>
+		<div class="col-xs-9">
+			<h4 align="center">Power Rankings</h4>
+			@{
+				var users = Model.Members.ToList();
+				users.Sort();
+				foreach(var leagueUser in users)
+				{
+					<div class="panel">
+						<span>@leagueUser.Rank</span>
+						<span>@leagueUser.User.Username</span>
+					</div>
+				}
+			}
+		</div>
+	</div>
+</div>

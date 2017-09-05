@@ -235,5 +235,18 @@ namespace Climb.Controllers
 
             return RedirectToAction(nameof(Join), new {id = leagueID});
         }
+
+        public async Task<IActionResult> Home(int id)
+        {
+            var league = await _context.League
+                .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(l => l.ID == id);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            return View(league);
+        }
     }
 }
