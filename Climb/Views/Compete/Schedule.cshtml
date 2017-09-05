@@ -9,13 +9,13 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-xs-3" style="border: black solid 2px">
+		<div class="col-xs-3">
 			<h3>Leagues</h3>
 			<div class="btn-group-vertical">
 				@foreach (var league in Model.leagues)
 				{
 					var buttonClass = "btn btn-primary";
-					if (league.ID == Model.leagueID)
+					if (league == Model.selectedLeague)
 					{
 						buttonClass += " active";
 					}
@@ -25,11 +25,10 @@
 			</div>
 		</div>
 
-		<div class="col-xs-9" style="border: black solid 2px">
+		<div class="col-xs-9">
 			<h3>Seasons</h3>
-			@{ var selectedSeason = Model.seasons.Single(s => s.ID == Model.seasonID); }
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">@selectedSeason.DisplayName <span class="caret"></span></button>
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">@Model.selectedSeason.DisplayName <span class="caret"></span></button>
 				<ul class="dropdown-menu">
 					@foreach(var season in Model.seasons)
 					{
@@ -39,12 +38,10 @@
 			</div>
 			
 			<h4>Sets</h4>
-			<ul>
-				@foreach(var set in selectedSeason.Sets)
-				{
-					<li>@set.Player1ID v @set.Player2ID</li>
-				}
-			</ul>
+			@foreach(var set in Model.selectedSeason.Sets)
+			{
+				@Html.Partial("../Sets/SetUnplayed", set)
+			}
 		</div>
 	</div>
 </div>

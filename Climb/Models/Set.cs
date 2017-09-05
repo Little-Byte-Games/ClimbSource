@@ -22,5 +22,7 @@ namespace Climb.Models
         public Season Season { get; set; }
 
         public bool IsComplete => UpdatedDate != null && UpdatedDate <= DateTime.Now;
+        public string Player1Name => Player1?.User?.Username ?? "BYE";
+        public string Player2Name => Player2?.User?.Username ?? "BYE";
     }
 }

@@ -50,10 +50,17 @@ namespace Climb.Controllers
                 leagueUser = user.LeagueUsers.Single(lu => lu.LeagueID == leagueID);
             }
 
-            var seasons = await _context.Season.Include(s => s.Participants).Include(s => s.Sets).ToListAsync();
+            var seasons = await _context.Season
+                .Include(s => s.Participants)
+                .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
+                .ToListAsync();
             var selectedSeasons = seasons.Where(season => season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
 
-            var viewModel = new CompeteScheduleViewModel(leagues, selectedSeasons, leagueID ?? leagues.First().ID, seasonID ?? selectedSeasons.First().ID);
+            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID) ?? leagues.First();
+            var selectedSeason = selectedSeasons.SingleOrDefault(s => s.ID == seasonID) ?? selectedSeasons.First();
+
+            var viewModel = new CompeteScheduleViewModel(selectedLeague, selectedSeason, leagues, selectedSeasons);
             return View(viewModel);
         }
     }

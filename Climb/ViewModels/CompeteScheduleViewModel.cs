@@ -6,15 +6,15 @@ namespace Climb.ViewModels
 {
     public class CompeteScheduleViewModel
     {
-        public readonly int leagueID;
-        public readonly int seasonID;
+        public readonly League selectedLeague;
+        public readonly Season selectedSeason;
         public readonly ReadOnlyCollection<League> leagues;
         public readonly ReadOnlyCollection<Season> seasons;
 
-        public CompeteScheduleViewModel(IList<League> leagues, IList<Season> seasons, int leagueID, int seasonID)
+        public CompeteScheduleViewModel(League selectedLeague, Season selectedSeason, IList<League> leagues, IList<Season> seasons)
         {
-            this.leagueID = leagueID;
-            this.seasonID = seasonID;
+            this.selectedLeague = selectedLeague;
+            this.selectedSeason = selectedSeason;
             this.leagues = new ReadOnlyCollection<League>(leagues);
             this.seasons = new ReadOnlyCollection<Season>(seasons);
         }
