@@ -8,7 +8,7 @@ namespace Climb.Data
     {
         public static void Initialize(ClimbContext context)
         {
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if(context.User.Any())
@@ -55,11 +55,18 @@ namespace Climb.Data
                 }
             }
             context.SaveChanges();
-
+             
             foreach(var league in leagues)
             {
-                var season = new Season { League = league, Index = 0, StartDate = DateTime.Today.AddDays(7), Participants = league.Members};
+                var season = new Season { League = league, Index = 0, StartDate = DateTime.Today.AddDays(7) };
                 context.Season.Add(season);
+                context.SaveChanges();
+
+                foreach (var member in league.Members)
+                {
+                    var participant = new LeagueUserSeason { Season = season, LeagueUser = member };
+                    context.LeagueUserSeason.Add(participant);
+                }
             }
             context.SaveChanges();
         }

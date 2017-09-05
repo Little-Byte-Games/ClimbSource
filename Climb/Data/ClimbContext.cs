@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Climb.Models;
 
 namespace Climb.Models
 {
@@ -17,6 +16,9 @@ namespace Climb.Models
         public DbSet<Season> Season { get; set; }
         public DbSet<Set> Set { get; set; }
         public DbSet<Match> Match { get; set; }
+        public DbSet<RankEvent> RankEvent { get; set; }
+        public DbSet<LeagueUser> LeagueUser { get; set; }
+        public DbSet<LeagueUserSeason> LeagueUserSeason { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,19 +27,18 @@ namespace Climb.Models
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
+            modelBuilder.Entity<LeagueUserSeason>()
+                .HasKey(lus => new { lus.LeagueUserID, lus.SeasonID });
 
+            modelBuilder.Entity<LeagueUserSeason>()
+                .HasOne(lus => lus.LeagueUser)
+                .WithMany(lu => lu.Seasons)
+                .HasForeignKey(bc => bc.LeagueUserID);
 
-            //foreach(var property in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetProperties()))
-            //{
-            //    if(property.IsForeignKey() && property.IsNullable)
-            //    {
-            //        property.
-            //    }
-            //}
+            modelBuilder.Entity<LeagueUserSeason>()
+                .HasOne(lus => lus.Season)
+                .WithMany(s => s.Participants)
+                .HasForeignKey(lus => lus.SeasonID);
         }
-
-        public DbSet<Climb.Models.RankEvent> RankEvent { get; set; }
-
-        public DbSet<Climb.Models.LeagueUser> LeagueUser { get; set; }
     }
 }

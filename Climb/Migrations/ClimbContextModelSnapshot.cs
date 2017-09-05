@@ -65,19 +65,28 @@ namespace Climb.Migrations
 
                     b.Property<string>("ProfilePicKey");
 
-                    b.Property<int?>("SeasonID");
-
                     b.Property<int>("UserID");
 
                     b.HasKey("ID");
 
                     b.HasIndex("LeagueID");
 
-                    b.HasIndex("SeasonID");
-
                     b.HasIndex("UserID");
 
                     b.ToTable("LeagueUser");
+                });
+
+            modelBuilder.Entity("Climb.Models.LeagueUserSeason", b =>
+                {
+                    b.Property<int>("LeagueUserID");
+
+                    b.Property<int>("SeasonID");
+
+                    b.HasKey("LeagueUserID", "SeasonID");
+
+                    b.HasIndex("SeasonID");
+
+                    b.ToTable("LeagueUserSeason");
                 });
 
             modelBuilder.Entity("Climb.Models.Match", b =>
@@ -198,14 +207,22 @@ namespace Climb.Migrations
                         .HasForeignKey("LeagueID")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Climb.Models.Season")
-                        .WithMany("Participants")
-                        .HasForeignKey("SeasonID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Climb.Models.User", "User")
                         .WithMany("LeagueUsers")
                         .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Climb.Models.LeagueUserSeason", b =>
+                {
+                    b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
+                        .WithMany("LeagueUserSeasons")
+                        .HasForeignKey("LeagueUserID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Climb.Models.Season", "Season")
+                        .WithMany("Participants")
+                        .HasForeignKey("SeasonID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

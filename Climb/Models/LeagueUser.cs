@@ -13,6 +13,7 @@ namespace Climb.Models
 
         public User User { get; set; }
         public League League { get; set; }
+        public HashSet<LeagueUserSeason> Seasons { get; set; }
         public HashSet<Set> P1Sets { get; set; }
         public HashSet<Set> P2Sets { get; set; }
     }

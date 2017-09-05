@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Climb.Models;
+﻿using Climb.Models;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.ObjectModel;
@@ -52,7 +51,7 @@ namespace Climb.Controllers
             }
 
             var seasons = await _context.Season.Include(s => s.Participants).Include(s => s.Sets).ToListAsync();
-            var selectedSeasons = seasons.Where(season => season.Participants.Contains(leagueUser)).ToList();
+            var selectedSeasons = seasons.Where(season => season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
 
             var viewModel = new CompeteScheduleViewModel(leagues, selectedSeasons, leagueID ?? leagues.First().ID, seasonID ?? selectedSeasons.First().ID);
             return View(viewModel);

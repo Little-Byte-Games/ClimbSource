@@ -63,6 +63,35 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LeagueUser",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Elo = table.Column<int>(type: "int", nullable: false),
+                    HasLeft = table.Column<bool>(type: "bit", nullable: false),
+                    LeagueID = table.Column<int>(type: "int", nullable: false),
+                    ProfilePicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeagueUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_League_LeagueID",
+                        column: x => x.LeagueID,
+                        principalTable: "League",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_User_UserID",
+                        column: x => x.UserID,
+                        principalTable: "User",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Season",
                 columns: table => new
                 {
@@ -84,37 +113,25 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LeagueUser",
+                name: "LeagueUserSeason",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Elo = table.Column<int>(type: "int", nullable: false),
-                    HasLeft = table.Column<bool>(type: "bit", nullable: false),
-                    LeagueID = table.Column<int>(type: "int", nullable: false),
-                    ProfilePicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SeasonID = table.Column<int>(type: "int", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    LeagueUserID = table.Column<int>(type: "int", nullable: false),
+                    SeasonID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LeagueUser", x => x.ID);
+                    table.PrimaryKey("PK_LeagueUserSeason", x => new { x.LeagueUserID, x.SeasonID });
                     table.ForeignKey(
-                        name: "FK_LeagueUser_League_LeagueID",
-                        column: x => x.LeagueID,
-                        principalTable: "League",
+                        name: "FK_LeagueUserSeason_LeagueUser_LeagueUserID",
+                        column: x => x.LeagueUserID,
+                        principalTable: "LeagueUser",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_LeagueUser_Season_SeasonID",
+                        name: "FK_LeagueUserSeason_Season_SeasonID",
                         column: x => x.SeasonID,
                         principalTable: "Season",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_LeagueUser_User_UserID",
-                        column: x => x.UserID,
-                        principalTable: "User",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -220,14 +237,14 @@ namespace Climb.Migrations
                 column: "LeagueID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LeagueUser_SeasonID",
-                table: "LeagueUser",
-                column: "SeasonID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_LeagueUser_UserID",
                 table: "LeagueUser",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeagueUserSeason_SeasonID",
+                table: "LeagueUserSeason",
+                column: "SeasonID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Match_SetID",
@@ -267,6 +284,9 @@ namespace Climb.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "LeagueUserSeason");
+
             migrationBuilder.DropTable(
                 name: "Match");
 
