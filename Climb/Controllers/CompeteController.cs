@@ -63,5 +63,18 @@ namespace Climb.Controllers
             var viewModel = new CompeteScheduleViewModel(selectedLeague, selectedSeason, leagues, selectedSeasons);
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Home(int userID)
+        {
+            var user = _context.User
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League)
+                .SingleOrDefault(u => u.ID == userID);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
     }
 }

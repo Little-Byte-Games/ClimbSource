@@ -193,6 +193,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Submit(int setID, IList<Match> matches)
         {
             var set = await _context.Set.Include(s => s.Matches)
+                .Include(s => s.Season)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == setID);
@@ -239,6 +240,21 @@ namespace Climb.Controllers
             set.Player2.Elo = newElo.Item2;
 
             _context.Update(set);
+
+            var users = await _context.LeagueUser.Where(lu => lu.LeagueID == set.Season.LeagueID).ToListAsync();
+            users.Sort();
+            var rank = 0;
+            var lastElo = -1;
+            foreach(LeagueUser member in users)
+            {
+                if(member.Elo != lastElo)
+                {
+                    lastElo = member.Elo;
+                    ++rank;
+                }
+                member.Rank = rank;
+            }
+            _context.UpdateRange(users);
 
             await _context.SaveChangesAsync();
 

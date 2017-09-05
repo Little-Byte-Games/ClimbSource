@@ -1,0 +1,15 @@
+﻿@model User
+
+@{
+	ViewBag.Title = "Home";
+	Layout = "_Layout";
+}
+
+<div align="center">
+	<h2>Home</h2>
+	<h4>Hello @Model.Username</h4>
+</div>
+@foreach(var leagueUser in Model.LeagueUsers)
+{
+	@Html.Partial("../LeagueUsers/Info", leagueUser)
+}
