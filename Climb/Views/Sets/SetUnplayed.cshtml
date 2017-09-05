@@ -8,10 +8,14 @@
 		
 		@if(Model.IsComplete)
 		{
-			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-info" role="button">Details!</a>
+			<span>@Model.Player1Score - @Model.Player2Score</span>
+			<br/>
+			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-info" role="button">Details</a>
 		}
 		else
 		{
+			<span>@Model.DueDate.ToShortDateString()</span>
+			<br />
 			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-primary" role="button">Fight!</a>
 		}
 
