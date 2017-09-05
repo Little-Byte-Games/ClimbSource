@@ -63,7 +63,7 @@ namespace Climb.Controllers
             var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
             await transfer.UploadAsync(file.OpenReadStream(), bucketName, fileKey);
 
-            var user = await context.LeagueUser.SingleOrDefaultAsync(u => u.UserID == id);
+            var user = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
             if (user != null)
             {
                 user.ProfilePicKey = fileKey;
