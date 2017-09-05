@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace Climb.Models
 {
@@ -22,6 +23,19 @@ namespace Climb.Models
         public int CompareTo(LeagueUser other)
         {
             return other.Elo.CompareTo(Elo);
+        }
+
+        public string GetProfilePicUrl(IConfiguration configuration)
+        {
+            var profilePicUrl = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
+            if (ProfilePicKey != null)
+            {
+                var awsSection = configuration.GetSection("AWS");
+                var root = awsSection["RootUrl"];
+                var bucket = awsSection["Bucket"];
+                profilePicUrl = string.Join("/", root, bucket, ProfilePicKey);
+            }
+            return profilePicUrl;
         }
     }
 }

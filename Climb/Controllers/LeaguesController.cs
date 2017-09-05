@@ -5,26 +5,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.ViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace Climb.Controllers
 {
     public class LeaguesController : Controller
     {
         private readonly ClimbContext _context;
+        private readonly IConfiguration configuration;
 
-        public LeaguesController(ClimbContext context)
+        public LeaguesController(ClimbContext context, IConfiguration configuration)
         {
             _context = context;
+            this.configuration = configuration;
         }
 
-        // GET: League
         public async Task<IActionResult> Index()
         {
             var climbContext = _context.League.Include(l => l.Game).Include(l => l.Admin);
             return View(await climbContext.ToListAsync());
         }
 
-        // GET: League/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,7 +46,6 @@ namespace Climb.Controllers
             return View(league);
         }
 
-        // GET: League/Create
         public IActionResult Create()
         {
             ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID");
@@ -52,9 +53,6 @@ namespace Climb.Controllers
             return View();
         }
 
-        // POST: League/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,GameID,AdminID")] League league)
@@ -70,7 +68,6 @@ namespace Climb.Controllers
             return View(league);
         }
 
-        // GET: League/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,9 +85,6 @@ namespace Climb.Controllers
             return View(league);
         }
 
-        // POST: League/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,GameID,UserID")] League league)
@@ -125,7 +119,6 @@ namespace Climb.Controllers
             return View(league);
         }
 
-        // GET: League/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,7 +138,6 @@ namespace Climb.Controllers
             return View(league);
         }
 
-        // POST: League/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -246,7 +238,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            return View(league);
+            var viewModel = new LeagueHomeViewModel(league, configuration);
+            return View(viewModel);
         }
     }
 }

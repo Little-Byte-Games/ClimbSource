@@ -40,15 +40,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var profilePicUrl = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
-            if(leagueUser.ProfilePicKey != null)
-            {
-                var awsSection = configuration.GetSection("AWS");
-                var root = awsSection["RootUrl"];
-                var bucket = awsSection["Bucket"];
-                profilePicUrl = string.Join("/", root, bucket, leagueUser.ProfilePicKey);
-            }
-            ViewBag.ProfilePic = profilePicUrl;
+            ViewBag.ProfilePic = leagueUser.GetProfilePicUrl(configuration);
 
             return View(leagueUser);
         }
