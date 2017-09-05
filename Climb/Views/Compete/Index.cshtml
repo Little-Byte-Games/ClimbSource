@@ -22,26 +22,18 @@
 
 <h2>Hello @Model.user.Username</h2>
 
-<h3>Available Sets</h3>
-@foreach(var set in Model.availableSets)
-{
-	var seasonIndex = set.Season.Index + 1;
-	var player1 = set.Player1?.User?.Username ?? "BYE";
-	var player2 = set.Player2?.User?.Username ?? "BYE";
+<div align="center">
+	<h3>Available Sets</h3>
+	@foreach(var set in Model.availableSets)
+	{
+		@Html.Partial("../Sets/SetUnplayed", set)
+	}
+</div>
 
-	<h4>League: @set.Season.League.Name | Season: @seasonIndex | Due Date: @set.DueDate.ToShortDateString()</h4>
-	<span>@player1 v @player2</span>
-	<hr/>
-}
-
-<h3>Past Sets</h3>
-@foreach (var set in Model.pastSets)
-{
-	var seasonIndex = set.Season.Index + 1;
-	var player1 = set.Player1?.User?.Username ?? "BYE";
-	var player2 = set.Player2?.User?.Username ?? "BYE";
-
-	<h4>League: @set.Season.League.Name | Season: @seasonIndex</h4>
-	<span>@player1 v @player2</span>
-	<hr />
-}
+<div align="center">
+	<h3>Past Sets</h3>
+	@foreach(var set in Model.pastSets)
+	{
+		@Html.Partial("../Sets/SetUnplayed", set)
+	}
+</div>
