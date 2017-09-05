@@ -11,6 +11,8 @@ namespace Climb.Models
         public int? Player2ID { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int? Player1Score { get; set; }
+        public int? Player2Score { get; set; }
 
         [InverseProperty("P1Sets")]
         [ForeignKey("Player1ID")]
@@ -21,7 +23,7 @@ namespace Climb.Models
         public ICollection<Match> Matches { get; set; }
         public Season Season { get; set; }
 
-        public bool IsComplete => UpdatedDate != null && UpdatedDate <= DateTime.Now;
+        public bool IsComplete => Player1Score + Player2Score > 0;
         public string Player1Name => Player1?.User?.Username ?? "BYE";
         public string Player2Name => Player2?.User?.Username ?? "BYE";
     }

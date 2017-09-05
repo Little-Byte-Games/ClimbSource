@@ -144,7 +144,9 @@ namespace Climb.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Player1ID = table.Column<int>(type: "int", nullable: true),
+                    Player1Score = table.Column<int>(type: "int", nullable: true),
                     Player2ID = table.Column<int>(type: "int", nullable: true),
+                    Player2Score = table.Column<int>(type: "int", nullable: true),
                     SeasonID = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },

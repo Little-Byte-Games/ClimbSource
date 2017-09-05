@@ -197,9 +197,21 @@ namespace Climb.Controllers
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == setID);
 
+            set.Player1Score = 0;
+            set.Player2Score = 0;
+
             set.UpdatedDate = DateTime.Now;
             foreach(var match in matches)
             {
+                if(match.Player1Score > 0 && match.Player1Score > match.Player2Score)
+                {
+                    ++set.Player1Score;
+                }
+                else if(match.Player2Score > 0 && match.Player2Score > match.Player1Score)
+                {
+                    ++set.Player2Score;
+                }
+
                 var oldMatch = set.Matches.SingleOrDefault(m => match.ID == m.ID);
                 if(oldMatch == null)
                 {

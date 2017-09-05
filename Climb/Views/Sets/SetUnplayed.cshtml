@@ -5,6 +5,15 @@
 		<h5>@Model.Season.League.Name | @Model.Season.DisplayName</h5>
 		<span>@Model.Player1Name v @Model.Player2Name</span>
 		<br/>
-		<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-default" role="button">Fight!</a>
+		
+		@if(Model.IsComplete)
+		{
+			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-info" role="button">Details!</a>
+		}
+		else
+		{
+			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-primary" role="button">Fight!</a>
+		}
+
 	</div>
 </div>

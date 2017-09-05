@@ -11,7 +11,7 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170904220645_Init")]
+    [Migration("20170905021108_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -159,7 +159,11 @@ namespace Climb.Migrations
 
                     b.Property<int?>("Player1ID");
 
+                    b.Property<int?>("Player1Score");
+
                     b.Property<int?>("Player2ID");
+
+                    b.Property<int?>("Player2Score");
 
                     b.Property<int?>("SeasonID");
 
@@ -217,7 +221,7 @@ namespace Climb.Migrations
             modelBuilder.Entity("Climb.Models.LeagueUserSeason", b =>
                 {
                     b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
-                        .WithMany("LeagueUserSeasons")
+                        .WithMany("Seasons")
                         .HasForeignKey("LeagueUserID")
                         .OnDelete(DeleteBehavior.Restrict);
 

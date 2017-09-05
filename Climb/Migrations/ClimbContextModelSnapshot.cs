@@ -158,7 +158,11 @@ namespace Climb.Migrations
 
                     b.Property<int?>("Player1ID");
 
+                    b.Property<int?>("Player1Score");
+
                     b.Property<int?>("Player2ID");
+
+                    b.Property<int?>("Player2Score");
 
                     b.Property<int?>("SeasonID");
 
@@ -216,7 +220,7 @@ namespace Climb.Migrations
             modelBuilder.Entity("Climb.Models.LeagueUserSeason", b =>
                 {
                     b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
-                        .WithMany("LeagueUserSeasons")
+                        .WithMany("Seasons")
                         .HasForeignKey("LeagueUserID")
                         .OnDelete(DeleteBehavior.Restrict);
 
