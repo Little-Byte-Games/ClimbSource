@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Climb.Models
 {
-    public class ClimbContext : DbContext
+    public class ClimbContext : IdentityDbContext<ApplicationUser>
     {
         public ClimbContext(DbContextOptions<ClimbContext> options)
             : base(options)
@@ -22,6 +23,8 @@ namespace Climb.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             foreach(var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;

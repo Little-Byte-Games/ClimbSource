@@ -64,7 +64,7 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Home(int userID)
+        public IActionResult Home(int userID)
         {
             var user = _context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League)

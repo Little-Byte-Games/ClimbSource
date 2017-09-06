@@ -10,6 +10,9 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.10.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
@@ -20,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\js\" />
@@ -28,6 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Climb.Core\Climb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.1" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,3 @@
-using System;
-
 namespace Climb.Models
 {
     public class ErrorViewModel

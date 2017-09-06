@@ -35,6 +35,7 @@ namespace Climb
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseUrls("https://localhost:44357/")
                 .Build();
     }
 }
