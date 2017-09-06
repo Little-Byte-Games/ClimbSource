@@ -1,22 +1,26 @@
-﻿@model Set
+﻿@model Climb.ViewModels.SetCollapsedViewModel
 
 <div class="panel panel-default">
 	<div align="center">
-		<h5>@Model.Season.League.Name | @Model.Season.DisplayName</h5>
-		<span>@Model.Player1Name v @Model.Player2Name</span>
+		<h5>@Model.set.Season.League.Name | @Model.set.Season.DisplayName</h5>
+		<span>@Model.set.Player1Name v @Model.set.Player2Name</span>
 		<br/>
 		
-		@if(Model.IsComplete)
+		@if(Model.set.IsComplete)
 		{
-			<span>@Model.Player1Score - @Model.Player2Score</span>
+			<span>@Model.set.Player1Score - @Model.set.Player2Score</span>
 			<br/>
-			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-info" role="button">Details</a>
+			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
 		}
 		else
 		{
-			<span>@Model.DueDate.ToShortDateString()</span>
-			<br />
-			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.ID" class="btn btn-primary" role="button">Fight!</a>
+			<span>@Model.set.DueDate.ToShortDateString()</span>
+
+			if(Model.set.IsPlaying(Model.user))
+			{
+				<br />
+				<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
+			}
 		}
 
 	</div>

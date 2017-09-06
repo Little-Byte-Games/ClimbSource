@@ -1,4 +1,5 @@
-﻿@model Climb.ViewModels.CompeteScheduleViewModel
+﻿@using Climb.ViewModels
+@model CompeteScheduleViewModel
 
 @{
 	ViewBag.Title = "Schedule";
@@ -40,7 +41,8 @@
 			<h4>Sets</h4>
 			@foreach(var set in Model.selectedSeason.Sets)
 			{
-				@Html.Partial("../Sets/Collapsed", set)
+				var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
+				@Html.Partial("../Sets/Collapsed", viewModel)
 			}
 		</div>
 	</div>

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Controllers
@@ -11,10 +13,12 @@ namespace Climb.Controllers
     public class CompeteController : Controller
     {
         private readonly ClimbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CompeteController(ClimbContext context)
+        public CompeteController(ClimbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index(int userID)
@@ -32,6 +36,7 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
         public async Task<IActionResult> Schedule(int userID, int? leagueID, int? seasonID)
         {
             var user = await _context.User
@@ -40,6 +45,12 @@ namespace Climb.Controllers
             if(user == null)
             {
                 return NotFound();
+            }
+
+            var appUser = await _userManager.GetUserAsync(User);
+            if(appUser.UserID != userID)
+            {
+                return Forbid();
             }
 
             var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
@@ -60,7 +71,7 @@ namespace Climb.Controllers
             var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID) ?? leagues.First();
             var selectedSeason = selectedSeasons.SingleOrDefault(s => s.ID == seasonID) ?? selectedSeasons.First();
 
-            var viewModel = new CompeteScheduleViewModel(selectedLeague, selectedSeason, leagues, selectedSeasons);
+            var viewModel = new CompeteScheduleViewModel(selectedLeague, selectedSeason, leagues, selectedSeasons, leagueUser);
             return View(viewModel);
         }
 
