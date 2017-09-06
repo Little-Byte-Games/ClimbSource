@@ -8,5 +8,6 @@ namespace Climb.Models
         public string Username { get; set; }
 
         public HashSet<LeagueUser> LeagueUsers { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }

@@ -55,6 +55,8 @@ namespace Climb.Migrations
 
                     b.Property<bool>("TwoFactorEnabled");
 
+                    b.Property<int>("UserID");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
@@ -67,6 +69,9 @@ namespace Climb.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers");
                 });
@@ -350,6 +355,14 @@ namespace Climb.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Climb.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Climb.Models.User", "User")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("Climb.Models.ApplicationUser", "UserID")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.League", b =>

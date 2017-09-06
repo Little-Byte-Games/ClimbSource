@@ -11,8 +11,8 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170906044959_test")]
-    partial class test
+    [Migration("20170906054744_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,6 +56,8 @@ namespace Climb.Migrations
 
                     b.Property<bool>("TwoFactorEnabled");
 
+                    b.Property<int>("UserID");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
@@ -68,6 +70,9 @@ namespace Climb.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers");
                 });
@@ -351,6 +356,14 @@ namespace Climb.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Climb.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Climb.Models.User", "User")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("Climb.Models.ApplicationUser", "UserID")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.League", b =>
