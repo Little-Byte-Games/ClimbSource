@@ -21,8 +21,12 @@ namespace Climb.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int userID)
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
+            var appUser = await _userManager.GetUserAsync(User);
+            var userID = appUser.UserID;
+
             var users = _context.User.Select(u => u).ToList();
             var user = users.Single(u => u.ID == userID);
 

@@ -5,35 +5,21 @@
 	Layout = "_Layout";
 }
 
-<h2>Compete</h2>
-
-<h3>View as User</h3>
-<form asp-action="Index" method="get">
-	<select name="userID" type="">
-		@foreach(var user in Model.users)
-		{
-			<option value="@user.ID">@user.Username</option>
-		}
-	</select>
-	<div class="form-group">
-		<input type="submit" value="Select" class="btn btn-default"/>
-	</div>
-</form>
-
-<h2>Hello @Model.user.Username</h2>
-
 <div align="center">
-	<h3>Available Sets</h3>
-	@foreach(var set in Model.availableSets)
-	{
-		@Html.Partial("../Sets/Collapsed", set)
-	}
+	<h2>Compete</h2>
+	<h3>Hello @Model.user.Username</h3>
 </div>
 
 <div align="center">
-	<h3>Past Sets</h3>
-	@foreach(var set in Model.pastSets)
+	@if(Model.availableSets.Count == 0)
 	{
-		@Html.Partial("../Sets/Collapsed", set)
+		<span>All caught up!</span>
+	}
+	else
+	{
+		foreach(var set in Model.availableSets)
+		{
+			@Html.Partial("../Sets/Collapsed", set)
+		}
 	}
 </div>
