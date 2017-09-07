@@ -61,6 +61,11 @@ namespace Climb.Controllers
             {
                 _context.Add(league);
                 await _context.SaveChangesAsync();
+
+                var admin = new LeagueUser { UserID = league.AdminID, League = league };
+                _context.Add(admin);
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
