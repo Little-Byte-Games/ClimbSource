@@ -5,6 +5,13 @@ namespace Climb.Models
 {
     public class League
     {
+        public enum Membership
+        {
+            NonMember,
+            Member,
+            Admin,
+        }
+
         public int ID { get; set; }
         public string Name { get; set; }
         public int GameID { get; set; }

@@ -1,13 +1,27 @@
-﻿@model League
+﻿@model Climb.ViewModels.LeagueCollapsedViewModel
 
 <div class="panel panel-default">
 	<div align="center" style="padding: 4px">
-		<span>@Model.Game.Name</span>
+		<span>@Model.league.Game.Name</span>
 		<br />
-		<span><b>@Model.Name</b></span>
+		<span><b>@Model.league.Name</b></span>
 		<br />
-		<span>Admin: @Model.Admin.Username | Members: @Model.Members.Count</span>
+		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.Members.Count</span>
 		<br />
-		<button class="btn btn-success">Join</button>
+		@{
+			var buttonType = "btn-success";
+			var label = "Join";
+			if(@Model.membership == League.Membership.Member)
+			{
+				buttonType = "btn-danger";
+				label = "Leave";
+			}
+			else if(Model.membership == League.Membership.Admin)
+			{
+				buttonType = "btn-primary";
+				label = "Manage";
+			}
+		}
+		<button class="btn @buttonType">@label</button>
 	</div>
 </div>

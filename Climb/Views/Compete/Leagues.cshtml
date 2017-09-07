@@ -1,4 +1,5 @@
-﻿@model Climb.ViewModels.CompeteLeaguesViewModel
+﻿@using Climb.ViewModels
+@model Climb.ViewModels.CompeteLeaguesViewModel
 
 @{
 	ViewBag.Title = "Leagues";
@@ -21,10 +22,32 @@
 		</div>
 		<div class="col-xs-9">
 			<div>
+				<h4>Member</h4>
 				@{
 					foreach(var league in Model.memberOf)
 					{
-						@Html.Partial("../Leagues/Collapsed", league)
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Member);
+						@Html.Partial("../Leagues/Collapsed", viewModel)
+					}
+				}
+			</div>
+			<div>
+				<h4>Admin</h4>
+				@{
+					foreach(var league in Model.adminOf)
+					{
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Admin);
+						@Html.Partial("../Leagues/Collapsed", viewModel)
+					}
+				}
+			</div>
+			<div>
+				<h4>Non-Member</h4>
+				@{
+					foreach(var league in Model.nonmemberOf)
+					{
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.NonMember);
+						@Html.Partial("../Leagues/Collapsed", viewModel)
 					}
 				}
 			</div>
