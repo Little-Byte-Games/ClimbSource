@@ -230,7 +230,7 @@ namespace Climb.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Join), new {id = leagueID});
+            return Redirect(Request.Path);
         }
 
         public async Task<IActionResult> Home(int id)

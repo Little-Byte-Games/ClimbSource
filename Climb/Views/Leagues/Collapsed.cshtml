@@ -6,22 +6,23 @@
 		<br />
 		<span><b>@Model.league.Name</b></span>
 		<br />
-		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.Members.Count</span>
+		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.MemberCount</span>
 		<br />
 		@{
-			var buttonType = "btn-success";
-			var label = "Join";
-			if(@Model.membership == League.Membership.Member)
+			if (Model.membership == League.Membership.Member)
 			{
-				buttonType = "btn-danger";
-				label = "Leave";
+				<form asp-controller="Leagues" asp-action="Leave" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
+					<button type="submit" class="btn btn-danger">Leave</button>
+				</form>
 			}
-			else if(Model.membership == League.Membership.Admin)
+			else if (Model.membership == League.Membership.Admin)
 			{
-				buttonType = "btn-primary";
-				label = "Manage";
+				<a class="btn btn-primary" role="button" asp-controller="Leagues" asp-action="Edit" asp-route-leagueID="@Model.league.ID">Manage</a>
+			}
+			else
+			{
+				<a class="btn btn-success" role="button" asp-controller="Leagues" asp-action="Join" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID">Join</a>
 			}
 		}
-		<button class="btn @buttonType">@label</button>
 	</div>
 </div>

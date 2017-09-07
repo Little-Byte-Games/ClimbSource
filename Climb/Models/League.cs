@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Climb.Models
 {
@@ -22,5 +23,7 @@ namespace Climb.Models
         public User Admin { get; set; }
         public HashSet<LeagueUser> Members { get; set; }
         public HashSet<Season> Seasons { get; set; }
+
+        public int MemberCount => Members.Count(m => !m.HasLeft);
     }
 }

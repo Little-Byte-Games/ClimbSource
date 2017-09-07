@@ -7,12 +7,14 @@ namespace Climb.ViewModels
 {
     public class CompeteLeaguesViewModel
     {
+        public readonly int userID;
         public readonly ReadOnlyCollection<League> memberOf;
         public readonly ReadOnlyCollection<League> nonmemberOf;
         public readonly ReadOnlyCollection<League> adminOf;
 
-        private CompeteLeaguesViewModel(IList<League> memberOf, IList<League> nonmemberOf, IList<League> adminOf)
+        private CompeteLeaguesViewModel(int userID, IList<League> memberOf, IList<League> nonmemberOf, IList<League> adminOf)
         {
+            this.userID = userID;
             this.memberOf = new ReadOnlyCollection<League>(memberOf);
             this.nonmemberOf = new ReadOnlyCollection<League>(nonmemberOf);
             this.adminOf = new ReadOnlyCollection<League>(adminOf);
@@ -33,7 +35,7 @@ namespace Climb.ViewModels
                 else
                 {
                     var leagueUser = leagueUsers.FirstOrDefault(lu => lu.LeagueID == league.ID);
-                    if (leagueUser == null)
+                    if (leagueUser == null || leagueUser.HasLeft)
                     {
                         nonmemberOf.Add(league);
                     }
@@ -44,7 +46,7 @@ namespace Climb.ViewModels
                 }
             }
 
-            return new CompeteLeaguesViewModel(memberOf, nonmemberOf, adminOf);
+            return new CompeteLeaguesViewModel(userID, memberOf, nonmemberOf, adminOf);
         }
     }
 }
