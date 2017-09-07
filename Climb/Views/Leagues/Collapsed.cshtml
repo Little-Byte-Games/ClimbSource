@@ -1,0 +1,13 @@
+﻿@model League
+
+<div class="panel panel-default">
+	<div align="center" style="padding: 4px">
+		<span>@Model.Game.Name</span>
+		<br />
+		<span><b>@Model.Name</b></span>
+		<br />
+		<span>Admin: @Model.Admin.Username | Members: @Model.Members.Count</span>
+		<br />
+		<button class="btn btn-success">Join</button>
+	</div>
+</div>

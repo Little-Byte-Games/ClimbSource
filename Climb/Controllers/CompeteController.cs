@@ -94,5 +94,19 @@ namespace Climb.Controllers
 
             return View(user);
         }
+
+        [Authorize]
+        public async Task<IActionResult> Leagues()
+        {
+            var appUser = await _userManager.GetUserAsync(User);
+            var user = await _context.User.Include(u => u.LeagueUsers).SingleOrDefaultAsync(u => u.ID == appUser.UserID);
+            var leagues = await _context.League
+                .Include(l => l.Admin)
+                .Include(l => l.Game)
+                .ToListAsync();
+
+            var viewModel = CompeteLeaguesViewModel.Create(user.LeagueUsers, leagues);
+            return View(viewModel);
+        }
     }
 }

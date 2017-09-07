@@ -1,0 +1,33 @@
+﻿@model Climb.ViewModels.CompeteLeaguesViewModel
+
+@{
+	ViewBag.Title = "Leagues";
+	Layout = "_Layout";
+}
+
+<div align="center">
+	<h2>Leagues</h2>
+	<hr/>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="btn-group-vertical">
+				<a class="btn btn-primary" role="button">Member</a>
+				<a class="btn btn-primary" role="button">Admin</a>
+				<a class="btn btn-primary" role="button">Non-member</a>
+			</div>
+		</div>
+		<div class="col-xs-9">
+			<div>
+				@{
+					foreach(var league in Model.memberOf)
+					{
+						@Html.Partial("../Leagues/Collapsed", league)
+					}
+				}
+			</div>
+		</div>
+	</div>
+</div>
