@@ -41,20 +41,17 @@ namespace Climb.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Schedule(int userID, int? leagueID, int? seasonID)
+        public async Task<IActionResult> Schedule(int? leagueID, int? seasonID)
         {
+            var appUser = await _userManager.GetUserAsync(User);
+            var userID = appUser.UserID;
+
             var user = await _context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League)
                 .SingleOrDefaultAsync(u => u.ID == userID);
             if(user == null)
             {
                 return NotFound();
-            }
-
-            var appUser = await _userManager.GetUserAsync(User);
-            if(appUser.UserID != userID)
-            {
-                return Forbid();
             }
 
             var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
@@ -79,8 +76,14 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Home(int userID)
+        public async Task<IActionResult> Home(int? userID)
         {
+            if(userID == null)
+            {
+                var appUser = await _userManager.GetUserAsync(User);
+                userID = appUser.UserID;
+            }
+
             var user = _context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League)
                 .SingleOrDefault(u => u.ID == userID);
