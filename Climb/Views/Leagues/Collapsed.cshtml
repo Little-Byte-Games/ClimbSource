@@ -17,11 +17,13 @@
 			}
 			else if (Model.membership == League.Membership.Admin)
 			{
-				<a class="btn btn-primary" role="button" asp-controller="Leagues" asp-action="Edit" asp-route-leagueID="@Model.league.ID">Manage</a>
+				<a class="btn btn-primary" role="button" asp-controller="Leagues" asp-action="Edit" asp-route-id="@Model.league.ID">Manage</a>
 			}
 			else
 			{
-				<a class="btn btn-success" role="button" asp-controller="Leagues" asp-action="Join" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID">Join</a>
+				<form asp-controller="Leagues" asp-action="Join" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
+					<button type="submit" class="btn btn-success">Join</button>
+				</form>
 			}
 		}
 	</div>
