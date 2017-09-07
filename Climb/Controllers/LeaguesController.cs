@@ -196,7 +196,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.UserID == userID);
+            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == leagueID && u.UserID == userID);
             if(leagueUser != null)
             {
                 leagueUser.HasLeft = false;
@@ -216,7 +216,7 @@ namespace Climb.Controllers
             
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Join), new { id = leagueID });
+            return RedirectToAction("Leagues", "Compete");
         }
 
         [HttpPost]
@@ -230,7 +230,7 @@ namespace Climb.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Redirect(Request.Path);
+            return RedirectToAction("Leagues", "Compete");
         }
 
         public async Task<IActionResult> Home(int id)
