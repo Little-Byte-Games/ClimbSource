@@ -29,20 +29,34 @@
 		<div class="col-xs-9">
 			<h3>Seasons</h3>
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">@Model.selectedSeason.DisplayName <span class="caret"></span></button>
-				<ul class="dropdown-menu">
-					@foreach(var season in Model.seasons)
-					{
-						<li><a asp-action="Schedule" asp-route-userID="4" asp-route-leagueID="@season.LeagueID" asp-route-seasonID="@season.ID">@season.DisplayName</a></li>
-					}
-				</ul>
+				@if(Model.selectedSeason != null)
+				{
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">@Model.selectedSeason.DisplayName <span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						@foreach(var season in Model.seasons)
+						{
+							<li><a asp-action="Schedule" asp-route-userID="4" asp-route-leagueID="@season.LeagueID" asp-route-seasonID="@season.ID">@season.DisplayName</a></li>
+						}
+					</ul>
+				}
+				else
+				{
+					<span>No Seasons</span>
+				}
 			</div>
 			
 			<h4>Sets</h4>
-			@foreach(var set in Model.selectedSeason.Sets)
+			@if(Model.selectedSeason != null)
 			{
-				var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
-				@Html.Partial("../Sets/Collapsed", viewModel)
+				foreach(var set in Model.selectedSeason.Sets)
+				{
+					var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
+					@Html.Partial("../Sets/Collapsed", viewModel)
+				}
+			}
+			else
+			{
+				<span>No sets</span>
 			}
 		</div>
 	</div>

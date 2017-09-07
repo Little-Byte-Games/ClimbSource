@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System.Collections.Generic;
+using Climb.Models;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.ObjectModel;
@@ -55,22 +56,22 @@ namespace Climb.Controllers
             }
 
             var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
+            var leagueUser = user.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == leagueID) ?? user.LeagueUsers.FirstOrDefault();
 
-            var leagueUser = user.LeagueUsers.First();
-            if(leagueID != null)
+            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID);
+            List<Season> selectedSeasons = null;
+
+            if (leagueUser != null)
             {
-                leagueUser = user.LeagueUsers.Single(lu => lu.LeagueID == leagueID);
+                var seasons = await _context.Season
+                        .Include(s => s.Participants)
+                        .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                        .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
+                        .ToListAsync();
+                selectedSeasons = seasons.Where(season => season.Participants != null && season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList(); 
             }
 
-            var seasons = await _context.Season
-                .Include(s => s.Participants)
-                .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
-                .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                .ToListAsync();
-            var selectedSeasons = seasons.Where(season => season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
-
-            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID) ?? leagues.First();
-            var selectedSeason = selectedSeasons.SingleOrDefault(s => s.ID == seasonID) ?? selectedSeasons.First();
+            var selectedSeason = selectedSeasons?.SingleOrDefault(s => s.ID == seasonID) ?? selectedSeasons?.FirstOrDefault();
 
             var viewModel = new CompeteScheduleViewModel(selectedLeague, selectedSeason, leagues, selectedSeasons, leagueUser);
             return View(viewModel);

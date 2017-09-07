@@ -17,8 +17,8 @@ namespace Climb.ViewModels
             this.selectedLeague = selectedLeague;
             this.selectedSeason = selectedSeason;
             this.leagueUser = leagueUser;
-            this.leagues = new ReadOnlyCollection<League>(leagues);
-            this.seasons = new ReadOnlyCollection<Season>(seasons);
+            this.leagues = new ReadOnlyCollection<League>(leagues ?? new List<League>());
+            this.seasons = new ReadOnlyCollection<Season>(seasons ?? new List<Season>());
         }
     }
 }
