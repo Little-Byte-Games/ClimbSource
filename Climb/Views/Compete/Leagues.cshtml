@@ -6,6 +6,8 @@
 	Layout = "_Layout";
 }
 
+<script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
+
 <div align="center">
 	<h2>Leagues</h2>
 	<hr/>
@@ -18,14 +20,14 @@
 			<br />
 			<br />
 			<br />
-			<div class="btn-group-vertical">
-				<a class="btn btn-primary" role="button">Member</a>
-				<a class="btn btn-primary" role="button">Admin</a>
-				<a class="btn btn-primary" role="button">Non-member</a>
+			<div id="membershipButtons" class="btn-group-vertical">
+				<button id="membershipButtons.member" class="btn btn-primary" onclick="toggleMembership('member')">Member</button>
+				<button id="membershipButtons.admin" class="btn btn-primary" onclick="toggleMembership('admin')">Admin</button>
+				<button id="membershipButtons.nonMember" class="btn btn-primary" onclick="toggleMembership('nonMember')">Non-member</button>
 			</div>
 		</div>
-		<div class="col-xs-9" align="center">
-			<div>
+		<div id="memberships" class="col-xs-9" align="center">
+			<div id="member">
 				<h4>Member</h4>
 				@{
 					foreach(var league in Model.memberOf)
@@ -35,7 +37,7 @@
 					}
 				}
 			</div>
-			<div>
+			<div id="admin">
 				<h4>Admin</h4>
 				@{
 					foreach(var league in Model.adminOf)
@@ -45,7 +47,7 @@
 					}
 				}
 			</div>
-			<div>
+			<div id="nonMember">
 				<h4>Non-Member</h4>
 				@{
 					foreach(var league in Model.nonmemberOf)
@@ -58,3 +60,7 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	window.onload = toggleMembership("member");
+</script>
