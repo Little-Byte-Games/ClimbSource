@@ -18,7 +18,7 @@ namespace Climb.ViewModels
             this.adminOf = new ReadOnlyCollection<League>(adminOf);
         }
 
-        public static CompeteLeaguesViewModel Create(HashSet<LeagueUser> leagueUsers, IEnumerable<League> leagues)
+        public static CompeteLeaguesViewModel Create(int userID, HashSet<LeagueUser> leagueUsers, IEnumerable<League> leagues)
         {
             List<League> memberOf = new List<League>();
             List<League> nonmemberOf = new List<League>();
@@ -26,18 +26,21 @@ namespace Climb.ViewModels
 
             foreach(var league in leagues)
             {
-                var leagueUser = leagueUsers.FirstOrDefault(lu => lu.LeagueID == league.ID);
-                if(leagueUser == null)
-                {
-                    nonmemberOf.Add(league);
-                }
-                else if(league.AdminID == leagueUser.UserID)
+                if (league.AdminID == userID)
                 {
                     adminOf.Add(league);
                 }
                 else
                 {
-                    memberOf.Add(league);
+                    var leagueUser = leagueUsers.FirstOrDefault(lu => lu.LeagueID == league.ID);
+                    if (leagueUser == null)
+                    {
+                        nonmemberOf.Add(league);
+                    }
+                    else
+                    {
+                        memberOf.Add(league);
+                    }
                 }
             }
 

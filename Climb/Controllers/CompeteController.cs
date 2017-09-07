@@ -106,7 +106,7 @@ namespace Climb.Controllers
                 .Include(l => l.Game)
                 .ToListAsync();
 
-            var viewModel = CompeteLeaguesViewModel.Create(user.LeagueUsers, leagues);
+            var viewModel = CompeteLeaguesViewModel.Create(appUser.UserID, user.LeagueUsers, leagues);
             return View(viewModel);
         }
     }
