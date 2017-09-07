@@ -9,7 +9,7 @@
 	<h2>Home</h2>
 	<h4>Hello @Model.Username</h4>
 </div>
-@foreach(var leagueUser in Model.LeagueUsers)
+@foreach(var leagueUser in Model.LeagueUsers.Where(lu => !lu.HasLeft))
 {
 	@Html.Partial("../LeagueUsers/Info", leagueUser)
 }
