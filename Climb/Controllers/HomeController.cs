@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3.Transfer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,17 +19,23 @@ namespace Climb.Controllers
     {
         public readonly IConfiguration configuration;
         private readonly ClimbContext context;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public HomeController(IConfiguration configuration, ClimbContext context)
+        public HomeController(IConfiguration configuration, ClimbContext context, SignInManager<ApplicationUser> signInManager)
         {
             this.configuration = configuration;
             this.context = context;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            ViewData["UserID"] = new SelectList(context.LeagueUser, "ID", "ID");
-            return View();
+            if(_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Home", "Compete");
+            }
+
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult About()
