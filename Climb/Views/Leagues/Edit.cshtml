@@ -9,30 +9,41 @@
 <h4>League</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="GameID" class="control-label"></label>
-                <select asp-for="GameID" class="form-control" asp-items="ViewBag.GameID"></select>
-                <span asp-validation-for="GameID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdminID" class="control-label"></label>
-                <select asp-for="AdminID" class="form-control" asp-items="ViewBag.UserID"></select>
-                <span asp-validation-for="AdminID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
-    </div>
+	<div class="col-xs-4">
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="ID" />
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="GameID" class="control-label"></label>
+				<select asp-for="GameID" class="form-control" asp-items="ViewBag.GameID"></select>
+				<span asp-validation-for="GameID" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="AdminID" class="control-label"></label>
+				<select asp-for="AdminID" class="form-control" asp-items="ViewBag.UserID"></select>
+				<span asp-validation-for="AdminID" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-default" />
+			</div>
+		</form>
+	</div>
+	<div class="col-xs-8" align="center">
+		<h3>Seasons</h3>
+		<form asp-controller="Seasons" asp-action="CreateForLeague">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="ID" />
+			<input type="hidden" asp-for="ID"/>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-danger"/>
+			</div>
+		</form>
+	</div>
 </div>
 
 <div>

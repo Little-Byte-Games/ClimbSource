@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,6 +72,22 @@ namespace Climb.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(season);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> CreateForLeague(int leagueID, DateTime? startDate)
+        {
+            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == leagueID);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            var season = new Season { Index = league.Seasons.Count, LeagueID = leagueID, StartDate = startDate ?? DateTime.UtcNow.AddDays(7) };
+            await _context.AddAsync(season);
+
+            return RedirectToAction("Leagues", "Compete");
         }
 
         // GET: Seasons/Edit/5
