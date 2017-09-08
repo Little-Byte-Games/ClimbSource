@@ -2,10 +2,14 @@
 
 <div class="panel panel-default">
 	<div align="center">
-		<h5>@Model.set.Season.League.Name | @Model.set.Season.DisplayName</h5>
+		<div>
+			@Html.Partial("../Leagues/Name", Model.set.Season.League)
+			|
+			@Model.set.Season.DisplayName
+		</div>
 		<span>@Model.set.Player1Name v @Model.set.Player2Name</span>
 		<br/>
-		
+
 		@if(Model.set.IsComplete)
 		{
 			<span>@Model.set.Player1Score - @Model.set.Player2Score</span>
@@ -18,7 +22,7 @@
 
 			if(Model.set.IsPlaying(Model.user))
 			{
-				<br />
+				<br/>
 				<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
 			}
 		}
