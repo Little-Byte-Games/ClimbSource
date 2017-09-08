@@ -4,7 +4,7 @@
 	<div align="center" style="padding: 4px">
 		<span>@Model.league.Game.Name</span>
 		<br />
-		<span><b>@Model.league.Name</b></span>
+		@Html.Partial("../Leagues/Name", Model.league)
 		<br />
 		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.MemberCount</span>
 		<br />
