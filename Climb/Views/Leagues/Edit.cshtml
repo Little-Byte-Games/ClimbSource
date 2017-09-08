@@ -35,10 +35,12 @@
 	</div>
 	<div class="col-xs-8" align="center">
 		<h3>Seasons</h3>
-		<form asp-controller="Seasons" asp-action="CreateForLeague">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input type="hidden" asp-for="ID" />
-			<input type="hidden" asp-for="ID"/>
+		<form asp-controller="Seasons" asp-action="CreateForLeague" method="post">
+			<input type="hidden" name="leagueID" value="@Model.ID" />
+			<div class="form-group">
+				<label class="control-label">Start Date</label>
+				<input type="datetime" name="startDate"/>
+			</div>
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-danger"/>
 			</div>

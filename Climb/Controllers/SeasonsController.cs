@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Climb.Core;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Set = Climb.Models.Set;
 
@@ -16,23 +14,17 @@ namespace Climb.Controllers
     public partial class SeasonsController : Controller
     {
         private readonly ClimbContext _context;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeasonsController(ClimbContext context, IAuthorizationService authorizationService, UserManager<ApplicationUser> userManager)
+        public SeasonsController(ClimbContext context)
         {
             _context = context;
-            _authorizationService = authorizationService;
-            _userManager = userManager;
         }
 
-        // GET: Seasons
         public async Task<IActionResult> Index()
         {
             return View(await _context.Season.Include(s => s.Participants).ToListAsync());
         }
 
-        // GET: Seasons/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,16 +41,12 @@ namespace Climb.Controllers
             return View(season);
         }
 
-        // GET: Seasons/Create
         public IActionResult Create()
         {
             ViewData["LeagueID"] = new SelectList(_context.League, "ID", "ID");
             return View();
         }
 
-        // POST: Seasons/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID", "LeagueID, StartDate")] Season season)
@@ -78,7 +66,9 @@ namespace Climb.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> CreateForLeague(int leagueID, DateTime? startDate)
         {
-            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == leagueID);
+            var league = await _context.League
+                .Include(l => l.Seasons)
+                .SingleOrDefaultAsync(l => l.ID == leagueID);
             if(league == null)
             {
                 return NotFound();
@@ -86,11 +76,11 @@ namespace Climb.Controllers
 
             var season = new Season { Index = league.Seasons.Count, LeagueID = leagueID, StartDate = startDate ?? DateTime.UtcNow.AddDays(7) };
             await _context.AddAsync(season);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Leagues", "Compete");
         }
 
-        // GET: Seasons/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -106,9 +96,6 @@ namespace Climb.Controllers
             return View(season);
         }
 
-        // POST: Seasons/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID")] Season season)
@@ -141,7 +128,6 @@ namespace Climb.Controllers
             return View(season);
         }
 
-        // GET: Seasons/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -159,7 +145,6 @@ namespace Climb.Controllers
             return View(season);
         }
 
-        // POST: Seasons/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -283,7 +268,7 @@ namespace Climb.Controllers
             }
             season.Sets = new HashSet<Set>();
 
-            var participants = season.Participants.Select(lus => lus.LeagueUser.UserID).ToList();
+            var participants = season.Participants.Select(lus => lus.LeagueUser.ID).ToList();
             var rounds = ScheduleGenerator.Generate(10, participants, season.StartDate);
             foreach(var round in rounds)
             {

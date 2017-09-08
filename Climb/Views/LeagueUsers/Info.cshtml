@@ -1,11 +1,9 @@
 ﻿@model LeagueUser
 
-<div class="panel panel-default">
-	<div align="center">
-		@Html.Partial("../Leagues/Name", @Model.League)
-		<br/>
-		<span>Rank: @Model.Rank</span>
-		<br/>
-		<span>Score: @Model.Elo</span>
-	</div>
+<div align="center">
+	@Html.Partial("../Leagues/Name", Model.League)
+	<br/>
+	<span>Rank: @Model.Rank</span>
+	<br/>
+	<span>Score: @Model.Elo</span>
 </div>

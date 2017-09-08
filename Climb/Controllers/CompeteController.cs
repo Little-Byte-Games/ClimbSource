@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Climb.Models;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ namespace Climb.Controllers
         }
 
         [Authorize]
+        [Obsolete]
         public async Task<IActionResult> Index()
         {
             var appUser = await _userManager.GetUserAsync(User);
@@ -37,7 +39,7 @@ namespace Climb.Controllers
                 .Include(s => s.Player2).ThenInclude(u => u.User)
                 .Where(s => s.Player1.UserID == userID || s.Player2.UserID == userID).ToListAsync();
 
-            var viewModel = new CompeteIndexViewModel(user, new ReadOnlyCollection<User>(users), sets);
+            var viewModel = new CompeteIndexViewModel(null, new ReadOnlyCollection<User>(users), sets);
             return View(viewModel);
         }
 
@@ -86,14 +88,16 @@ namespace Climb.Controllers
             }
 
             var user = _context.User
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
                 .SingleOrDefault(u => u.ID == userID);
             if(user == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            var viewModel = CompeteHomeViewModel.Create(user);
+            return View(viewModel);
         }
 
         [Authorize]

@@ -38,9 +38,7 @@ else
 			<h4>Round @roundNumber (@round.Key.ToShortDateString())</h4>
 			foreach(var set in round.Value)
 			{
-				var player1 = set.Player1?.User?.Username ?? "BYE";
-				var player2 = set.Player2?.User?.Username ?? "BYE";
-				<span>@player1 v @player2</span><br/>
+				<span>@set.Player1Name v @set.Player2Name</span><br/>
 			}
 		}
 	</ul>
