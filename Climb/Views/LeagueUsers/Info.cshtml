@@ -2,7 +2,8 @@
 
 <div class="panel panel-default">
 	<div align="center">
-		<h5>@Model.League.Name</h5>
+		@Html.Partial("../Leagues/Name", @Model.League)
+		<br/>
 		<span>Rank: @Model.Rank</span>
 		<br/>
 		<span>Score: @Model.Elo</span>
