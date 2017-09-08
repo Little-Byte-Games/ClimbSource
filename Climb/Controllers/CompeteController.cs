@@ -24,26 +24,6 @@ namespace Climb.Controllers
         }
 
         [Authorize]
-        [Obsolete]
-        public async Task<IActionResult> Index()
-        {
-            var appUser = await _userManager.GetUserAsync(User);
-            var userID = appUser.UserID;
-
-            var users = _context.User.Select(u => u).ToList();
-            var user = users.Single(u => u.ID == userID);
-
-            var sets = await _context.Set
-                .Include(s => s.Season).ThenInclude(s => s.League)
-                .Include(s => s.Player1).ThenInclude(u => u.User)
-                .Include(s => s.Player2).ThenInclude(u => u.User)
-                .Where(s => s.Player1.UserID == userID || s.Player2.UserID == userID).ToListAsync();
-
-            var viewModel = new CompeteIndexViewModel(null, new ReadOnlyCollection<User>(users), sets);
-            return View(viewModel);
-        }
-
-        [Authorize]
         public async Task<IActionResult> Schedule(int? leagueID, int? seasonID)
         {
             var appUser = await _userManager.GetUserAsync(User);
