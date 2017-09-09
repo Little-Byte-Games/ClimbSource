@@ -9,14 +9,18 @@
 	</div>
 	<span>v</span>
 	<div align="right">
-		<img src="@Model.Player2.GetProfilePicUrl(configuration)" />
 		<span>@Model.Player2Name</span>
+		<img src="@Model.Player2.GetProfilePicUrl(configuration)" />
 	</div>
 	<hr/>
-	<form asp-action="AddMatch">
+	<form asp-controller="Sets" asp-action="AddMatch" method="post">
 		<input type="hidden" name="setID" value="@Model.ID" />
 		<div class="form-group">
 			<input type="submit" value="Add Match" class="btn btn-default" />
 		</div>
 	</form>
+	@foreach(var match in Model.Matches)
+	{
+		@Html.Partial("../Matches/MatchForm", match)
+	}
 </div>

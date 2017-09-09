@@ -182,11 +182,13 @@ namespace Climb.Controllers
             {
                 Index = set.Matches.Count
             };
+
+            await _context.AddAsync(match);
             set.Matches.Add(match);
             _context.Update(set);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Details), new {id = setID });
+            return RedirectToAction("Fight", "Compete", new {id = setID });
         }
 
         [HttpPost]

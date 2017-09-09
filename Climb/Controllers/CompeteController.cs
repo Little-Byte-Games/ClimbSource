@@ -99,6 +99,7 @@ namespace Climb.Controllers
             var set = await _context.Set
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)
+                .Include(s => s.Matches)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(set == null)
             {
