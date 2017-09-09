@@ -23,7 +23,7 @@
 			if(Model.set.IsPlaying(Model.user))
 			{
 				<br/>
-				<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
+				<a asp-controller="Compete" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
 			}
 		}
 

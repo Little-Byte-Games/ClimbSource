@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Climb.Models;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -93,6 +91,21 @@ namespace Climb.Controllers
 
             var viewModel = CompeteLeaguesViewModel.Create(appUser.UserID, user.LeagueUsers, leagues);
             return View(viewModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Fight(int id)
+        {
+            var set = await _context.Set
+                .Include(s => s.Player1).ThenInclude(lu => lu.User)
+                .Include(s => s.Player2).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(set == null)
+            {
+                return NotFound();
+            }
+
+            return View(set);
         }
     }
 }
