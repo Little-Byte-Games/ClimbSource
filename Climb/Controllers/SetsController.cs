@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Climb.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Climb.Models;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
     public class SetsController : Controller
     {
+        public readonly IConfiguration configuration;
         private readonly ClimbContext _context;
 
-        public SetsController(ClimbContext context)
+        public SetsController(ClimbContext context, IConfiguration configuration)
         {
             _context = context;
+            this.configuration = configuration;
         }
 
-        // GET: Sets
         public async Task<IActionResult> Index()
         {
             var climbContext = _context.Set.Include(s => s.Player1).Include(s => s.Player2);
             return View(await climbContext.ToListAsync());
         }
 
-        // GET: Sets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,7 +49,6 @@ namespace Climb.Controllers
             return View(set);
         }
 
-        // GET: Sets/Create
         public IActionResult Create()
         {
             ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID");
@@ -59,9 +56,6 @@ namespace Climb.Controllers
             return View();
         }
 
-        // POST: Sets/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set set)
@@ -77,7 +71,6 @@ namespace Climb.Controllers
             return View(set);
         }
 
-        // GET: Sets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,9 +88,6 @@ namespace Climb.Controllers
             return View(set);
         }
 
-        // POST: Sets/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set set)
@@ -132,7 +122,6 @@ namespace Climb.Controllers
             return View(set);
         }
 
-        // GET: Sets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,7 +141,6 @@ namespace Climb.Controllers
             return View(set);
         }
 
-        // POST: Sets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -260,10 +248,9 @@ namespace Climb.Controllers
 
             await _context.SaveChangesAsync();
 
-            var client = new HttpClient();
-            const string requestUri = @"https://hooks.slack.com/services/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";
-            var message = new { text = $"{set.Player1.User.Username} ({p1Wins}) v {set.Player2.User.Username} ({p2Wins})" };
-            await client.PostAsync(requestUri, new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8, "application/json"));
+            var message = $"{set.Player1.User.Username} ({p1Wins}) v {set.Player2.User.Username} ({p2Wins})";
+            var apiKey = configuration.GetSection("Slack")["Key"];
+            await SlackController.SendGroupMessage(apiKey, message);
 
             return RedirectToAction(nameof(Index));
         }
