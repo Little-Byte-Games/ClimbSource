@@ -1,0 +1,46 @@
+﻿@model RankSnapshot
+
+<div class="panel panel-default" align="center">
+	@Html.Partial("../Leagues/Name", Model.LeagueUser.League)
+	<br/>
+	@{
+		string color;
+		string deltaDirection = "";
+		if(Model.DeltaRank > 0)
+		{
+			color = "red";
+			deltaDirection = "-";
+		}
+		else if(Model.DeltaRank < 0)
+		{
+			color = "green";
+			deltaDirection = "+";
+		}
+		else
+		{
+			color = "yellow";
+		}
+		var delta = deltaDirection + Model.DeltaRank;
+		<span>Rank</span>
+		<span style="color: @color">@Model.Rank (@delta)</span>
+		<span>|</span>
+		deltaDirection = "";
+		if (Model.DeltaElo < 0)
+		{
+			color = "red";
+			deltaDirection = "-";
+		}
+		else if (Model.DeltaElo > 0)
+		{
+			color = "green";
+			deltaDirection = "+";
+		}
+		else
+		{
+			color = "yellow";
+		}
+		delta = deltaDirection + Model.DeltaElo;
+		<span>Score</span>
+		<span style="color: @color">@Model.Elo (@delta)</span>
+	}
+</div>

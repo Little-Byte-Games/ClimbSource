@@ -17,7 +17,7 @@
 			var snapshots = Model.leagueInfos.SelectMany(li => li.leagueUser.RankSnapshots).ToList();
 			foreach(var snapshot in snapshots)
 			{
-				<span>@snapshot.Rank</span>
+				@Html.Partial("../RankSnapshots/Info", snapshot);
 			}
 		}
 	</div>

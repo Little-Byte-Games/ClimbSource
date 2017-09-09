@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Climb.ViewModels;
 using Microsoft.Extensions.Configuration;
+using MoreLinq;
 
 namespace Climb.Controllers
 {
@@ -252,7 +253,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> TakeRankSnapshot(int id)
         {
             var league = await _context.League
-                .Include(l => l.Members)
+                .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .SingleOrDefaultAsync(l => l.ID == id);
             if(league == null)
             {
@@ -262,7 +263,10 @@ namespace Climb.Controllers
             HashSet<RankSnapshot> rankSnapshots = new HashSet<RankSnapshot>();
             foreach(var member in league.Members)
             {
-                RankSnapshot rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, Elo = member.Elo};
+                var lastSnapshot = member.RankSnapshots.MaxBy(rs => rs.CreatedDate);
+                var rankDelta = member.Rank - (lastSnapshot?.Rank ?? 0);
+                var eloDelta = member.Elo - (lastSnapshot?.Elo ?? 0);
+                var rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, DeltaRank = rankDelta, Elo = member.Elo, DeltaElo = eloDelta};
                 rankSnapshots.Add(rankSnapshot);
             }
             await _context.RankSnapshot.AddRangeAsync(rankSnapshots);
