@@ -11,6 +11,7 @@
 		if(Model.DeltaRank > 0)
 		{
 			color = "red";
+			deltaDirection = "-";
 		}
 		else if(Model.DeltaRank < 0)
 		{
@@ -21,7 +22,7 @@
 		{
 			color = "yellow";
 		}
-		var delta = deltaDirection + Model.DeltaRank;
+		var delta = deltaDirection + Math.Abs(Model.DeltaRank);
 		<span>Rank</span>
 		<span style="color: @color">@Model.Rank (@delta)</span>
 		<span>|</span>
@@ -29,6 +30,7 @@
 		if(Model.DeltaElo < 0)
 		{
 			color = "red";
+			deltaDirection = "-";
 		}
 		else if(Model.DeltaElo > 0)
 		{
@@ -39,7 +41,7 @@
 		{
 			color = "yellow";
 		}
-		delta = deltaDirection + Model.DeltaElo;
+		delta = deltaDirection + Math.Abs(Model.DeltaElo);
 		<span>Score</span>
 		<span style="color: @color">@Model.Elo (@delta)</span>
 	}
