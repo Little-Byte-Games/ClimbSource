@@ -2,42 +2,39 @@
 
 <div class="row">
 	<div class="col-md-4">
-		<form asp-action="Edit">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input type="hidden" asp-for="ID"/>
-			
-			<table>
-				<tr>
-					<td>
-						<input asp-for="Player1Score" class="form-control"/>
-					</td>
-					<td>
-						<input asp-for="Player2Score" class="form-control"/>
-					</td>
-					<td>
-						<select class="form-control">
-							<option>Falcon</option>
-							<option>Mario</option>
-							<option>Link</option>
-						</select>
-					</td>
-					<td>
-						<select class="form-control">
-							<option>Falcon</option>
-							<option>Mario</option>
-							<option>Link</option>
-						</select>
-					</td>
-					<td>
-						<select class="form-control">
-							<option>Final Destination</option>
-							<option>Battlefield</option>
-							<option>Smashville</option>
-						</select>
-					</td>
-				</tr>
-			</table>
-			
-		</form>
+		<input type="hidden" value="@Model.ID" name="[@Model.Index].ID" />
+		<input type="hidden" value="@Model.Index" name="[@Model.Index].Index"/>
+
+		<table>
+			<tr>
+				<td>
+					<input type="number" value="@Model.Player1Score" name="[@Model.Index].Player1Score" class="form-control"/>
+				</td>
+				<td>
+					<input type="number" value="@Model.Player2Score" name="[@Model.Index].Player2Score" class="form-control" />
+				</td>
+				<td>
+					<select class="form-control">
+						<option>Falcon</option>
+						<option>Mario</option>
+						<option>Link</option>
+					</select>
+				</td>
+				<td>
+					<select class="form-control">
+						<option>Falcon</option>
+						<option>Mario</option>
+						<option>Link</option>
+					</select>
+				</td>
+				<td>
+					<select class="form-control">
+						<option>Final Destination</option>
+						<option>Battlefield</option>
+						<option>Smashville</option>
+					</select>
+				</td>
+			</tr>
+		</table>
 	</div>
 </div>

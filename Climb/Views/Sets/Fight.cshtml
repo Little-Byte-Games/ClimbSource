@@ -3,28 +3,33 @@
 @inject IConfiguration configuration
 
 <div align="center">
-	<div style="width: 45%; display: block">
-		<div align="left" style="float: left; clear: both">
-			<img src="@Model.Player1.GetProfilePicUrl(configuration)" />
+	<div>
+		<div>
+			<img src="@Model.Player1.GetProfilePicUrl(configuration)"/>
 			<span>@Model.Player1Name</span>
 		</div>
 		<h1>v</h1>
-		<div align="right" style="float: right; clear: both">
+		<div>
 			<span>@Model.Player2Name</span>
-			<img src="@Model.Player2.GetProfilePicUrl(configuration)" />
+			<img src="@Model.Player2.GetProfilePicUrl(configuration)"/>
 		</div>
 	</div>
 	<hr/>
 	<form asp-controller="Sets" asp-action="AddMatch" method="post">
-		<input type="hidden" name="setID" value="@Model.ID" />
+		<input type="hidden" name="setID" value="@Model.ID"/>
 		<div class="form-group">
-			<input type="submit" value="Add Match" class="btn btn-primary" />
+			<input type="submit" value="Add Match" class="btn btn-primary"/>
 		</div>
 	</form>
-	@foreach(var match in Model.Matches)
-	{
-		@Html.Partial("../Matches/MatchForm", match)
-	}
-	<br/>
-	<button class="btn btn-danger">Submit</button>
+	<form asp-controller="Sets" asp-action="Submit" method="post">
+		<input type="hidden" name="setID" value="@Model.ID" />
+		@foreach(var match in Model.Matches)
+		{
+			@Html.Partial("../Matches/MatchForm", match)
+		}
+		<br/>
+		<div class="form-group">
+			<input type="submit" value="Submit" class="btn btn-danger" />
+		</div>
+	</form>
 </div>
