@@ -247,5 +247,28 @@ namespace Climb.Controllers
             var viewModel = new LeagueHomeViewModel(league, configuration);
             return View(viewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> TakeRankSnapshot(int id)
+        {
+            var league = await _context.League
+                .Include(l => l.Members)
+                .SingleOrDefaultAsync(l => l.ID == id);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            HashSet<RankSnapshot> rankSnapshots = new HashSet<RankSnapshot>();
+            foreach(var member in league.Members)
+            {
+                RankSnapshot rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, Elo = member.Elo};
+                rankSnapshots.Add(rankSnapshot);
+            }
+            await _context.RankSnapshot.AddRangeAsync(rankSnapshots);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Home), new {id});
+        }
     }
 }
