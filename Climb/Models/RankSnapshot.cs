@@ -1,4 +1,6 @@
-﻿namespace Climb.Models
+﻿using System;
+
+namespace Climb.Models
 {
     public class RankSnapshot
     {
@@ -6,6 +8,7 @@
         public int LeagueUserID { get; set; }
         public int Rank { get; set; }
         public int Elo { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public LeagueUser LeagueUser { get; set; }
     }

@@ -10,28 +10,42 @@
 	<h2>Home</h2>
 	<h4>Hello @Model.user.Username</h4>
 </div>
-@foreach(var leagueInfo in Model.leagueInfos)
-{
-	<div class="panel panel-default">
-		@Html.Partial("../LeagueUsers/Info", leagueInfo.leagueUser)
-
+<div class="row">
+	<div class="col-xs-4">
+		<h4>Activity</h4>
 		@{
-			if(leagueInfo.nextSet == null)
+			var snapshots = Model.leagueInfos.SelectMany(li => li.leagueUser.RankSnapshots).ToList();
+			foreach(var snapshot in snapshots)
 			{
-				<div align="center">
-					<span>No available sets</span>
-				</div>
-			}
-			else
-			{
-				var viewModel = new SetCollapsedViewModel(leagueInfo.nextSet, leagueInfo.leagueUser);
-				@Html.Partial("../Sets/Collapsed", viewModel)
+				<span>@snapshot.Rank</span>
 			}
 		}
 	</div>
+	<div class="col-xs-8">
+		@foreach(var leagueInfo in Model.leagueInfos)
+		{
+			<div class="panel panel-default">
+				@Html.Partial("../LeagueUsers/Info", leagueInfo.leagueUser)
+
+				@{
+					if(leagueInfo.nextSet == null)
+					{
+						<div align="center">
+							<span>No available sets</span>
+						</div>
+					}
+					else
+					{
+						var viewModel = new SetCollapsedViewModel(leagueInfo.nextSet, leagueInfo.leagueUser);
+						@Html.Partial("../Sets/Collapsed", viewModel)
+					}
+				}
+			</div>
 	
-	if (Model.leagueInfos.Last() != leagueInfo)
-	{
-		<hr />
-	}
-}
+			if (Model.leagueInfos.Last() != leagueInfo)
+			{
+				<hr />
+			}
+		}
+	</div>
+</div>

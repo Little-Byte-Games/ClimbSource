@@ -19,6 +19,7 @@ namespace Climb.Models
         public HashSet<LeagueUserSeason> Seasons { get; set; }
         public HashSet<Set> P1Sets { get; set; }
         public HashSet<Set> P2Sets { get; set; }
+        public HashSet<RankSnapshot> RankSnapshots { get; set; }
 
         public int CompareTo(LeagueUser other)
         {
