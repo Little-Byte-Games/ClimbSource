@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -260,13 +261,14 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            HashSet<RankSnapshot> rankSnapshots = new HashSet<RankSnapshot>();
+            var createdDate = DateTime.Now;
+            var rankSnapshots = new HashSet<RankSnapshot>();
             foreach(var member in league.Members)
             {
                 var lastSnapshot = member.RankSnapshots.MaxBy(rs => rs.CreatedDate);
                 var rankDelta = member.Rank - (lastSnapshot?.Rank ?? 0);
                 var eloDelta = member.Elo - (lastSnapshot?.Elo ?? 0);
-                var rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, DeltaRank = rankDelta, Elo = member.Elo, DeltaElo = eloDelta};
+                var rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, DeltaRank = rankDelta, Elo = member.Elo, DeltaElo = eloDelta, CreatedDate = createdDate };
                 rankSnapshots.Add(rankSnapshot);
             }
             await _context.RankSnapshot.AddRangeAsync(rankSnapshots);

@@ -51,5 +51,10 @@ namespace Climb.ViewModels
 
             return new CompeteHomeViewModel(user, leagueInfos);
         }
+
+        public IEnumerable<RankSnapshot> GetSortedRankSnapshots()
+        {
+            return leagueInfos.SelectMany(li => li.leagueUser.RankSnapshots).OrderByDescending(rs => rs.CreatedDate);
+        }
     }
 }

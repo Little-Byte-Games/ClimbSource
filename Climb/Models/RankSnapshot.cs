@@ -2,7 +2,7 @@
 
 namespace Climb.Models
 {
-    public class RankSnapshot : IComparable<RankSnapshot>
+    public class RankSnapshot
     {
         public int ID { get; set; }
         public int LeagueUserID { get; set; }
@@ -13,14 +13,5 @@ namespace Climb.Models
         public DateTime CreatedDate { get; set; }
 
         public LeagueUser LeagueUser { get; set; }
-
-        public int CompareTo(RankSnapshot other)
-        {
-            if(ReferenceEquals(this, other))
-                return 0;
-            if(ReferenceEquals(null, other))
-                return 1;
-            return CreatedDate.CompareTo(other.CreatedDate);
-        }
     }
 }

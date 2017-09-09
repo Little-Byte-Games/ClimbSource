@@ -1,6 +1,8 @@
 ﻿@model RankSnapshot
 
 <div class="panel panel-default" align="center">
+	<span>@Model.CreatedDate.ToShortDateString()</span>
+	<br/>
 	@Html.Partial("../Leagues/Name", Model.LeagueUser.League)
 	<br/>
 	@{
@@ -25,12 +27,12 @@
 		<span style="color: @color">@Model.Rank (@delta)</span>
 		<span>|</span>
 		deltaDirection = "";
-		if (Model.DeltaElo < 0)
+		if(Model.DeltaElo < 0)
 		{
 			color = "red";
 			deltaDirection = "-";
 		}
-		else if (Model.DeltaElo > 0)
+		else if(Model.DeltaElo > 0)
 		{
 			color = "green";
 			deltaDirection = "+";
