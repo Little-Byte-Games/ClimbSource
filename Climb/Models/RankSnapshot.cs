@@ -13,5 +13,8 @@ namespace Climb.Models
         public DateTime CreatedDate { get; set; }
 
         public LeagueUser LeagueUser { get; set; }
+
+        public string DisplayDeltaRank => DeltaRank.ToString("-#;+#;0");
+        public string DisplayDeltaElo => DeltaRank.ToString("+#;-#;0");
     }
 }

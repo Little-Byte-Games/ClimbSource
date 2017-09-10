@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Climb.Core;
 using Climb.ViewModels;
 using Microsoft.Extensions.Configuration;
 using MoreLinq;
@@ -255,6 +257,7 @@ namespace Climb.Controllers
         {
             var league = await _context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
+                .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(l => l.ID == id);
             if(league == null)
             {
@@ -273,6 +276,16 @@ namespace Climb.Controllers
             }
             await _context.RankSnapshot.AddRangeAsync(rankSnapshots);
             await _context.SaveChangesAsync();
+
+            var orderedSnapshots = rankSnapshots.OrderBy(lu => lu.Rank);
+            var message = new StringBuilder();
+            message.AppendLine($"*{league.Name} PR*");
+            foreach(var snapshot in orderedSnapshots)
+            {
+                message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
+            }
+            var apiKey = configuration.GetSection("Slack")["Key"];
+            await SlackController.SendGroupMessage(apiKey, message.ToString());
 
             return RedirectToAction(nameof(Home), new {id});
         }
