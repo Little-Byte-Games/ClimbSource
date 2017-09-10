@@ -11,40 +11,53 @@
 	<h4>Hello @Model.user.Username</h4>
 </div>
 <div class="row">
-	<div class="col-xs-4" align="center">
-		<h4>Activity</h4>
+	<div class="col-xs-3" align="center">
+		<h3>Leagues</h3>
+		@foreach (var leagueUser in Model.user.LeagueUsers)
+		{
+			<div class="panel panel-default">
+				@Html.Partial("../LeagueUsers/Info", leagueUser)
+			</div>
+		}
+	</div>
+	<div class="col-xs-6" align="center">
+		<h3>Available Sets</h3>
+		<h4>OverDue Sets</h4>
+		@if (Model.overdueSets.Count == 0)
+		{
+			<span>No overdue sets!</span>
+		}
+		else
+		{
+			foreach (var set in Model.overdueSets)
+			{
+				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+				@Html.Partial("../Sets/Collapsed", viewModel)
+			}
+		}
+		<hr/>
+		<h4>Available Sets</h4>
+		@if (Model.availableSets.Count == 0)
+		{
+			<span>No available sets!</span>
+		}
+		else
+		{
+			foreach (var set in Model.availableSets)
+			{
+				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+				@Html.Partial("../Sets/Collapsed", viewModel)
+			}
+		}
+	</div>
+	<div class="col-xs-3" align="center">
+		<h3>Activity</h3>
 		@{
 			var snapshots = Model.GetSortedRankSnapshots();
 			foreach(var snapshot in snapshots)
 			{
-				@Html.Partial("../RankSnapshots/Info", snapshot);
-			}
-		}
-	</div>
-	<div class="col-xs-8">
-		@foreach(var leagueInfo in Model.leagueInfos)
-		{
-			<div class="panel panel-default">
-				@Html.Partial("../LeagueUsers/Info", leagueInfo.leagueUser)
-
-				@{
-					if(leagueInfo.nextSet == null)
-					{
-						<div align="center">
-							<span>No available sets</span>
-						</div>
-					}
-					else
-					{
-						var viewModel = new SetCollapsedViewModel(leagueInfo.nextSet, leagueInfo.leagueUser);
-						@Html.Partial("../Sets/Collapsed", viewModel)
-					}
-				}
-			</div>
-	
-			if (Model.leagueInfos.Last() != leagueInfo)
-			{
-				<hr />
+				@Html.Partial("../RankSnapshots/Info", snapshot)
+				;
 			}
 		}
 	</div>

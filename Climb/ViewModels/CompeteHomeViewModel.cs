@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Climb.Models;
@@ -7,30 +8,34 @@ namespace Climb.ViewModels
 {
     public class CompeteHomeViewModel
     {
-        public class LeagueInfo
+        public class LeagueUserSet
         {
             public readonly LeagueUser leagueUser;
-            public readonly Set nextSet;
+            public readonly Set set;
 
-            public LeagueInfo(LeagueUser leagueUser, Set nextSet)
+            public LeagueUserSet(LeagueUser leagueUser, Set set)
             {
                 this.leagueUser = leagueUser;
-                this.nextSet = nextSet;
+                this.set = set;
             }
         }
 
         public readonly User user;
-        public readonly ReadOnlyCollection<LeagueInfo> leagueInfos;
+        public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
+        public readonly ReadOnlyCollection<LeagueUserSet> availableSets;
 
-        public CompeteHomeViewModel(User user, IList<LeagueInfo> leagueInfos)
+        public CompeteHomeViewModel(User user, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets)
         {
             this.user = user;
-            this.leagueInfos = new ReadOnlyCollection<LeagueInfo>(leagueInfos);
+            this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);
+            this.availableSets = new ReadOnlyCollection<LeagueUserSet>(availableSets);
         }
 
         public static CompeteHomeViewModel Create(User user)
         {
-            List<LeagueInfo> leagueInfos = new List<LeagueInfo>();
+            DateTime now = DateTime.Now;
+            List<LeagueUserSet> overdueSets = new List<LeagueUserSet>();
+            List<LeagueUserSet> availableSets = new List<LeagueUserSet>();
             foreach (var leagueUser in user.LeagueUsers.Where(lu => !lu.HasLeft))
             {
                 var season = leagueUser.League.Seasons.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
@@ -39,22 +44,27 @@ namespace Climb.ViewModels
                     continue;
                 }
                 var sets = season.Sets.Where(s => !s.IsComplete && s.IsPlaying(leagueUser));
-                Set set = null;
-                if(sets.Any())
+                foreach(var set in sets)
                 {
-                    set = sets.Aggregate((c, d) => c.DueDate < d.DueDate ? c : d);
+                    if(set.DueDate < now)
+                    {
+                        var leagueUserSet = new LeagueUserSet(leagueUser, set);
+                        overdueSets.Add(leagueUserSet);
+                    }
+                    else if (availableSets.All(s => s.leagueUser != leagueUser))
+                    {
+                        var leagueUserSet = new LeagueUserSet(leagueUser, set);
+                        availableSets.Add(leagueUserSet);
+                    }
                 }
-
-                LeagueInfo leagueInfo = new LeagueInfo(leagueUser, set);
-                leagueInfos.Add(leagueInfo);
             }
 
-            return new CompeteHomeViewModel(user, leagueInfos);
+            return new CompeteHomeViewModel(user, overdueSets, availableSets);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()
         {
-            return leagueInfos.SelectMany(li => li.leagueUser.RankSnapshots).OrderByDescending(rs => rs.CreatedDate);
+            return user.LeagueUsers.SelectMany(lu => lu.RankSnapshots).OrderByDescending(rs => rs.CreatedDate);
         }
     }
 }
