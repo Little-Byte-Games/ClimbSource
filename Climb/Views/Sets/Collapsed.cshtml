@@ -7,7 +7,7 @@
 			|
 			@Model.set.Season.DisplayName
 		</div>
-		<span>@Model.set.Player1Name v @Model.set.Player2Name</span>
+		<span>@Html.Partial("../Users/Name", Model.set.Player1?.User) v @Html.Partial("../Users/Name", Model.set.Player2?.User)</span>
 		<br/>
 
 		@if(Model.set.IsComplete)

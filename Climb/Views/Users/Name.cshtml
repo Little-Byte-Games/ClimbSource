@@ -1,0 +1,10 @@
+﻿@model User
+
+@if(Model == null)
+{
+	<span>BYE</span>
+}
+else
+{
+	<a asp-controller="Compete" asp-action="Home" asp-route-id="@Model.ID">@Model.Username</a>
+}

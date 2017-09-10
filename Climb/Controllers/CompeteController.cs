@@ -57,19 +57,19 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Home(int? userID)
+        public async Task<IActionResult> Home(int? id)
         {
-            if(userID == null)
+            if(id == null)
             {
                 var appUser = await _userManager.GetUserAsync(User);
-                userID = appUser.UserID;
+                id = appUser.UserID;
             }
 
             var user = _context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                .SingleOrDefault(u => u.ID == userID);
+                .SingleOrDefault(u => u.ID == id);
             if(user == null)
             {
                 return NotFound();
