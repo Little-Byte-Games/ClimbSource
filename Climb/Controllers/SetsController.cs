@@ -235,12 +235,13 @@ namespace Climb.Controllers
             users.Sort();
             var rank = 0;
             var lastElo = -1;
-            foreach(LeagueUser member in users)
+            for(var i = 0; i < users.Count; i++)
             {
+                LeagueUser member = users[i];
                 if(member.Elo != lastElo)
                 {
                     lastElo = member.Elo;
-                    ++rank;
+                    rank = i + 1;
                 }
                 member.Rank = rank;
             }
