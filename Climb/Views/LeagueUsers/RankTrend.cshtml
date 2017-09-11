@@ -1,0 +1,23 @@
+﻿@model LeagueUser.Trend
+
+
+@{ var icon = ""; }
+@switch(Model)
+{
+	case LeagueUser.Trend.BigDown:
+		icon = "▼";
+		break;
+	case LeagueUser.Trend.SmallDown:
+		icon = "↓";
+		break;
+	case LeagueUser.Trend.BigUp:
+		icon = "▲";
+		break;
+	case LeagueUser.Trend.SmallUp:
+		icon = "↑";
+		break;
+	case LeagueUser.Trend.None:
+		icon = "•";
+		break;
+}
+<span>@icon</span>

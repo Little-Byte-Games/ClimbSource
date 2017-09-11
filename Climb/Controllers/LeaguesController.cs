@@ -241,6 +241,7 @@ namespace Climb.Controllers
         {
             var league = await _context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets)
                 .SingleOrDefaultAsync(l => l.ID == id);
             if(league == null)

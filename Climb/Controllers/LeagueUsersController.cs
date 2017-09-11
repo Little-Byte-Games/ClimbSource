@@ -1,5 +1,4 @@
-﻿using System;
-using Climb.Models;
+﻿using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -155,18 +154,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            const int trendMonths = 1;
-            var trendStart = DateTime.Today.AddMonths(-trendMonths);
-            var trendSnapshots = leagueUser.RankSnapshots.Where(rs => rs.CreatedDate >= trendStart).OrderByDescending(rs => rs.CreatedDate).ToList();
-            if(trendSnapshots.Count < 2)
-            {
-                return Ok(0);
-            }
-
-            var startSnapshot = trendSnapshots.Last();
-            var endSnapshot = trendSnapshots.First();
-
-            var rankDifference = endSnapshot.Rank - startSnapshot.Rank;
+            var rankDifference = leagueUser.GetRankTrendDelta();
             return Ok(new {leagueUserID = id, rankDelta = rankDifference });
         }
     }
