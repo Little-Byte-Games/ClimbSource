@@ -99,10 +99,9 @@ namespace Climb.Controllers
         public async Task<IActionResult> Fight(int id)
         {
             var set = await _context.Set
-                .Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)
-                .Include(s => s.Matches)
+                .Include(s => s.Matches).ThenInclude(m => m.Set).Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(set == null)
             {

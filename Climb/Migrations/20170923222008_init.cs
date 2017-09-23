@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Climb.Migrations
 {
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,6 +67,26 @@ namespace Climb.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Character",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    GameID = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Character", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Character_Game_GameID",
+                        column: x => x.GameID,
+                        principalTable: "Game",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -266,6 +286,30 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RankSnapshot",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeltaElo = table.Column<int>(type: "int", nullable: false),
+                    DeltaRank = table.Column<int>(type: "int", nullable: false),
+                    Elo = table.Column<int>(type: "int", nullable: false),
+                    LeagueUserID = table.Column<int>(type: "int", nullable: false),
+                    Rank = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RankSnapshot", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_RankSnapshot_LeagueUser_LeagueUserID",
+                        column: x => x.LeagueUserID,
+                        principalTable: "LeagueUser",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LeagueUserSeason",
                 columns: table => new
                 {
@@ -348,34 +392,6 @@ namespace Climb.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "RankEvent",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Elo = table.Column<int>(type: "int", nullable: false),
-                    LeagueID = table.Column<int>(type: "int", nullable: false),
-                    Rank = table.Column<int>(type: "int", nullable: false),
-                    SetID = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RankEvent", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_RankEvent_League_LeagueID",
-                        column: x => x.LeagueID,
-                        principalTable: "League",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RankEvent_Set_SetID",
-                        column: x => x.SetID,
-                        principalTable: "Set",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -422,6 +438,11 @@ namespace Climb.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Character_GameID",
+                table: "Character",
+                column: "GameID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_League_AdminID",
                 table: "League",
                 column: "AdminID");
@@ -452,14 +473,9 @@ namespace Climb.Migrations
                 column: "SetID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RankEvent_LeagueID",
-                table: "RankEvent",
-                column: "LeagueID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RankEvent_SetID",
-                table: "RankEvent",
-                column: "SetID");
+                name: "IX_RankSnapshot_LeagueUserID",
+                table: "RankSnapshot",
+                column: "LeagueUserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Season_LeagueID",
@@ -500,13 +516,16 @@ namespace Climb.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Character");
+
+            migrationBuilder.DropTable(
                 name: "LeagueUserSeason");
 
             migrationBuilder.DropTable(
                 name: "Match");
 
             migrationBuilder.DropTable(
-                name: "RankEvent");
+                name: "RankSnapshot");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

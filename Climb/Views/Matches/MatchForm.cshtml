@@ -1,5 +1,7 @@
 ﻿@model Match
 
+<link href="/css/fight.css" rel="Stylesheet" type="text/css" />	
+
 <div class="row">
 	<div class="col-md-4">
 		<input type="hidden" value="@Model.ID" name="[@Model.Index].ID" />
@@ -7,28 +9,31 @@
 
 		<table>
 			<tr>
-				<td>
+				<td class="match-form-score">
 					<input type="number" value="@Model.Player1Score" name="[@Model.Index].Player1Score" class="form-control"/>
 				</td>
-				<td>
+				<td class="match-form-score">
 					<input type="number" value="@Model.Player2Score" name="[@Model.Index].Player2Score" class="form-control" />
 				</td>
-				<td>
+				<td class="match-form-character">
 					<select class="form-control">
-						@foreach(var character in Model.Characters)
+						@*@foreach(var character in Model.Characters)
 						{
 							<option>@character</option>
-						}
+						}*@
+						<option>Falcon</option>
+						<option>Mario</option>
+						<option>Link</option>
 					</select>
 				</td>
-				<td>
+				<td class="match-form-character">
 					<select class="form-control">
 						<option>Falcon</option>
 						<option>Mario</option>
 						<option>Link</option>
 					</select>
 				</td>
-				<td>
+				<td class="match-form-stage">
 					<select class="form-control">
 						<option>Final Destination</option>
 						<option>Battlefield</option>

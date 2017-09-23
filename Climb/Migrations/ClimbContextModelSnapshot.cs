@@ -170,21 +170,13 @@ namespace Climb.Migrations
 
                     b.Property<int>("Index");
 
-                    b.Property<int>("Player1CharacterID");
-
                     b.Property<int>("Player1Score");
-
-                    b.Property<int>("Player2CharacterID");
 
                     b.Property<int>("Player2Score");
 
                     b.Property<int?>("SetID");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("Player1CharacterID");
-
-                    b.HasIndex("Player2CharacterID");
 
                     b.HasIndex("SetID");
 
@@ -440,16 +432,6 @@ namespace Climb.Migrations
 
             modelBuilder.Entity("Climb.Models.Match", b =>
                 {
-                    b.HasOne("Climb.Models.Character", "Player1Character")
-                        .WithMany()
-                        .HasForeignKey("Player1CharacterID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.Character", "Player2Character")
-                        .WithMany()
-                        .HasForeignKey("Player2CharacterID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Climb.Models.Set", "Set")
                         .WithMany("Matches")
                         .HasForeignKey("SetID")

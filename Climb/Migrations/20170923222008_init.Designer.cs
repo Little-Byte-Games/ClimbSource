@@ -11,8 +11,8 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170909065526_RankSnapshot")]
-    partial class RankSnapshot
+    [Migration("20170923222008_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,6 +75,22 @@ namespace Climb.Migrations
                         .IsUnique();
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Climb.Models.Character", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("GameID");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("GameID");
+
+                    b.ToTable("Character");
                 });
 
             modelBuilder.Entity("Climb.Models.Game", b =>
@@ -168,32 +184,16 @@ namespace Climb.Migrations
                     b.ToTable("Match");
                 });
 
-            modelBuilder.Entity("Climb.Models.RankEvent", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("Elo");
-
-                    b.Property<int>("LeagueID");
-
-                    b.Property<int>("Rank");
-
-                    b.Property<int>("SetID");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("LeagueID");
-
-                    b.HasIndex("SetID");
-
-                    b.ToTable("RankEvent");
-                });
-
             modelBuilder.Entity("Climb.Models.RankSnapshot", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<int>("DeltaElo");
+
+                    b.Property<int>("DeltaRank");
 
                     b.Property<int>("Elo");
 
@@ -384,6 +384,14 @@ namespace Climb.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Climb.Models.Character", b =>
+                {
+                    b.HasOne("Climb.Models.Game", "Game")
+                        .WithMany("Characters")
+                        .HasForeignKey("GameID")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("Climb.Models.League", b =>
                 {
                     b.HasOne("Climb.Models.User", "Admin")
@@ -431,23 +439,10 @@ namespace Climb.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Climb.Models.RankEvent", b =>
-                {
-                    b.HasOne("Climb.Models.League", "League")
-                        .WithMany()
-                        .HasForeignKey("LeagueID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.Set", "Set")
-                        .WithMany()
-                        .HasForeignKey("SetID")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("Climb.Models.RankSnapshot", b =>
                 {
                     b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
-                        .WithMany()
+                        .WithMany("RankSnapshots")
                         .HasForeignKey("LeagueUserID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
