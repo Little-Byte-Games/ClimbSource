@@ -8,7 +8,7 @@ namespace Climb.Data
     {
         public static void Initialize(ClimbContext context)
         {
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if(context.User.Any())
@@ -36,6 +36,19 @@ namespace Climb.Data
                 new Game{Name = "Street Fighter V"},
             };
             context.Game.AddRange(games);
+            context.SaveChanges();
+
+            var characters = new[]
+            {
+                new Character{Name = "Mario", Game = games[0]}, 
+                new Character{Name = "Sonic", Game = games[0]}, 
+                new Character{Name = "Link", Game = games[0]}, 
+
+                new Character{Name = "Ryu", Game = games[1]},
+                new Character{Name = "Ken", Game = games[1]},
+                new Character{Name = "Gief", Game = games[1]},
+            };
+            context.Character.AddRange(characters);
             context.SaveChanges();
 
             var leagues = new[]
