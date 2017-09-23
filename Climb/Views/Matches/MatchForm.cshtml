@@ -15,9 +15,10 @@
 				</td>
 				<td>
 					<select class="form-control">
-						<option>Falcon</option>
-						<option>Mario</option>
-						<option>Link</option>
+						@foreach(var character in Model.Characters)
+						{
+							<option>@character</option>
+						}
 					</select>
 				</td>
 				<td>
