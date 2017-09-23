@@ -24,6 +24,6 @@ namespace Climb.Models
         public HashSet<LeagueUser> Members { get; set; }
         public HashSet<Season> Seasons { get; set; }
 
-        public int MemberCount => Members.Count(m => !m.HasLeft);
+        public int MemberCount => Members?.Count(m => !m.HasLeft) ?? 0;
     }
 }
