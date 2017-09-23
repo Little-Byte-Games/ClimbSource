@@ -1,19 +1,22 @@
 ﻿using Climb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Services;
+using Climb.ViewModels;
 
 namespace Climb.Controllers
 {
     public class UsersController : Controller
     {
         private readonly ClimbContext _context;
+        private readonly UserService userService;
 
         public UsersController(ClimbContext context)
         {
             _context = context;
+            userService = new UserService(_context.User);
         }
 
         public async Task<IActionResult> Index()
@@ -88,14 +91,13 @@ namespace Climb.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.ID))
+                    var userExists = await userService.DoesUserExist(user.ID);
+                    if (!userExists)
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -127,23 +129,6 @@ namespace Climb.Controllers
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.ID == id);
-        }
-
-        public class AvailableSetsViewData
-        {
-            public readonly User user;
-            public readonly List<Set> sets;
-
-            public AvailableSetsViewData(User user, List<Set> sets)
-            {
-                this.user = user;
-                this.sets = sets;
-            }
         }
 
         public async Task<IActionResult> AvailableSets(int id)
