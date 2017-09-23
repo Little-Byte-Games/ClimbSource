@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20170921043439_Character")]
+    partial class Character
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
