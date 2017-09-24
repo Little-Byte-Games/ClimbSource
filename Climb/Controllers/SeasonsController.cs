@@ -274,15 +274,19 @@ namespace Climb.Controllers
             {
                 foreach(var setData in round.sets)
                 {
+                    var byePlayer = 0;
+
                     int? player1 = setData.player1;
                     if(player1 == ScheduleGenerator.Bye)
                     {
                         player1 = null;
+                        byePlayer = 1;
                     }
                     int? player2 = setData.player2;
                     if (player2 == ScheduleGenerator.Bye)
                     {
                         player2 = null;
+                        byePlayer = 2;
                     }
 
                     var set = new Set
@@ -290,7 +294,10 @@ namespace Climb.Controllers
                         DueDate = round.dueDate,
                         Player1ID = player1,
                         Player2ID = player2,
+                        Player1Score = byePlayer == 1 ? - 1 : 0,
+                        Player2Score = byePlayer == 2 ? 0 : - 1,
                     };
+
                     season.Sets.Add(set);
                 }
             }
