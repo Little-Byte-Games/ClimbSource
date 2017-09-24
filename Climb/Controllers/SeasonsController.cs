@@ -295,7 +295,7 @@ namespace Climb.Controllers
                         Player1ID = player1,
                         Player2ID = player2,
                         Player1Score = byePlayer == 1 ? - 1 : 0,
-                        Player2Score = byePlayer == 2 ? 0 : - 1,
+                        Player2Score = byePlayer == 2 ? - 1 : 0,
                     };
 
                     season.Sets.Add(set);
