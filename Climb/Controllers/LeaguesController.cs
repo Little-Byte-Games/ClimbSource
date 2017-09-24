@@ -269,7 +269,11 @@ namespace Climb.Controllers
             var rankSnapshots = new HashSet<RankSnapshot>();
             foreach(var member in league.Members)
             {
-                var lastSnapshot = member.RankSnapshots.MaxBy(rs => rs.CreatedDate);
+                RankSnapshot lastSnapshot = null;
+                if(member.RankSnapshots?.Count > 0)
+                {
+                    lastSnapshot = member.RankSnapshots?.MaxBy(rs => rs.CreatedDate);
+                }
                 var rankDelta = member.Rank - (lastSnapshot?.Rank ?? 0);
                 var eloDelta = member.Elo - (lastSnapshot?.Elo ?? 0);
                 var rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, DeltaRank = rankDelta, Elo = member.Elo, DeltaElo = eloDelta, CreatedDate = createdDate };
