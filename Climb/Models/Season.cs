@@ -16,6 +16,6 @@ namespace Climb.Models
         public HashSet<Set> Sets { get; set; }
 
         public string DisplayName => $"Season {Index + 1}";
-        public bool IsComplete => Sets.All(s => s.IsComplete);
+        public bool IsComplete => Sets != null && Sets.All(s => s.IsComplete);
     }
 }
