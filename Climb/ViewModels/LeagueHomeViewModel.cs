@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System.Collections.Generic;
+using Climb.Models;
 using Microsoft.Extensions.Configuration;
 
 namespace Climb.ViewModels
@@ -7,11 +8,13 @@ namespace Climb.ViewModels
     {
         public readonly League league;
         public readonly IConfiguration configuration;
+        public readonly IEnumerable<Set> recentSets;
 
-        public LeagueHomeViewModel(League league, IConfiguration configuration)
+        public LeagueHomeViewModel(League league, IConfiguration configuration, IEnumerable<Set> recentSets)
         {
             this.league = league;
             this.configuration = configuration;
+            this.recentSets = recentSets;
         }
     }
 }

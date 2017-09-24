@@ -11,6 +11,7 @@ using Climb.Core;
 using Climb.ViewModels;
 using Microsoft.Extensions.Configuration;
 using MoreLinq;
+using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
@@ -242,14 +243,18 @@ namespace Climb.Controllers
             var league = await _context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
-                .Include(l => l.Seasons).ThenInclude(s => s.Sets)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2)
                 .SingleOrDefaultAsync(l => l.ID == id);
             if(league == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new LeagueHomeViewModel(league, configuration);
+            var currentSeason = league.CurrentSeason;
+            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete && !s.IsBye);
+
+            var viewModel = new LeagueHomeViewModel(league, configuration, completedSets);
             return View(viewModel);
         }
 

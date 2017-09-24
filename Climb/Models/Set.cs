@@ -26,6 +26,7 @@ namespace Climb.Models
         public bool IsComplete => Player1Score != 0 || Player2Score != 0;
         public string Player1Name => Player1?.User?.Username ?? "BYE";
         public string Player2Name => Player2?.User?.Username ?? "BYE";
+        public bool IsBye => Player1ID == null || Player2ID == null;
 
         public bool IsPlaying(LeagueUser leagueUser)
         {
