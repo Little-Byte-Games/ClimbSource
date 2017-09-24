@@ -13,7 +13,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-xs-3">
+		<div class="col-xs-4">
 			<h4 align="center">Power Rankings</h4>
 			@{
 				var users = Model.league.Members.ToList();
@@ -28,7 +28,7 @@
 				}
 			}
 		</div>
-		<div class="col-xs-6">
+		<div class="col-xs-4">
 			<h4 align="center">Recent Activity</h4>
 			@if(Model.recentSets != null)
 			{
@@ -43,9 +43,9 @@
 				<div align="center"><span>No recent activity</span></div>
 			}
 		</div>
-		<div class="col-xs-3">
+		<div class="col-xs-4">
 			<h4 align="center">Seasons</h4>
-			<div class="btn-group">
+			<div class="btn-group" align="center">
 				@foreach(var season in Model.league.Seasons)
 				{
 					var buttonClass = "btn-info";
@@ -57,9 +57,22 @@
 					{
 						buttonClass = "btn-primary";
 					}
-					<a class="btn @buttonClass" role="button" asp-controller="Seasons" asp-action="Details" asp-route-id="@season.ID">@season.DisplayName</a>
+					<a class="btn @buttonClass" role="button" asp-controller="Leagues" asp-action="Home" asp-route-id="@season.LeagueID" asp-route-seasonID="@season.ID">@season.DisplayName</a>
 				}
 			</div>
+			@if(Model.selectedSeason != null)
+			{
+				<span>@Model.selectedSeason.DisplayName</span>
+				foreach(var set in Model.selectedSeason.Sets)
+				{
+					var viewModel = new SetCollapsedViewModel(set, null);
+					@Html.Partial("../Sets/Collapsed", viewModel)
+				}
+			}
+			else
+			{
+				<span>No seasons</span>
+			}
 		</div>
 	</div>
 </div>
