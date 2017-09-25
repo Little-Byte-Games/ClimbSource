@@ -23,7 +23,7 @@ namespace Climb.Models
         public ICollection<Match> Matches { get; set; }
         public Season Season { get; set; }
 
-        public bool IsComplete => Player1Score != 0 || Player2Score != 0;
+        public bool IsComplete => Player1Score != null || Player2Score != null;
         public string Player1Name => Player1?.User?.Username ?? "BYE";
         public string Player2Name => Player2?.User?.Username ?? "BYE";
         public bool IsBye => Player1ID == null || Player2ID == null;
