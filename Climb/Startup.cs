@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System;
+using Climb.Models;
 using Climb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,8 +34,10 @@ namespace Climb
 
             services.AddMvc();
 
+            Console.WriteLine("[YEAGER] Configuring Services");
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
+                Console.WriteLine($"[YEAGER] ClientId={Configuration["Authentication:Google:ClientId"]}");
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });
