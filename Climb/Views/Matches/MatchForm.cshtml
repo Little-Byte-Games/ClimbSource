@@ -17,20 +17,18 @@
 				</td>
 				<td class="match-form-character">
 					<select class="form-control">
-						@*@foreach(var character in Model.Characters)
+						@foreach(var character in Model.Set.Season.League.Game.Characters)
 						{
 							<option>@character</option>
-						}*@
-						<option>Falcon</option>
-						<option>Mario</option>
-						<option>Link</option>
+						}
 					</select>
 				</td>
 				<td class="match-form-character">
 					<select class="form-control">
-						<option>Falcon</option>
-						<option>Mario</option>
-						<option>Link</option>
+						@foreach (var character in Model.Set.Season.League.Game.Characters)
+						{
+							<option>@character</option>
+						}
 					</select>
 				</td>
 				<td class="match-form-stage">

@@ -14,6 +14,7 @@ namespace Climb.Models
         public DbSet<User> User { get; set; }
         public DbSet<Game> Game { get; set; }
         public DbSet<Character> Character { get; set; }
+        public DbSet<Stage> Stage { get; set; }
         public DbSet<League> League { get; set; }
         public DbSet<Season> Season { get; set; }
         public DbSet<Set> Set { get; set; }

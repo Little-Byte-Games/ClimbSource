@@ -8,7 +8,7 @@ namespace Climb.Data
     {
         public static void Initialize(ClimbContext context)
         {
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if(context.User.Any())
@@ -49,6 +49,23 @@ namespace Climb.Data
                 new Character{Name = "Gief", Game = games[1]},
             };
             context.Character.AddRange(characters);
+            context.SaveChanges();
+
+            var stages = new[]
+            {
+                new Stage {Name = "Final Destination", Game = games[0]},
+                new Stage {Name = "Smashville", Game = games[0]},
+                new Stage {Name = "Town & City", Game = games[0]},
+                new Stage {Name = "Lylat Cruise", Game = games[0]},
+                new Stage {Name = "Dreamland", Game = games[0]},
+                new Stage {Name = "Battlefield", Game = games[0]},
+
+                new Stage {Name = "Suzaku Castle", Game = games[1]},
+                new Stage {Name = "English Manor", Game = games[1]},
+                new Stage {Name = "English Manor", Game = games[1]},
+                new Stage {Name = "Forgotten Waterfall", Game = games[1]},
+            };
+            context.Stage.AddRange(stages);
             context.SaveChanges();
 
             var leagues = new[]

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Climb.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -67,26 +67,6 @@ namespace Climb.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Character",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    GameID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Character", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Character_Game_GameID",
-                        column: x => x.GameID,
-                        principalTable: "Game",
-                        principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -377,7 +357,9 @@ namespace Climb.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Index = table.Column<int>(type: "int", nullable: false),
+                    Player1CharacterID = table.Column<int>(type: "int", nullable: true),
                     Player1Score = table.Column<int>(type: "int", nullable: false),
+                    Player2CharacterID = table.Column<int>(type: "int", nullable: true),
                     Player2Score = table.Column<int>(type: "int", nullable: false),
                     SetID = table.Column<int>(type: "int", nullable: true)
                 },
@@ -388,6 +370,33 @@ namespace Climb.Migrations
                         name: "FK_Match_Set_SetID",
                         column: x => x.SetID,
                         principalTable: "Set",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Character",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    GameID = table.Column<int>(type: "int", nullable: false),
+                    MatchID = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Character", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Character_Game_GameID",
+                        column: x => x.GameID,
+                        principalTable: "Game",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Character_Match_MatchID",
+                        column: x => x.MatchID,
+                        principalTable: "Match",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -443,6 +452,11 @@ namespace Climb.Migrations
                 column: "GameID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Character_MatchID",
+                table: "Character",
+                column: "MatchID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_League_AdminID",
                 table: "League",
                 column: "AdminID");
@@ -466,6 +480,16 @@ namespace Climb.Migrations
                 name: "IX_LeagueUserSeason_SeasonID",
                 table: "LeagueUserSeason",
                 column: "SeasonID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Match_Player1CharacterID",
+                table: "Match",
+                column: "Player1CharacterID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Match_Player2CharacterID",
+                table: "Match",
+                column: "Player2CharacterID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Match_SetID",
@@ -496,10 +520,46 @@ namespace Climb.Migrations
                 name: "IX_Set_SeasonID",
                 table: "Set",
                 column: "SeasonID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Match_Character_Player1CharacterID",
+                table: "Match",
+                column: "Player1CharacterID",
+                principalTable: "Character",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Match_Character_Player2CharacterID",
+                table: "Match",
+                column: "Player2CharacterID",
+                principalTable: "Character",
+                principalColumn: "ID",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_League_User_AdminID",
+                table: "League");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LeagueUser_User_UserID",
+                table: "LeagueUser");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Character_Game_GameID",
+                table: "Character");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_League_Game_GameID",
+                table: "League");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Character_Match_MatchID",
+                table: "Character");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -516,13 +576,7 @@ namespace Climb.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Character");
-
-            migrationBuilder.DropTable(
                 name: "LeagueUserSeason");
-
-            migrationBuilder.DropTable(
-                name: "Match");
 
             migrationBuilder.DropTable(
                 name: "RankSnapshot");
@@ -532,6 +586,18 @@ namespace Climb.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Game");
+
+            migrationBuilder.DropTable(
+                name: "Match");
+
+            migrationBuilder.DropTable(
+                name: "Character");
 
             migrationBuilder.DropTable(
                 name: "Set");
@@ -544,12 +610,6 @@ namespace Climb.Migrations
 
             migrationBuilder.DropTable(
                 name: "League");
-
-            migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropTable(
-                name: "Game");
         }
     }
 }
