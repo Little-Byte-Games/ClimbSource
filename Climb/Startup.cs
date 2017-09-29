@@ -39,7 +39,16 @@ namespace Climb
             {
                 Console.WriteLine($"[YEAGER] ClientId={Configuration["Authentication:Google:ClientId"]}");
                 googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                if(string.IsNullOrWhiteSpace(Configuration["Authentication:Google:ClientId"]))
+                {
+                    throw new ArgumentNullException(nameof(googleOptions.ClientId), "Google Client ID is missing!");
+                }
+
                 googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                if (string.IsNullOrWhiteSpace(Configuration["Authentication:Google:ClientSecret"]))
+                {
+                    throw new ArgumentNullException(nameof(googleOptions.ClientSecret), "Google Client secret is missing!");
+                }
             });
 
             services.Configure<MvcOptions>(options =>
