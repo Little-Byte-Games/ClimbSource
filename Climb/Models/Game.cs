@@ -8,5 +8,6 @@ namespace Climb.Models
         public string Name { get; set; }
 
         public HashSet<Character> Characters { get; set; }
-    }
+        public HashSet<Stage> Stages { get; set; }
+}
 }

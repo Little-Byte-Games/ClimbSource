@@ -11,7 +11,7 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20170929223452_Init")]
+    [Migration("20170930015843_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,15 +84,11 @@ namespace Climb.Migrations
 
                     b.Property<int>("GameID");
 
-                    b.Property<int?>("MatchID");
-
                     b.Property<string>("Name");
 
                     b.HasKey("ID");
 
                     b.HasIndex("GameID");
-
-                    b.HasIndex("MatchID");
 
                     b.ToTable("Character");
                 });
@@ -185,6 +181,8 @@ namespace Climb.Migrations
 
                     b.Property<int?>("SetID");
 
+                    b.Property<int?>("StageID");
+
                     b.HasKey("ID");
 
                     b.HasIndex("Player1CharacterID");
@@ -192,6 +190,8 @@ namespace Climb.Migrations
                     b.HasIndex("Player2CharacterID");
 
                     b.HasIndex("SetID");
+
+                    b.HasIndex("StageID");
 
                     b.ToTable("Match");
                 });
@@ -266,6 +266,22 @@ namespace Climb.Migrations
                     b.HasIndex("SeasonID");
 
                     b.ToTable("Set");
+                });
+
+            modelBuilder.Entity("Climb.Models.Stage", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("GameID");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("GameID");
+
+                    b.ToTable("Stage");
                 });
 
             modelBuilder.Entity("Climb.Models.User", b =>
@@ -402,11 +418,6 @@ namespace Climb.Migrations
                         .WithMany("Characters")
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.Match")
-                        .WithMany("Characters")
-                        .HasForeignKey("MatchID")
-                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.League", b =>
@@ -464,6 +475,11 @@ namespace Climb.Migrations
                         .WithMany("Matches")
                         .HasForeignKey("SetID")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Climb.Models.Stage", "Stage")
+                        .WithMany()
+                        .HasForeignKey("StageID")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Climb.Models.RankSnapshot", b =>
@@ -497,6 +513,14 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Season", "Season")
                         .WithMany("Sets")
                         .HasForeignKey("SeasonID")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Climb.Models.Stage", b =>
+                {
+                    b.HasOne("Climb.Models.Game", "Game")
+                        .WithMany("Stages")
+                        .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

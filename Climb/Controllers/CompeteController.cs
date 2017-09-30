@@ -102,6 +102,7 @@ namespace Climb.Controllers
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)
                 .Include(s => s.Matches).ThenInclude(m => m.Set).Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
+                .Include(s => s.Matches).ThenInclude(m => m.Set).Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(set == null)
             {

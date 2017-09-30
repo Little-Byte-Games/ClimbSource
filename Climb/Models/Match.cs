@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Climb.Models
+﻿namespace Climb.Models
 {
     public class Match
     {
@@ -10,11 +8,11 @@ namespace Climb.Models
         public int Player2Score { get; set; }
         public int? Player1CharacterID { get; set; }
         public int? Player2CharacterID { get; set; }
+        public int? StageID { get; set; }
 
         public Set Set { get; set; }
         public Character Player1Character { get; set; }
         public Character Player2Character { get; set; }
-
-        //public HashSet<Character> Characters => Set.Season.League.Game.Characters;
+        public Stage Stage { get; set; }
     }
 }

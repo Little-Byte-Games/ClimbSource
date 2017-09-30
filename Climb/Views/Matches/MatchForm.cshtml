@@ -33,9 +33,10 @@
 				</td>
 				<td class="match-form-stage">
 					<select class="form-control">
-						<option>Final Destination</option>
-						<option>Battlefield</option>
-						<option>Smashville</option>
+						@foreach (var stage in Model.Set.Season.League.Game.Stages)
+						{
+							<option>@stage</option>
+						}
 					</select>
 				</td>
 			</tr>
