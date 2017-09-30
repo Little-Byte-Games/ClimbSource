@@ -16,26 +16,26 @@
 					<input type="number" value="@Model.Player2Score" name="[@Model.Index].Player2Score" class="form-control" />
 				</td>
 				<td class="match-form-character">
-					<select class="form-control">
+					<select name="[@Model.Index].Player1CharacterID" class="form-control">
 						@foreach(var character in Model.Set.Season.League.Game.Characters)
 						{
-							<option>@character</option>
+							<option value="@character.ID">@character</option>
 						}
 					</select>
 				</td>
 				<td class="match-form-character">
-					<select class="form-control">
+					<select name="[@Model.Index].Player2CharacterID" class="form-control">
 						@foreach (var character in Model.Set.Season.League.Game.Characters)
 						{
-							<option>@character</option>
+							<option value="@character.ID">@character</option>
 						}
 					</select>
 				</td>
 				<td class="match-form-stage">
-					<select class="form-control">
+					<select name="[@Model.Index].StageID" class="form-control">
 						@foreach (var stage in Model.Set.Season.League.Game.Stages)
 						{
-							<option>@stage</option>
+							<option value="@stage.ID">@stage</option>
 						}
 					</select>
 				</td>
