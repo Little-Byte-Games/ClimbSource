@@ -150,6 +150,12 @@ namespace Climb.Controllers
                 return BadRequest("Character name has to be a valid string.");
             }
 
+            var alreadyExists = await _context.Character.AnyAsync(c => c.Name == characterName);
+            if (alreadyExists)
+            {
+                return BadRequest($"Character '{characterName}' already exists.");
+            }
+
             var game = await _context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if(game == null)
             {
