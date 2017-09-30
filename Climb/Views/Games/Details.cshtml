@@ -44,6 +44,17 @@
 			@Html.DisplayNameFor(model => model.Stages)
 		</dt>
 		<dd>
+			<form method="post" asp-action="AddStage">
+				<input type="hidden" name="id" value="@Model.ID" />
+				<div class="form-group">
+					<input type="text" placeholder="Stage Name" name="stageName" />
+				</div>
+				<div class="form-group">
+					<button class="btn btn-danger" type="submit">Add</button>
+				</div>
+			</form>
+		</dd>
+		<dd>
 			@foreach(var stage in Model.Stages)
 			{
 				<div>@stage</div>

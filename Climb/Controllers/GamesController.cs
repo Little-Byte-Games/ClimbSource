@@ -166,5 +166,35 @@ namespace Climb.Controllers
 
             return RedirectToAction(nameof(Details), new {id});
         }
+
+        public async Task<IActionResult> AddStage(int id, string stageName)
+        {
+            if (string.IsNullOrWhiteSpace(stageName))
+            {
+                return BadRequest("Stage name has to be a valid string.");
+            }
+
+            var alreadyExists = await _context.Stage.AnyAsync(s => s.Name == stageName);
+            if(alreadyExists)
+            {
+                return BadRequest($"Stage '{stageName}' already exists.");
+            }
+
+            var game = await _context.Game.SingleOrDefaultAsync(g => g.ID == id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            var stage = new Stage
+            {
+                Name = stageName,
+                GameID = id,
+            };
+            await _context.AddAsync(stage);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
     }
 }
