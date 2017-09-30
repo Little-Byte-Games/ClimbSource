@@ -27,7 +27,10 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game.SingleOrDefaultAsync(m => m.ID == id);
+            var game = await _context.Game
+                .Include(g => g.Characters)
+                .Include(g => g.Stages)
+                .SingleOrDefaultAsync(m => m.ID == id);
             if(game == null)
             {
                 return NotFound();
@@ -138,6 +141,30 @@ namespace Climb.Controllers
             }
 
             return NotFound();
+        }
+
+        public async Task<IActionResult> AddCharacter(int id, string characterName)
+        {
+            if(string.IsNullOrWhiteSpace(characterName))
+            {
+                return BadRequest("Character name has to be a valid string.");
+            }
+
+            var game = await _context.Game.SingleOrDefaultAsync(g => g.ID == id);
+            if(game == null)
+            {
+                return NotFound();
+            }
+
+            var character = new Character
+            {
+                Name = characterName,
+                GameID = id,
+            };
+            await _context.AddAsync(character);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new {id});
         }
     }
 }

@@ -1,24 +1,57 @@
-﻿@model Climb.Models.Game
+﻿@model Game
 
 @{
-    ViewData["Title"] = "Details";
+	ViewData["Title"] = "Details";
 }
 
 <h2>Details</h2>
 
 <div>
-    <h4>Game</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+	<h4>Game</h4>
+	<hr/>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+	</dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Characters)
+		</dt>
+		<dd>
+			<form method="post" asp-action="AddCharacter">
+				<input type="hidden" name="id" value="@Model.ID"/>
+				<div class="form-group">
+					<input type="text" placeholder="Character Name" name="characterName"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-danger" type="submit">Add</button>
+				</div>
+			</form>
+		</dd>
+		<dd>
+			@foreach(var character in Model.Characters)
+			{
+				<div>@character</div>
+			}
+		</dd>
+	</dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Stages)
+		</dt>
+		<dd>
+			@foreach(var stage in Model.Stages)
+			{
+				<div>@stage</div>
+			}
+		</dd>
+	</dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+	<a asp-action="Index">Back to List</a>
 </div>
