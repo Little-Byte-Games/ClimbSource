@@ -289,13 +289,22 @@ namespace Climb.Controllers
                         byePlayer = 2;
                     }
 
+
+                    int? p1Score = null;
+                    int? p2Score = null;
+                    if(byePlayer != 0)
+                    {
+                        p1Score = byePlayer == 1 ? -1 : 0;
+                        p2Score = byePlayer == 2 ? -1 : 0;
+                    }
+
                     var set = new Set
                     {
                         DueDate = round.dueDate,
                         Player1ID = player1,
                         Player2ID = player2,
-                        Player1Score = byePlayer == 1 ? - 1 : 0,
-                        Player2Score = byePlayer == 2 ? - 1 : 0,
+                        Player1Score = p1Score,
+                        Player2Score = p2Score,
                     };
 
                     season.Sets.Add(set);
