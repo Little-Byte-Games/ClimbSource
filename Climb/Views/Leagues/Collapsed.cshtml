@@ -2,7 +2,7 @@
 
 <div class="panel panel-default">
 	<div align="center" style="padding: 4px">
-		<span>@Model.league.Game.Name</span>
+		<span>@Html.Partial("../Games/Name", Model.league.Game)</span>
 		<br />
 		@Html.Partial("../Leagues/Name", Model.league)
 		<br />
