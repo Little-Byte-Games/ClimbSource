@@ -53,8 +53,8 @@ namespace Climb.Controllers
 
         public IActionResult Create()
         {
-            ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID");
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID");
+            ViewData[nameof(League.GameID)] = new SelectList(_context.Game, nameof(Game.ID), nameof(Game.Name));
+            ViewData[nameof(League.AdminID)] = new SelectList(_context.User, nameof(Models.User.ID), nameof(Models.User.Username));
             return View();
         }
 
