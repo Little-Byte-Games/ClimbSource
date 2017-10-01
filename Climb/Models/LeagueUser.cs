@@ -44,7 +44,8 @@ namespace Climb.Models
                 var awsSection = configuration.GetSection("AWS");
                 var root = awsSection["RootUrl"];
                 var bucket = awsSection["Bucket"];
-                profilePicUrl = string.Join("/", root, bucket, ProfilePicKey);
+                var folder = awsSection["ProfilePics"];
+                profilePicUrl = string.Join("/", root, bucket, folder, ProfilePicKey);
             }
             return profilePicUrl;
         }

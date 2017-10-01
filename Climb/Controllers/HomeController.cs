@@ -63,12 +63,13 @@ namespace Climb.Controllers
             var accessKey = configuration.GetSection("AWS")["AccessKey"];
             var secretKey = configuration.GetSection("AWS")["SecretKey"];
             var bucketName = configuration.GetSection("AWS")["Bucket"];
+            var folder = configuration.GetSection("AWS")["ProfilePics"];
 
             var fileKey = $"{Guid.NewGuid()}_{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}{Path.GetExtension(file.FileName)}";
             fileKey = fileKey.ToLowerInvariant();
 
             var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
-            await transfer.UploadAsync(file.OpenReadStream(), bucketName, fileKey);
+            await transfer.UploadAsync(file.OpenReadStream(), bucketName + "/" + folder, fileKey);
 
             var user = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
             if (user != null)
