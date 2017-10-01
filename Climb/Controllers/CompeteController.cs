@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Climb.Models;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -60,9 +61,9 @@ namespace Climb.Controllers
         [Authorize]
         public async Task<IActionResult> Home(int? id)
         {
+            var appUser = await _userManager.GetUserAsync(User);
             if(id == null)
             {
-                var appUser = await _userManager.GetUserAsync(User);
                 id = appUser.UserID;
             }
 
@@ -76,7 +77,11 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var viewModel = CompeteHomeViewModel.Create(user);
+            var viewingUser = await _context.User
+                .Include(u => u.LeagueUsers)
+                .SingleOrDefaultAsync(u => u.ID == appUser.UserID);
+
+            var viewModel = CompeteHomeViewModel.Create(user, viewingUser);
             return View(viewModel);
         }
 
@@ -99,10 +104,12 @@ namespace Climb.Controllers
         public async Task<IActionResult> Fight(int id)
         {
             var set = await _context.Set
+                .Include(s => s.Matches)
+                .Include(s => s.Season)
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)
-                .Include(s => s.Matches).ThenInclude(m => m.Set).Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
-                .Include(s => s.Matches).ThenInclude(m => m.Set).Include(s => s.Season).ThenInclude(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(set == null)
             {
@@ -110,6 +117,42 @@ namespace Climb.Controllers
             }
 
             return View(set);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
+        {
+            var challenged = await _context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
+            if(challenged == null)
+            {
+                return NotFound($"No challenged league user with id '{challengedID} found.");
+            }
+
+            var challenger = await _context.User
+                .Include(u => u.LeagueUsers)
+                .SingleOrDefaultAsync(u => u.ID == challengerID);
+            if(challenger == null)
+            {
+                return NotFound($"No challenger user with id '{challengerID} found.");
+            }
+
+            var challengerLeagueUser = challenger.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == challenged.LeagueID);
+            if(challengerLeagueUser == null)
+            {
+                return NotFound($"No challenger league user for league ID '{challenged.LeagueID}' found.");
+            }
+
+            var set = new Set
+            {
+                Player1ID = challengerLeagueUser.ID,
+                Player2ID = challengedID,
+                DueDate = DateTime.Now.Date,
+                LeagueID = challengerLeagueUser.LeagueID,
+            };
+            await _context.Set.AddAsync(set);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Fight), new {id = set.ID});
         }
     }
 }

@@ -231,7 +231,7 @@ namespace Climb.Controllers
 
             _context.Update(set);
 
-            var users = await _context.LeagueUser.Where(lu => lu.LeagueID == set.Season.LeagueID).ToListAsync();
+            var users = await _context.LeagueUser.Where(lu => lu.LeagueID == set.LeagueID).ToListAsync();
             users.Sort();
             var rank = 0;
             var lastElo = -1;

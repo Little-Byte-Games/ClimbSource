@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Climb.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Data
 {
@@ -10,6 +11,7 @@ namespace Climb.Data
         {
             //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+            //context.Database.Migrate();
 
             if(context.User.Any())
             {

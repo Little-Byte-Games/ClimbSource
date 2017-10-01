@@ -21,17 +21,23 @@ namespace Climb.ViewModels
         }
 
         public readonly User user;
+        public readonly User viewingUser;
+        public readonly HashSet<LeagueUser> possibleExhibitions;
         public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
         public readonly ReadOnlyCollection<LeagueUserSet> availableSets;
 
-        public CompeteHomeViewModel(User user, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets)
+        public bool IsHome => user == viewingUser;
+
+        public CompeteHomeViewModel(User user, User viewingUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets)
         {
             this.user = user;
+            this.viewingUser = viewingUser;
+            this.possibleExhibitions = possibleExhibitions;
             this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);
             this.availableSets = new ReadOnlyCollection<LeagueUserSet>(availableSets);
         }
 
-        public static CompeteHomeViewModel Create(User user)
+        public static CompeteHomeViewModel Create(User user, User viewingUser)
         {
             DateTime now = DateTime.Now;
             List<LeagueUserSet> overdueSets = new List<LeagueUserSet>();
@@ -59,7 +65,14 @@ namespace Climb.ViewModels
                 }
             }
 
-            return new CompeteHomeViewModel(user, overdueSets, availableSets);
+            var isHome = user == viewingUser;
+            HashSet<LeagueUser> possibleExhibitions = null;
+            if(!isHome)
+            {
+                possibleExhibitions = new HashSet<LeagueUser>(user.LeagueUsers.Where(lu => viewingUser.LeagueUsers.Any(vlu => vlu.LeagueID == lu.LeagueID)));
+            }
+
+            return new CompeteHomeViewModel(user, viewingUser, possibleExhibitions, overdueSets, availableSets);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()

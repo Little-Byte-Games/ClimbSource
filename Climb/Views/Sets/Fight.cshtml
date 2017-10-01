@@ -38,9 +38,9 @@
 			</div>
 		</div>
 		<div class="header">
-			<span>@Model.Season.League.Name</span>
+			<span>@Model.League.Name</span>
 			<span>&nbsp;|&nbsp;</span>
-			<span>@Model.Season.DisplayName</span>
+			<span>@(Model.Season?.DisplayName ?? "Exhibition")</span>
 			<span>&nbsp;|&nbsp;</span>
 			<span>@Model.DueDate.ToShortDateString()</span>
 		</div>
@@ -88,36 +88,3 @@
 		</form>
 	</div>
 </div>
-
-
-@*<div align="center">
-	<div>
-		<div>
-			<img src="@Model.Player1.GetProfilePicUrl(configuration)"/>
-			<span>@Model.Player1Name</span>
-		</div>
-		<h1>v</h1>
-		<div>
-			<span>@Model.Player2Name</span>
-			<img src="@Model.Player2.GetProfilePicUrl(configuration)"/>
-		</div>
-	</div>
-	<hr/>
-	<form asp-controller="Sets" asp-action="AddMatch" method="post">
-		<input type="hidden" name="setID" value="@Model.ID"/>
-		<div class="form-group">
-			<input type="submit" value="Add Match" class="btn btn-primary"/>
-		</div>
-	</form>
-	<form asp-controller="Sets" asp-action="Submit" method="post">
-		<input type="hidden" name="setID" value="@Model.ID" />
-		@foreach(var match in Model.Matches)
-		{
-			@Html.Partial("../Matches/MatchForm", match)
-		}
-		<br/>
-		<div class="form-group">
-			<input type="submit" value="Submit" class="btn btn-danger" />
-		</div>
-	</form>
-</div>*@

@@ -17,7 +17,7 @@
 				</td>
 				<td class="match-form-character">
 					<select name="[@Model.Index].Player1CharacterID" class="form-control">
-						@foreach(var character in Model.Set.Season.League.Game.Characters)
+						@foreach(var character in Model.Set.League.Game.Characters)
 						{
 							<option value="@character.ID">@character</option>
 						}
@@ -25,7 +25,7 @@
 				</td>
 				<td class="match-form-character">
 					<select name="[@Model.Index].Player2CharacterID" class="form-control">
-						@foreach (var character in Model.Set.Season.League.Game.Characters)
+						@foreach (var character in Model.Set.League.Game.Characters)
 						{
 							<option value="@character.ID">@character</option>
 						}
@@ -33,7 +33,7 @@
 				</td>
 				<td class="match-form-stage">
 					<select name="[@Model.Index].StageID" class="form-control">
-						@foreach (var stage in Model.Set.Season.League.Game.Stages)
+						@foreach (var stage in Model.Set.League.Game.Stages)
 						{
 							<option value="@stage.ID">@stage</option>
 						}

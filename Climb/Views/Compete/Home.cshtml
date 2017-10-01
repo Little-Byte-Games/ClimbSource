@@ -8,12 +8,26 @@
 
 <div align="center">
 	<h2>Home</h2>
-	<h4>Hello @Model.user.Username</h4>
+	@if(Model.IsHome)
+	{
+		<h4>Hello @Model.user.Username</h4>
+	}
+	else
+	{
+		<h4>Home of @Model.user.Username</h4>
+		foreach(var leagueUser in Model.possibleExhibitions)
+		{
+			<form method="post" asp-action="Exhibition" asp-route-challengerID="@Model.viewingUser.ID" asp-route-challengedID="@leagueUser.ID">
+				<button type="submit" class="btn btn-danger">Fight in @leagueUser.League.Name!</button>
+			</form>
+		}
+	}
+
 </div>
 <div class="row">
 	<div class="col-xs-3" align="center">
 		<h3>Leagues</h3>
-		@foreach (var leagueUser in Model.user.LeagueUsers)
+		@foreach(var leagueUser in Model.user.LeagueUsers)
 		{
 			<div class="panel panel-default">
 				@Html.Partial("../LeagueUsers/Info", leagueUser)
@@ -23,13 +37,13 @@
 	<div class="col-xs-6" align="center">
 		<h3>Available Sets</h3>
 		<h4>OverDue Sets</h4>
-		@if (Model.overdueSets.Count == 0)
+		@if(Model.overdueSets.Count == 0)
 		{
 			<span>No overdue sets!</span>
 		}
 		else
 		{
-			foreach (var set in Model.overdueSets)
+			foreach(var set in Model.overdueSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
 				@Html.Partial("../Sets/Collapsed", viewModel)
@@ -37,13 +51,13 @@
 		}
 		<hr/>
 		<h4>Available Sets</h4>
-		@if (Model.availableSets.Count == 0)
+		@if(Model.availableSets.Count == 0)
 		{
 			<span>No available sets!</span>
 		}
 		else
 		{
-			foreach (var set in Model.availableSets)
+			foreach(var set in Model.availableSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
 				@Html.Partial("../Sets/Collapsed", viewModel)

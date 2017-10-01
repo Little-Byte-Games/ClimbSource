@@ -5,7 +5,7 @@
 		<div>
 			@Html.Partial("../Leagues/Name", Model.set.Season.League)
 			|
-			@Model.set.Season.DisplayName
+			@Model.SeasonName
 		</div>
 		<span>@Html.Partial("../Users/Name", Model.set.Player1?.User) v @Html.Partial("../Users/Name", Model.set.Player2?.User)</span>
 		<br/>
