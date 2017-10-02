@@ -31,6 +31,7 @@ namespace Climb
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<ICDNService, CDNService>();
 
             services.AddMvc();
 

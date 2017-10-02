@@ -16,6 +16,8 @@ namespace Climb.Models
             BigDown,
         }
 
+        public const string MissingPic = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
+
         public int ID { get; set; }
         public int UserID { get; set; }
         public int LeagueID { get; set; }
@@ -34,20 +36,6 @@ namespace Climb.Models
         public int CompareTo(LeagueUser other)
         {
             return other.Elo.CompareTo(Elo);
-        }
-
-        public string GetProfilePicUrl(IConfiguration configuration)
-        {
-            var profilePicUrl = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
-            if (ProfilePicKey != null)
-            {
-                var awsSection = configuration.GetSection("AWS");
-                var root = awsSection["RootUrl"];
-                var bucket = awsSection["Bucket"];
-                var folder = awsSection["ProfilePics"];
-                profilePicUrl = string.Join("/", root, bucket, folder, ProfilePicKey);
-            }
-            return profilePicUrl;
         }
 
         public int GetRankTrendDelta()

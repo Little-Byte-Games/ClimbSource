@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Climb.Services;
 
 namespace Climb.Controllers
 {
     public class LeagueUsersController : Controller
     {
-        private readonly IConfiguration configuration;
         private readonly ClimbContext _context;
+        private readonly ICDNService cdnService;
 
-        public LeagueUsersController(IConfiguration configuration, ClimbContext context)
+        public LeagueUsersController(ClimbContext context, ICDNService cdnService)
         {
-            this.configuration = configuration;
             _context = context;
+            this.cdnService = cdnService;
         }
 
         public async Task<IActionResult> Index()
@@ -38,7 +38,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            ViewBag.ProfilePic = leagueUser.GetProfilePicUrl(configuration);
+            ViewBag.ProfilePic = cdnService.GetProfilePic(leagueUser);
 
             return View(leagueUser);
         }

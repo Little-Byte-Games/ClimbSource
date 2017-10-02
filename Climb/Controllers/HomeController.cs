@@ -1,31 +1,25 @@
-﻿using System;
-using Climb.Models;
+﻿using Climb.Models;
+using Climb.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Threading.Tasks;
-using Amazon;
-using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Climb.Controllers
 {
     public class HomeController : Controller
     {
-        public readonly IConfiguration configuration;
         private readonly ClimbContext context;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ICDNService cdnService;
 
-        public HomeController(IConfiguration configuration, ClimbContext context, SignInManager<ApplicationUser> signInManager)
+        public HomeController(ClimbContext context, SignInManager<ApplicationUser> signInManager, ICDNService cdnService)
         {
-            this.configuration = configuration;
             this.context = context;
             _signInManager = signInManager;
+            this.cdnService = cdnService;
         }
 
         public IActionResult Index()
@@ -60,16 +54,7 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {
-            var accessKey = configuration.GetSection("AWS")["AccessKey"];
-            var secretKey = configuration.GetSection("AWS")["SecretKey"];
-            var bucketName = configuration.GetSection("AWS")["Bucket"];
-            var folder = configuration.GetSection("AWS")["ProfilePics"];
-
-            var fileKey = $"{Guid.NewGuid()}_{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}{Path.GetExtension(file.FileName)}";
-            fileKey = fileKey.ToLowerInvariant();
-
-            var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
-            await transfer.UploadAsync(file.OpenReadStream(), bucketName + "/" + folder, fileKey);
+            var fileKey = await cdnService.UploadProfilePic(file);
 
             var user = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
             if (user != null)
