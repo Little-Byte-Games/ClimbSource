@@ -23,7 +23,7 @@ namespace Climb.Core
                 };
                 await client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
             }
-            catch(HttpRequestException)
+            catch(Exception)
             {
             }
         }
