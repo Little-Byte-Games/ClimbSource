@@ -1,6 +1,6 @@
-﻿@using Microsoft.Extensions.Configuration
+﻿@using Climb.Services
 @model Set
-@inject IConfiguration configuration
+@inject ICDNService CDNService
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 
@@ -9,7 +9,7 @@
 		<div class="player-container">
 			<div class="player">
 				<div class="player-picture">
-					<img class="profile-picture" src="@Model.Player1.GetProfilePicUrl(configuration)"/>
+					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player1)"/>
 				</div>
 				<div class="player-info">
 					<div class="player-info-name">
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 				<div class="player-picture">
-					<img class="profile-picture" src="@Model.Player2.GetProfilePicUrl(configuration)"/>
+					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player2)"/>
 				</div>
 			</div>
 		</div>

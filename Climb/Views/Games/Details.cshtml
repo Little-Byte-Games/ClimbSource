@@ -1,4 +1,7 @@
-﻿@model Game
+﻿@using Climb.Services
+@model Game
+
+@inject ICDNService CDNService
 
 @{
 	ViewData["Title"] = "Details";
@@ -22,10 +25,13 @@
 			@Html.DisplayNameFor(model => model.Characters)
 		</dt>
 		<dd>
-			<form method="post" asp-action="AddCharacter">
+			<form method="post" enctype="multipart/form-data" asp-action="AddCharacter">
 				<input type="hidden" name="id" value="@Model.ID"/>
 				<div class="form-group">
 					<input type="text" placeholder="Character Name" name="characterName"/>
+				</div>
+				<div class="form-group">
+					<input type="file" name="file" accept="image/*"/>
 				</div>
 				<div class="form-group">
 					<button class="btn btn-danger" type="submit">Add</button>
@@ -35,7 +41,10 @@
 		<dd>
 			@foreach(var character in Model.Characters)
 			{
-				<div>@character</div>
+				<div>
+					<img src="@CDNService.GetCharacterPic(character)" width="25"/>
+					<span>@character</span>
+				</div>
 			}
 		</dd>
 	</dl>
@@ -45,9 +54,9 @@
 		</dt>
 		<dd>
 			<form method="post" asp-action="AddStage">
-				<input type="hidden" name="id" value="@Model.ID" />
+				<input type="hidden" name="id" value="@Model.ID"/>
 				<div class="form-group">
-					<input type="text" placeholder="Stage Name" name="stageName" />
+					<input type="text" placeholder="Stage Name" name="stageName"/>
 				</div>
 				<div class="form-group">
 					<button class="btn btn-danger" type="submit">Add</button>

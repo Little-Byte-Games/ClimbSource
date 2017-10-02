@@ -3,16 +3,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Climb.Models;
+using Climb.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Climb.Controllers
 {
     public class GamesController : Controller
     {
         private readonly ClimbContext _context;
+        private readonly ICDNService cdnService;
 
-        public GamesController(ClimbContext context)
+        public GamesController(ClimbContext context, ICDNService cdnService)
         {
             _context = context;
+            this.cdnService = cdnService;
         }
 
         public async Task<IActionResult> Index()
@@ -143,7 +147,8 @@ namespace Climb.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> AddCharacter(int id, string characterName)
+        [HttpPost]
+        public async Task<IActionResult> AddCharacter(int id, string characterName, IFormFile file)
         {
             if(string.IsNullOrWhiteSpace(characterName))
             {
@@ -162,10 +167,13 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
+            var picKey = await cdnService.UploadCharacterPic(file);
+
             var character = new Character
             {
                 Name = characterName,
                 GameID = id,
+                PicKey = picKey,
             };
             await _context.AddAsync(character);
             await _context.SaveChangesAsync();

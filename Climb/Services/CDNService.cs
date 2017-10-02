@@ -12,11 +12,12 @@ namespace Climb.Services
 {
     public class CDNService : ICDNService
     {
+        private readonly string accessKey;
+        private readonly string secretKey;
         private readonly string rootUrl;
         private readonly string bucketName;
         private readonly string profilePics;
-        private readonly string accessKey;
-        private readonly string secretKey;
+        private readonly string characterPics;
 
         public CDNService(IConfiguration configuration)
         {
@@ -30,6 +31,7 @@ namespace Climb.Services
             rootUrl += "/" + bucketName;
 
             profilePics = awsSection["ProfilePics"];
+            characterPics = awsSection["CharacterPics"];
         }
 
         public string GetProfilePic(LeagueUser leagueUser)
@@ -39,13 +41,35 @@ namespace Climb.Services
 
         public async Task<string> UploadProfilePic(IFormFile file)
         {
-            var fileKey = $"{Guid.NewGuid()}_{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}{Path.GetExtension(file.FileName)}";
-            fileKey = fileKey.ToLowerInvariant();
-
-            var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
-            await transfer.UploadAsync(file.OpenReadStream(), bucketName + "/" + profilePics, fileKey);
-
+            var fileKey = GenerateFileKey(file);
+            await UploadFile(file, profilePics, fileKey);
             return fileKey;
+        }
+
+        public string GetCharacterPic(Character character)
+        {
+            return string.Join("/", rootUrl, characterPics, character.PicKey);
+        }
+
+        public async Task<string> UploadCharacterPic(IFormFile file)
+        {
+            var fileKey = GenerateFileKey(file);
+            await UploadFile(file, characterPics, fileKey);
+            return fileKey;
+        }
+
+        private static string GenerateFileKey(IFormFile file)
+        {
+            var fileExtension = Path.GetExtension(file.FileName);
+            var fileKey = $"{Guid.NewGuid()}_{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}{fileExtension}";
+            fileKey = fileKey.ToLowerInvariant();
+            return fileKey;
+        }
+
+        private async Task UploadFile(IFormFile file, string folder, string fileKey)
+        {
+            var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
+            await transfer.UploadAsync(file.OpenReadStream(), bucketName + "/" + folder, fileKey);
         }
     }
 }
