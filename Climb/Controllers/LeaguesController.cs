@@ -11,7 +11,6 @@ using Climb.Core;
 using Climb.ViewModels;
 using Microsoft.Extensions.Configuration;
 using MoreLinq;
-using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
@@ -163,27 +162,13 @@ namespace Climb.Controllers
             return _context.League.Any(e => e.ID == id);
         }
 
-        public class LeagueUserList
-        {
-            public readonly League league;
-            public readonly IEnumerable<User> potentialMembers;
-            public readonly IEnumerable<LeagueUser> members;
-
-            public LeagueUserList(League league, IEnumerable<User> potentialMembers, IEnumerable<LeagueUser> members)
-            {
-                this.league = league;
-                this.potentialMembers = potentialMembers ?? new List<User>();
-                this.members = members ?? new List<LeagueUser>();
-            }
-        }
-
         public async Task<IActionResult> Join(int id)
         {
             var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
             var leagueUsers = await _context.LeagueUser.Where(u => u.LeagueID == id && !u.HasLeft).Include(l => l.User).ToListAsync();
             var users = await _context.User.Where(u => leagueUsers.All(lu => lu.UserID != u.ID)).ToListAsync();
 
-            return View(new LeagueUserList(league, users, leagueUsers));
+            return View(new LeagueJoinViewModel(league, users, leagueUsers));
         }
 
         [HttpPost]
