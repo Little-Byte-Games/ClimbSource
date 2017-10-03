@@ -12,11 +12,13 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext _context;
         private readonly ICDNService cdnService;
+        private readonly LeagueUserService leagueUserService;
 
         public LeagueUsersController(ClimbContext context, ICDNService cdnService)
         {
             _context = context;
             this.cdnService = cdnService;
+            leagueUserService = new LeagueUserService(context);
         }
 
         public async Task<IActionResult> Index()
@@ -156,6 +158,12 @@ namespace Climb.Controllers
 
             var rankDifference = leagueUser.GetRankTrendDelta();
             return Ok(new {leagueUserID = id, rankDelta = rankDifference });
+        }
+
+        public async Task<string> FavoriteCharacter(int id)
+        {
+            var character = await leagueUserService.GetFavoriteCharacter(id);
+            return character?.Name ?? "None";
         }
     }
 }

@@ -296,5 +296,16 @@ namespace Climb.Controllers
 
             return RedirectToAction(nameof(Home), new {id});
         }
+
+        public async Task<IActionResult> BestCharacter(int id)
+        {
+            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
     }
 }

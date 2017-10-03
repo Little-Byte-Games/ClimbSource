@@ -24,6 +24,7 @@ namespace Climb.Models
         public LeagueUser Player2 { get; set; }
         public ICollection<Match> Matches { get; set; }
         public Season Season { get; set; }
+
         public League League { get; set; }
 
         public bool IsComplete => Player1Score != null || Player2Score != null;
