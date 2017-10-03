@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb", "Climb\Climb.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb.Core", "Climb.Core\Climb.Core.csproj", "{0A2E1738-C24C-49F0-B2A5-FE47E67348E5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb.Azure", "Climb.Azure\Climb.Azure.csproj", "{8386B901-3C52-44D7-AB45-A0D9CE857639}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0A2E1738-C24C-49F0-B2A5-FE47E67348E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A2E1738-C24C-49F0-B2A5-FE47E67348E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A2E1738-C24C-49F0-B2A5-FE47E67348E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

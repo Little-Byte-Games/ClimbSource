@@ -3,6 +3,7 @@ using Climb.Models;
 using Climb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,8 @@ namespace Climb
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ICDNService, CDNService>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc();
 

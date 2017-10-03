@@ -8,7 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Climb.Core;
+using Climb.Services;
 using Climb.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MoreLinq;
 
@@ -18,11 +20,13 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext _context;
         private readonly IConfiguration configuration;
+        private readonly LeagueService leagueService;
 
         public LeaguesController(ClimbContext context, IConfiguration configuration)
         {
             _context = context;
             this.configuration = configuration;
+            leagueService = new LeagueService(context);
         }
 
         public async Task<IActionResult> Index()
@@ -267,22 +271,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var createdDate = DateTime.Now;
-            var rankSnapshots = new HashSet<RankSnapshot>();
-            foreach(var member in league.Members)
-            {
-                RankSnapshot lastSnapshot = null;
-                if(member.RankSnapshots?.Count > 0)
-                {
-                    lastSnapshot = member.RankSnapshots?.MaxBy(rs => rs.CreatedDate);
-                }
-                var rankDelta = member.Rank - (lastSnapshot?.Rank ?? 0);
-                var eloDelta = member.Elo - (lastSnapshot?.Elo ?? 0);
-                var rankSnapshot = new RankSnapshot {LeagueUser = member, Rank = member.Rank, DeltaRank = rankDelta, Elo = member.Elo, DeltaElo = eloDelta, CreatedDate = createdDate };
-                rankSnapshots.Add(rankSnapshot);
-            }
-            await _context.RankSnapshot.AddRangeAsync(rankSnapshots);
-            await _context.SaveChangesAsync();
+            var rankSnapshots = await leagueService.TakeSnapshot(league);
 
             var orderedSnapshots = rankSnapshots.OrderBy(lu => lu.Rank);
             var message = new StringBuilder();
@@ -295,6 +284,26 @@ namespace Climb.Controllers
             await SlackController.SendGroupMessage(apiKey, message.ToString());
 
             return RedirectToAction(nameof(Home), new {id});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TakeAllRankSnapshots([FromServices]IHttpContextAccessor contextAccessor)
+        {
+            var key = contextAccessor.HttpContext.Request.Headers["key"];
+            if(key == "steve")
+            {
+                var leagues = await _context.League
+                    .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
+                    .Include(l => l.Members).ThenInclude(lu => lu.User)
+                    .ToArrayAsync();
+                foreach(var league in leagues)
+                {
+                    await leagueService.TakeSnapshot(league);
+                }
+                return Accepted();
+            }
+
+            return Forbid();
         }
 
         public async Task<IActionResult> BestCharacter(int id)
