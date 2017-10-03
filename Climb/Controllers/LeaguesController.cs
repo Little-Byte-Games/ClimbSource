@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Climb.Core;
 using Climb.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Climb.Core;
 using Climb.Services;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MoreLinq;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Climb.Controllers
 {
@@ -304,17 +301,6 @@ namespace Climb.Controllers
             }
 
             return Forbid();
-        }
-
-        public async Task<IActionResult> BestCharacter(int id)
-        {
-            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
-            if(league == null)
-            {
-                return NotFound();
-            }
-
-            return View();
         }
     }
 }
