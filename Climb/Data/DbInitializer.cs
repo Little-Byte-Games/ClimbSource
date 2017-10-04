@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Climb.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Data
 {
@@ -9,9 +8,8 @@ namespace Climb.Data
     {
         public static void Initialize(ClimbContext context)
         {
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            //context.Database.Migrate();
 
             if(context.User.Any())
             {
@@ -42,13 +40,14 @@ namespace Climb.Data
 
             var characters = new[]
             {
-                new Character{Name = "Mario", Game = games[0]}, 
-                new Character{Name = "Sonic", Game = games[0]}, 
-                new Character{Name = "Link", Game = games[0]}, 
+                new Character{Name = "Mario", Game = games[0], PicKey = "stock_90_mario_01.png"}, 
+                new Character{Name = "Sonic", Game = games[0], PicKey = "stock_90_sonic_01.png"},
+                new Character{Name = "Link", Game = games[0], PicKey = "stock_90_link_01.png"},
 
-                new Character{Name = "Ryu", Game = games[1]},
-                new Character{Name = "Ken", Game = games[1]},
-                new Character{Name = "Gief", Game = games[1]},
+                //https://game.capcom.com/cfn/sfv/character
+                new Character{Name = "Ryu", Game = games[1], PicKey = "ryu.png"},
+                new Character{Name = "Ken", Game = games[1], PicKey = "ken.png"},
+                new Character{Name = "Gief", Game = games[1], PicKey = "zgf.png"},
             };
             context.Character.AddRange(characters);
             context.SaveChanges();
