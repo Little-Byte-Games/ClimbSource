@@ -21,7 +21,6 @@ namespace Climb
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ClimbContext>(options =>
@@ -33,6 +32,7 @@ namespace Climb
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ICDNService, CDNService>();
+            services.AddTransient<ILeagueUserService, LeagueUserService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

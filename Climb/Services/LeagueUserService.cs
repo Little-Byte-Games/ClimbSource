@@ -8,7 +8,7 @@ using MoreLinq;
 
 namespace Climb.Services
 {
-    public class LeagueUserService
+    public class LeagueUserService : ILeagueUserService
     {
         private readonly ClimbContext context;
 
