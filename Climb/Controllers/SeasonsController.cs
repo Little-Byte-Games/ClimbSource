@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 using Climb.Core;
+using Climb.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Set = Climb.Models.Set;
 
@@ -14,10 +15,12 @@ namespace Climb.Controllers
     public partial class SeasonsController : Controller
     {
         private readonly ClimbContext _context;
+        private readonly ISeasonService seasonService;
 
-        public SeasonsController(ClimbContext context)
+        public SeasonsController(ClimbContext context, ISeasonService seasonService)
         {
             _context = context;
+            this.seasonService = seasonService;
         }
 
         public async Task<IActionResult> Index()
@@ -74,9 +77,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var season = new Season { Index = league.Seasons.Count, LeagueID = leagueID, StartDate = startDate ?? DateTime.UtcNow.AddDays(7) };
-            await _context.AddAsync(season);
-            await _context.SaveChangesAsync();
+            await seasonService.Create(league, startDate);
 
             return RedirectToAction("Leagues", "Compete");
         }
@@ -205,11 +206,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var leagueUserSeason = new LeagueUserSeason { Season = season, LeagueUser = leagueUser };
+            await seasonService.Join(season, leagueUser);
 
-            season.Participants.Add(leagueUserSeason);
-            _context.Update(season);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Join), new { id = seasonID });
         }
 
@@ -262,59 +260,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            if (season.Sets != null)
-            {
-                _context.RemoveRange(season.Sets); 
-            }
-            season.Sets = new HashSet<Set>();
-
-            var participants = season.Participants.Select(lus => lus.LeagueUser.ID).ToList();
-            var rounds = ScheduleGenerator.Generate(10, participants, season.StartDate);
-            foreach(var round in rounds)
-            {
-                foreach(var setData in round.sets)
-                {
-                    var byePlayer = 0;
-
-                    int? player1 = setData.player1;
-                    if(player1 == ScheduleGenerator.Bye)
-                    {
-                        player1 = null;
-                        byePlayer = 1;
-                    }
-                    int? player2 = setData.player2;
-                    if (player2 == ScheduleGenerator.Bye)
-                    {
-                        player2 = null;
-                        byePlayer = 2;
-                    }
-
-
-                    int? p1Score = null;
-                    int? p2Score = null;
-                    if(byePlayer != 0)
-                    {
-                        p1Score = byePlayer == 1 ? -1 : 0;
-                        p2Score = byePlayer == 2 ? -1 : 0;
-                    }
-
-                    var set = new Set
-                    {
-                        DueDate = round.dueDate,
-                        Player1ID = player1,
-                        Player2ID = player2,
-                        Player1Score = p1Score,
-                        Player2Score = p2Score,
-                    };
-
-                    season.Sets.Add(set);
-                }
-            }
-
-            _context.UpdateRange(season.Sets);
-            _context.Update(season);
-            await _context.SaveChangesAsync();
-
+            await seasonService.Start(season);
+            
             return RedirectToAction(nameof(Start), new {id});
         }
     }

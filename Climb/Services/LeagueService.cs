@@ -16,7 +16,7 @@ namespace Climb.Services
             this.context = context;
         }
 
-        public async Task JoinLeague(User user, League league)
+        public async Task<LeagueUser> JoinLeague(User user, League league)
         {
             var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == league.ID && u.UserID == user.ID);
             if (leagueUser != null)
@@ -36,6 +36,7 @@ namespace Climb.Services
             }
 
             await context.SaveChangesAsync();
+            return leagueUser;
         }
 
         public async Task<HashSet<RankSnapshot>> TakeSnapshot(League league)

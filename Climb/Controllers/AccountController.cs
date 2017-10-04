@@ -26,6 +26,7 @@ namespace UserApp.Controllers
         private readonly ClimbContext context;
         private readonly IHostingEnvironment environment;
         private readonly ILeagueService leagueService;
+        private readonly ISeasonService seasonService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +34,7 @@ namespace UserApp.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger,
             ClimbContext context,
-            IHostingEnvironment environment, ILeagueService leagueService)
+            IHostingEnvironment environment, ILeagueService leagueService, ISeasonService seasonService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,6 +43,7 @@ namespace UserApp.Controllers
             this.context = context;
             this.environment = environment;
             this.leagueService = leagueService;
+            this.seasonService = seasonService;
         }
 
         [TempData]
@@ -328,10 +330,19 @@ namespace UserApp.Controllers
                 {
                     if(environment.IsDevelopment())
                     {
-                        var leagues = await context.League.ToArrayAsync();
+                        var leagues = await context.League
+                            .Include(l => l.Members)
+                            .Include(l => l.Seasons)
+                            .ToArrayAsync();
                         foreach(var league in leagues)
                         {
                             await leagueService.JoinLeague(user, league);
+                            var season = await seasonService.Create(league);
+                            foreach(var member in league.Members)
+                            {
+                                await seasonService.Join(season, member);
+                            }
+                            await seasonService.Start(season);
                         }
                     }
 
