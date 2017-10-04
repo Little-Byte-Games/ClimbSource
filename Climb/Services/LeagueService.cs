@@ -3,16 +3,39 @@ using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Services
 {
-    public class LeagueService
+    public class LeagueService : ILeagueService
     {
         private readonly ClimbContext context;
 
         public LeagueService(ClimbContext context)
         {
             this.context = context;
+        }
+
+        public async Task JoinLeague(User user, League league)
+        {
+            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == league.ID && u.UserID == user.ID);
+            if (leagueUser != null)
+            {
+                leagueUser.HasLeft = false;
+                context.Update(leagueUser);
+            }
+            else
+            {
+                leagueUser = new LeagueUser
+                {
+                    Elo = 2000,
+                    League = league,
+                    User = user
+                };
+                await context.AddAsync(leagueUser);
+            }
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<HashSet<RankSnapshot>> TakeSnapshot(League league)

@@ -187,25 +187,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == leagueID && u.UserID == userID);
-            if(leagueUser != null)
-            {
-                leagueUser.HasLeft = false;
-                _context.Update(leagueUser);
-            }
-            else
-            {
-                leagueUser = new LeagueUser
-                {
-                    Elo = 2000,
-                    League = league,
-                    User = user
-                };
-                await _context.AddAsync(leagueUser);
-            }
-
-            
-            await _context.SaveChangesAsync();
+            await leagueService.JoinLeague(user, league);
 
             return RedirectToAction("Leagues", "Compete");
         }

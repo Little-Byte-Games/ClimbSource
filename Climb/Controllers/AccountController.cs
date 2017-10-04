@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserApp.Controllers
 {
@@ -22,19 +24,24 @@ namespace UserApp.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly ClimbContext context;
+        private readonly IHostingEnvironment environment;
+        private readonly ILeagueService leagueService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger,
-            ClimbContext context)
+            ClimbContext context,
+            IHostingEnvironment environment, ILeagueService leagueService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             this.context = context;
+            this.environment = environment;
+            this.leagueService = leagueService;
         }
 
         [TempData]
@@ -319,6 +326,15 @@ namespace UserApp.Controllers
                 var result = await _userManager.CreateAsync(applicationUser);
                 if (result.Succeeded)
                 {
+                    if(environment.IsDevelopment())
+                    {
+                        var leagues = await context.League.ToArrayAsync();
+                        foreach(var league in leagues)
+                        {
+                            await leagueService.JoinLeague(user, league);
+                        }
+                    }
+
                     result = await _userManager.AddLoginAsync(applicationUser, info);
                     if (result.Succeeded)
                     {
