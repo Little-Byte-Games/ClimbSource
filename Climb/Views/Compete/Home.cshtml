@@ -35,28 +35,27 @@
 		}
 	</div>
 	<div class="col-xs-6" align="center">
-		<h3>Available Sets</h3>
-		<h4>OverDue Sets</h4>
-		@if(Model.overdueSets.Count == 0)
+		@if(Model.overdueSets.Count > 0)
 		{
-			<span>No overdue sets!</span>
-		}
-		else
-		{
+			<h3>OverDue Sets</h3>
 			foreach(var set in Model.overdueSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
 				@Html.Partial("../Sets/Collapsed", viewModel)
 			}
 		}
-		<hr/>
-		<h4>Available Sets</h4>
-		@if(Model.availableSets.Count == 0)
+		
+		@if (Model.overdueSets.Count == 0 && Model.availableSets.Count == 0)
 		{
-			<span>No available sets!</span>
+			<span>All caught up!</span>
 		}
-		else
+		else if(Model.overdueSets.Count > 0)
 		{
+			<hr />
+		}
+		@if(Model.availableSets.Count > 0)
+		{
+			<h3>Available Sets</h3>
 			foreach(var set in Model.availableSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
