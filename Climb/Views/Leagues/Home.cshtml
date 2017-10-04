@@ -23,11 +23,7 @@
 				users.Sort();
 				foreach(var leagueUser in users)
 				{
-					<div class="panel">
-						<span>@leagueUser.Rank (@leagueUser.Elo) @Html.Partial("../LeagueUsers/RankTrend", leagueUser.GetRankTrend())</span>
-						<img src="@CDNService.GetProfilePic(leagueUser)" width="100" height="100"/>
-						@Html.Partial("../Users/Name", leagueUser.User)
-					</div>
+					@Html.Partial("./PowerRank", leagueUser)
 				}
 			}
 		</div>

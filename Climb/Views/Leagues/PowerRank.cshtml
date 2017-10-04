@@ -1,0 +1,11 @@
+﻿@using Climb.Services
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model LeagueUser
+	
+@inject ICDNService CDNService
+
+<div class="panel">
+	<span>@Model.Rank (@Model.Elo) @Html.Partial("../LeagueUsers/RankTrend", Model.GetRankTrend())</span>
+	<img src="@CDNService.GetProfilePic(Model)" width="100" height="100"/>
+	@Html.Partial("../Users/Name", Model.User)
+</div>
