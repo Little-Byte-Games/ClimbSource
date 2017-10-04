@@ -8,7 +8,7 @@ namespace Climb.Data
     {
         public static void Initialize(ClimbContext context)
         {
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             if(context.User.Any())
