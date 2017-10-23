@@ -138,13 +138,16 @@ namespace Climb.Controllers
 
         public async Task<IActionResult> Home(int id)
         {
-            var game = await _context.Game.SingleOrDefaultAsync(m => m.ID == id);
+            var game = await _context.Game
+                .Include(g => g.Characters)
+                .Include(g => g.Stages)
+                .SingleOrDefaultAsync(m => m.ID == id);
             if(game == null)
             {
                 return NotFound();
             }
 
-            return NotFound();
+            return View(game);
         }
 
         [HttpPost]
