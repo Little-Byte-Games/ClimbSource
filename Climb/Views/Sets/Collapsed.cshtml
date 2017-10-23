@@ -13,8 +13,11 @@
 		@if(Model.set.IsComplete)
 		{
 			<span>@Model.set.Player1Score - @Model.set.Player2Score</span>
-			<br/>
-			<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
+			if(!Model.set.IsBye)
+			{
+				<br/>
+				<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
+			}
 		}
 		else
 		{
