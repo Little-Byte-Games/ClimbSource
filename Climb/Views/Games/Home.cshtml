@@ -5,3 +5,19 @@
 }
 
 <h1>@Model.Name</h1>
+
+<h3>Characters</h3>
+<ul>
+	@foreach(var character in Model.Characters)
+	{
+		<li>@character</li>
+	}
+</ul>
+
+<h3>Stages</h3>
+<ul>
+	@foreach(var stage in Model.Stages)
+	{
+		<li>@stage</li>
+	}
+</ul>
