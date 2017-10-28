@@ -69,6 +69,7 @@ namespace Climb.Controllers
 
             var user = _context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
                 .SingleOrDefault(u => u.ID == id);
