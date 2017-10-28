@@ -1,4 +1,8 @@
-﻿@model Game
+﻿@using Climb.Services
+@model Game
+
+@inject ICDNService CDNService
+@inject ClimbContext Context
 
 @{
     ViewData["Title"] = "Create";
@@ -6,18 +10,71 @@
 
 <h1>@Model.Name</h1>
 
-<h3>Characters</h3>
-<ul>
-	@foreach(var character in Model.Characters)
-	{
-		<li>@character</li>
-	}
-</ul>
-
-<h3>Stages</h3>
-<ul>
-	@foreach(var stage in Model.Stages)
-	{
-		<li>@stage</li>
-	}
-</ul>
+<div>
+	<h4>Game</h4>
+	<hr/>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Name)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Name)
+		</dd>
+	</dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Characters)
+		</dt>
+		<dd>
+			<form method="post" enctype="multipart/form-data" asp-action="AddCharacter">
+				<input type="hidden" name="id" value="@Model.ID"/>
+				<div class="form-group">
+					<input type="text" placeholder="Character Name" name="characterName"/>
+				</div>
+				<div class="form-group">
+					<input type="file" name="file" accept="image/*"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-danger" type="submit">Add</button>
+				</div>
+			</form>
+		</dd>
+		<dd>
+			@{ var percentages = await Model.GetCharacterUsagePercentagesAsync(Context); }
+			@foreach(var character in Model.Characters)
+			{
+				<div>
+					<img src="@CDNService.GetCharacterPic(character)" width="25"/>
+					<span>@character</span>
+					<span>Used @percentages[character].ToString("P1")</span>
+				</div>
+			}
+		</dd>
+	</dl>
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Stages)
+		</dt>
+		<dd>
+			<form method="post" asp-action="AddStage">
+				<input type="hidden" name="id" value="@Model.ID"/>
+				<div class="form-group">
+					<input type="text" placeholder="Stage Name" name="stageName"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-danger" type="submit">Add</button>
+				</div>
+			</form>
+		</dd>
+		<dd>
+			@foreach(var stage in Model.Stages)
+			{
+				<div>@stage</div>
+			}
+		</dd>
+	</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
