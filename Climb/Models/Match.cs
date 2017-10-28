@@ -14,5 +14,7 @@
         public Character Player1Character { get; set; }
         public Character Player2Character { get; set; }
         public Stage Stage { get; set; }
+        public Character WinningCharacter => Player1Score > Player2Score ? Player1Character : Player2Character;
+        public bool IsDitto => Player1CharacterID == Player2CharacterID;
     }
 }

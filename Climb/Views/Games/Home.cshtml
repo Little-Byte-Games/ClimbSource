@@ -2,7 +2,7 @@
 @model Game
 
 @inject ICDNService CDNService
-@inject ClimbContext Context
+@inject ClimbContext ClimbContext
 
 @{
     ViewData["Title"] = "Create";
@@ -40,13 +40,14 @@
 			</form>
 		</dd>
 		<dd>
-			@{ var percentages = await Model.GetCharacterUsagePercentagesAsync(Context); }
+			@{ var percentages = await Model.GetCharacterUsagePercentagesAsync(ClimbContext); }
 			@foreach(var character in Model.Characters)
 			{
 				<div>
 					<img src="@CDNService.GetCharacterPic(character)" width="25"/>
 					<span>@character</span>
-					<span>Used @percentages[character].ToString("P1")</span>
+					<span>Used @percentages[character].Item1.ToString("P1")</span>
+					<span>Win Rate @percentages[character].Item2.ToString("P1")</span>
 				</div>
 			}
 		</dd>
