@@ -6,9 +6,11 @@
 
 @{
 	ViewData["Title"] = "Home";
+	Layout = "_Layout";
 }
 
 <link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
+<script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
 
 <div align="center">
 	<h1>@Model.league.Name</h1>
@@ -47,21 +49,31 @@
 			<div class="btn-group" align="center">
 				@foreach(var season in Model.league.Seasons)
 				{
-					var buttonClass = "btn-info";
-					if(season.IsComplete)
-					{
-						buttonClass = "btn-default";
-					}
-					else if(season.StartDate < DateTime.Now)
-					{
-						buttonClass = "btn-primary";
-					}
-					<a class="btn @buttonClass" role="button" asp-controller="Leagues" asp-action="Home" asp-route-id="@season.LeagueID" asp-route-seasonID="@season.ID">@season.DisplayName</a>
+					var active = season.ID == Model.selectedSeason.ID ? "active" : "";
+					<button id="season-@season.ID" type="button" class="btn btn-default @active" onclick="getSeasonStatus(@season.ID)">@season.DisplayName</button>
 				}
 			</div>
 			@if(Model.selectedSeason != null)
 			{
-				<span>@Model.selectedSeason.DisplayName</span>
+				<br/>
+				<h4 align="center">@Model.selectedSeason.DisplayName</h4>
+				<div>
+					<table>
+						<tr>
+							<th>Total</th>
+							<th>Completed</th>
+							<th>Available</th>
+							<th>Overdue</th>
+						</tr>
+						<tr>
+							<td id="seasonStatus.totalSetCount"></td>
+							<td id="seasonStatus.completedCount"></td>
+							<td id="seasonStatus.availableCount"></td>
+							<td id="seasonStatus.overdueCount"></td>
+						</tr>
+					</table>
+				</div>
+
 				foreach(var set in Model.selectedSeason.Sets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, null);
@@ -75,3 +87,9 @@
 		</div>
 	</div>
 </div>
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function() { getSeasonStatus(@Model.selectedSeason.ID); });
+	</script>
+}

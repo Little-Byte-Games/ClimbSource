@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Core;
 using Climb.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Set = Climb.Models.Set;
+using Newtonsoft.Json;
 
 namespace Climb.Controllers
 {
@@ -263,6 +262,20 @@ namespace Climb.Controllers
             await seasonService.Start(season);
             
             return RedirectToAction(nameof(Start), new {id});
+        }
+
+        public async Task<IActionResult> GetStatus(int id)
+        {
+            var season = await _context.Season
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(season == null)
+            {
+                return NotFound();
+            }
+
+            var status = season.GetStatus();
+            return Ok(JsonConvert.SerializeObject(status));
         }
     }
 }

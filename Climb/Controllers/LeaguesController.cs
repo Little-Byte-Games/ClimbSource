@@ -206,7 +206,7 @@ namespace Climb.Controllers
             return RedirectToAction("Leagues", "Compete");
         }
 
-        public async Task<IActionResult> Home(int id, int? seasonID)
+        public async Task<IActionResult> Home(int id)
         {
             var league = await _context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
@@ -222,16 +222,14 @@ namespace Climb.Controllers
             var currentSeason = league.CurrentSeason;
             var completedSets = currentSeason?.Sets.Where(s => s.IsComplete && !s.IsBye);
 
-            if(seasonID == null)
+            int? seasonID = null;
+            if (currentSeason != null)
             {
-                if (currentSeason != null)
-                {
-                    seasonID = currentSeason.ID; 
-                }
-                else if (league.Seasons?.Count > 0)
-                {
-                    seasonID = league.Seasons.Last().ID;
-                }
+                seasonID = currentSeason.ID; 
+            }
+            else if (league.Seasons?.Count > 0)
+            {
+                seasonID = league.Seasons.Last().ID;
             }
 
             var viewModel = new LeagueHomeViewModel(league, configuration, completedSets, seasonID);
