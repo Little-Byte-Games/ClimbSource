@@ -6,7 +6,7 @@
 @inject ILeagueUserService LeagueUserService
 
 <div class="panel">
-	<span>@Model.Rank (@Model.Elo) @Html.Partial("../LeagueUsers/RankTrend", Model.GetRankTrend())</span>
+	<span>@Model.Rank (@Model.Elo) @Html.Partial("/Views/LeagueUsers/Partials/RankTrend.cshtml", Model.GetRankTrend())</span>
 	<img src="@CDNService.GetProfilePic(Model)" width="100" height="100"/>
 	@Html.Partial("../Users/Name", Model.User)
 	@{

@@ -51,6 +51,7 @@ namespace Climb.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        // TODO: Move to league user controller.
         [HttpPost]
         public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {

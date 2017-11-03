@@ -1,0 +1,11 @@
+﻿@model LeagueUser
+ 
+<div align="center"> 
+	@Html.Partial("../Leagues/Partials/Name", Model.League) | @Html.Partial("../Games/Partials/Name", Model.League.Game) 
+	<br/> 
+	<span>Rank: @Model.Rank</span> 
+	<br/> 
+	<span>Score: @Model.Elo</span> 
+	<br/> 
+	<span>@Html.Partial("/Views/LeagueUsers/Partials/RankTrend.cshtml", Model.GetRankTrend())</span> 
+</div> 

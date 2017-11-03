@@ -1,4 +1,4 @@
-﻿@model LeagueUser
+﻿@model Climb.ViewModels.GenericViewModel<LeagueUser>
 
 @{
     ViewData["Title"] = "Details";
@@ -9,33 +9,33 @@
 <div>
 	<h4>LeagueUser</h4>
 	<hr />
-	<h5>@Model.User.Username</h5>
+	<h5>@Model.data.User.Username</h5>
 	<dl class="dl-horizontal">
 		<dt>
-			@Html.DisplayNameFor(model => model.Elo)
+			@Html.DisplayNameFor(model => model.data.Elo)
 		</dt>
 		<dd>
-			@Html.DisplayFor(model => model.Elo)
+			@Html.DisplayFor(model => model.data.Elo)
 		</dd>
 		<dt>
-			@Html.DisplayNameFor(model => model.League)
+			@Html.DisplayNameFor(model => model.data.League)
 		</dt>
 		<dd>
-			@Html.DisplayFor(model => model.League.ID)
+			@Html.DisplayFor(model => model.data.League.ID)
 		</dd>
 		<dt>
-			@Html.DisplayNameFor(model => model.User)
+			@Html.DisplayNameFor(model => model.data.User)
 		</dt>
 		<dd>
-			@Html.DisplayFor(model => model.User.ID)
+			@Html.DisplayFor(model => model.data.User.ID)
 		</dd>
 		<dt>
-			@Html.DisplayNameFor(model => model.ProfilePicKey)
+			@Html.DisplayNameFor(model => model.data.ProfilePicKey)
 		</dt>
 		<dd>
 			<img src="@ViewBag.ProfilePic"/>
 			<form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="UploadProfilePic">
-				<input name="id" type="hidden" value="@Model.ID"/>
+				<input name="id" type="hidden" value="@Model.data.ID"/>
 				<div class="form-group">
 					<div class="col-md-10">
 						<p>Upload one or more files using this form:</p>
@@ -51,9 +51,4 @@
 			</form>
 		</dd>
 	</dl>
-</div>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
 </div>
