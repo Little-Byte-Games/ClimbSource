@@ -1,5 +1,6 @@
 ﻿@using Climb.Services
-@model Game
+@using Climb.ViewModels.Games
+@model HomeViewModel
 
 @inject ICDNService CDNService
 @inject ClimbContext ClimbContext
@@ -8,26 +9,26 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>@Model.Name</h1>
+<h1>@Model.game.Name</h1>
 
 <div>
 	<h4>Game</h4>
 	<hr/>
 	<dl class="dl-horizontal">
 		<dt>
-			@Html.DisplayNameFor(model => model.Name)
+			@Html.DisplayNameFor(model => model.game.Name)
 		</dt>
 		<dd>
-			@Html.DisplayFor(model => model.Name)
+			@Html.DisplayFor(model => model.game.Name)
 		</dd>
 	</dl>
 	<dl class="dl-horizontal">
 		<dt>
-			@Html.DisplayNameFor(model => model.Characters)
+			@Html.DisplayNameFor(model => model.game.Characters)
 		</dt>
 		<dd>
 			<form method="post" enctype="multipart/form-data" asp-action="AddCharacter">
-				<input type="hidden" name="id" value="@Model.ID"/>
+				<input type="hidden" name="id" value="@Model.game.ID"/>
 				<div class="form-group">
 					<input type="text" placeholder="Character Name" name="characterName"/>
 				</div>
@@ -40,8 +41,8 @@
 			</form>
 		</dd>
 		<dd>
-			@{ var percentages = await Model.GetCharacterUsagePercentagesAsync(ClimbContext); }
-			@foreach(var character in Model.Characters)
+			@{ var percentages = await Model.game.GetCharacterUsagePercentagesAsync(ClimbContext); }
+			@foreach(var character in Model.game.Characters)
 			{
 				<div>
 					<img src="@CDNService.GetCharacterPic(character)" width="25"/>
@@ -54,11 +55,11 @@
 	</dl>
 	<dl class="dl-horizontal">
 		<dt>
-			@Html.DisplayNameFor(model => model.Stages)
+			@Html.DisplayNameFor(model => model.game.Stages)
 		</dt>
 		<dd>
 			<form method="post" asp-action="AddStage">
-				<input type="hidden" name="id" value="@Model.ID"/>
+				<input type="hidden" name="id" value="@Model.game.ID"/>
 				<div class="form-group">
 					<input type="text" placeholder="Stage Name" name="stageName"/>
 				</div>
@@ -68,7 +69,7 @@
 			</form>
 		</dd>
 		<dd>
-			@foreach(var stage in Model.Stages)
+			@foreach(var stage in Model.game.Stages)
 			{
 				<div>@stage</div>
 			}

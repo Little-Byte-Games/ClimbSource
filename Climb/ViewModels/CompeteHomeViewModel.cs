@@ -6,7 +6,7 @@ using Climb.Models;
 
 namespace Climb.ViewModels
 {
-    public class CompeteHomeViewModel
+    public class CompeteHomeViewModel : BaseViewModel
     {
         public class LeagueUserSet
         {
@@ -20,7 +20,6 @@ namespace Climb.ViewModels
             }
         }
 
-        public readonly User user;
         public readonly User viewingUser;
         public readonly HashSet<LeagueUser> possibleExhibitions;
         public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
@@ -28,9 +27,8 @@ namespace Climb.ViewModels
 
         public bool IsHome => user == viewingUser;
 
-        public CompeteHomeViewModel(User user, User viewingUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets)
+        public CompeteHomeViewModel(User user, User viewingUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets) : base(user)
         {
-            this.user = user;
             this.viewingUser = viewingUser;
             this.possibleExhibitions = possibleExhibitions;
             this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);

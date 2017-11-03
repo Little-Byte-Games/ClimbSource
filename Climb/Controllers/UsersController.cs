@@ -11,12 +11,12 @@ namespace Climb.Controllers
     public class UsersController : Controller
     {
         private readonly ClimbContext _context;
-        private readonly UserService userService;
+        private readonly IUserService userService;
 
-        public UsersController(ClimbContext context)
+        public UsersController(ClimbContext context, IUserService userService)
         {
             _context = context;
-            userService = new UserService(_context.User);
+            this.userService = userService;
         }
 
         public async Task<IActionResult> Index()

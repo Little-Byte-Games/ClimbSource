@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Climb.Models;
 using Climb.Services;
+using Climb.ViewModels.Games;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Climb.Controllers
 {
-    public class GamesController : Controller
+    public class GamesController : ModelController
     {
         private readonly ClimbContext _context;
         private readonly ICDNService cdnService;
 
-        public GamesController(ClimbContext context, ICDNService cdnService)
+        public GamesController(ClimbContext context, ICDNService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
+            : base(userService, userManager)
         {
             _context = context;
             this.cdnService = cdnService;
@@ -138,6 +141,12 @@ namespace Climb.Controllers
 
         public async Task<IActionResult> Home(int id)
         {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             var game = await _context.Game
                 .Include(g => g.Characters)
                 .Include(g => g.Stages)
@@ -147,7 +156,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            return View(game);
+            var viewModel = new HomeViewModel(user, game);
+            return View(viewModel);
         }
 
         [HttpPost]

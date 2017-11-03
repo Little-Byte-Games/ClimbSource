@@ -5,14 +5,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace Climb.ViewModels
 {
-    public class LeagueHomeViewModel
+    public class LeagueHomeViewModel : BaseViewModel
     {
         public readonly League league;
         public readonly IConfiguration configuration;
         public readonly IEnumerable<Set> recentSets;
         public readonly Season selectedSeason;
 
-        public LeagueHomeViewModel(League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
+        public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
+            : base(user)
         {
             this.league = league;
             this.configuration = configuration;

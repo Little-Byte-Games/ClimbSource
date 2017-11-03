@@ -1,37 +1,90 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿
+.clearfix:after {
+	display:block;
+	clear:both;
 }
-
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+ 
+/*----- Menu Outline -----*/
+.menu-wrap {
+	width:100%;
+	box-shadow:0px 1px 3px rgba(0,0,0,0.2);
+	background:#3e3436;
 }
-
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
+ 
+.menu {
+	width:1000px;
+	margin:0px auto;
 }
-
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+ 
+.menu li {
+	margin:0px;
+	list-style:none;
+	font-family:'Ek Mukta';
+	float: right;
 }
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+ 
+.menu a {
+	transition:all linear 0.15s;
+	color:#919191;
 }
-
-/* Hide/rearrange for smaller screens */
-smedia screen and (max-width: 767px) {
-    /* Hide captions */
-    .carousel-caption {
-        display: none;
-    }
+ 
+.menu li:hover > a, .menu .current-item > a {
+	text-decoration:none;
+	color:orangered;
+}
+ 
+.menu .arrow {
+	font-size:11px;
+	line-height:0%;
+}
+ 
+/*----- Top Level -----*/
+.menu > ul > li {
+	float:left;
+	display:inline-block;
+	position:relative;
+	font-size:19px;
+}
+ 
+.menu > ul > li > a {
+	padding:10px 40px;
+	display:inline-block;
+	text-shadow:0px 1px 0px rgba(0,0,0,0.4);
+}
+ 
+.menu > ul > li:hover > a, .menu > ul > .current-item > a {
+	background:#2e2728;
+}
+ 
+/*----- Bottom Level -----*/
+.menu li:hover .sub-menu {
+	z-index:1;
+	opacity:1;
+}
+ 
+.sub-menu {
+	width:160%;
+	padding:5px 0px;
+	position:absolute;
+	top:100%;
+	left:0px;
+	z-index:-1;
+	opacity:0;
+	transition:opacity linear 0.15s;
+	box-shadow:0px 2px 3px rgba(0,0,0,0.2);
+	background:#2e2728;
+}
+ 
+.sub-menu li {
+	display:block;
+	font-size:16px;
+}
+ 
+.sub-menu li a {
+	padding:10px 30px;
+	display:block;
+}
+ 
+.sub-menu li a:hover, .sub-menu .current-item a {
+	background:#3e3436;
 }

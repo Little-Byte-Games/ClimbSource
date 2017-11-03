@@ -32,6 +32,7 @@ namespace Climb
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<ICDNService, CDNService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILeagueUserService, LeagueUserService>();
             services.AddTransient<ILeagueService, LeagueService>();
             services.AddTransient<ISeasonService, SeasonService>();

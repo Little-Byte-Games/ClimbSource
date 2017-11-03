@@ -1,4 +1,5 @@
-﻿using Climb.Core;
+﻿using System.Collections.Generic;
+using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
@@ -10,26 +11,35 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Climb.Controllers
 {
-    public class LeaguesController : Controller
+    public class LeaguesController : ModelController
     {
         private readonly ClimbContext _context;
         private readonly IConfiguration configuration;
-        private readonly LeagueService leagueService;
+        private readonly ILeagueService leagueService;
 
-        public LeaguesController(ClimbContext context, IConfiguration configuration)
+        public LeaguesController(ClimbContext context, IConfiguration configuration, IUserService userService, ILeagueService leagueService, UserManager<ApplicationUser> userManger)
+            : base(userService, userManger)
         {
             _context = context;
             this.configuration = configuration;
-            leagueService = new LeagueService(context);
+            this.leagueService = leagueService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var climbContext = _context.League.Include(l => l.Game).Include(l => l.Admin);
-            return View(await climbContext.ToListAsync());
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var leagues = await _context.League.Include(l => l.Game).Include(l => l.Admin).ToArrayAsync();
+            var viewModel = new GenericViewModel<IEnumerable<League>>(user, leagues);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -208,6 +218,12 @@ namespace Climb.Controllers
 
         public async Task<IActionResult> Home(int id)
         {
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return NotFound();
+            }
+
             var league = await _context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
@@ -232,7 +248,7 @@ namespace Climb.Controllers
                 seasonID = league.Seasons.Last().ID;
             }
 
-            var viewModel = new LeagueHomeViewModel(league, configuration, completedSets, seasonID);
+            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets, seasonID);
             return View(viewModel);
         }
 

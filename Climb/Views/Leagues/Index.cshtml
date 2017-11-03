@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Climb.Models.League>
+﻿@model Climb.ViewModels.GenericViewModel<IEnumerable<League>>
 @{
 	ViewData["Title"] = "Index";
 }
@@ -9,20 +9,13 @@
 <table class="table">
 	<thead>
 		<tr>
-			<th>
-				@Html.DisplayNameFor(model => model.Name)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Game)
-			</th>
-			<th>
-				@Html.DisplayNameFor(model => model.Admin)
-			</th>
-			<th></th>
+			<th>Name</th>
+			<th>Game</th>
+			<th>Admin</th>
 		</tr>
 	</thead>
 	<tbody>
-		@foreach (var item in Model)
+		@foreach (var item in Model.data)
 		{
 			<tr>
 				<td>
