@@ -1,142 +1,29 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Climb.Models;
+﻿using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels.Games;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Climb.Controllers
 {
     public class GamesController : ModelController
     {
-        private readonly ClimbContext _context;
+        private readonly ClimbContext context;
         private readonly ICDNService cdnService;
 
         public GamesController(ClimbContext context, ICDNService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
             : base(userService, userManager)
         {
-            _context = context;
+            this.context = context;
             this.cdnService = cdnService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Game.ToListAsync());
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await _context.Game
-                .Include(g => g.Characters)
-                .Include(g => g.Stages)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if(game == null)
-            {
-                return NotFound();
-            }
-
-            return View(game);
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name")] Game game)
-        {
-            if(ModelState.IsValid)
-            {
-                _context.Add(game);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(game);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await _context.Game.SingleOrDefaultAsync(m => m.ID == id);
-            if(game == null)
-            {
-                return NotFound();
-            }
-            return View(game);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name")] Game game)
-        {
-            if(id != game.ID)
-            {
-                return NotFound();
-            }
-
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(game);
-                    await _context.SaveChangesAsync();
-                }
-                catch(DbUpdateConcurrencyException)
-                {
-                    if(!GameExists(game.ID))
-                    {
-                        return NotFound();
-                    }
-                    throw;
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(game);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var game = await _context.Game.SingleOrDefaultAsync(m => m.ID == id);
-            if(game == null)
-            {
-                return NotFound();
-            }
-
-            return View(game);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var game = await _context.Game.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Game.Remove(game);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool GameExists(int id)
-        {
-            return _context.Game.Any(e => e.ID == id);
+            return View(await context.Game.ToListAsync());
         }
 
         public async Task<IActionResult> Home(int id)
@@ -147,7 +34,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Game
+            var game = await context.Game
                 .Include(g => g.Characters)
                 .Include(g => g.Stages)
                 .SingleOrDefaultAsync(m => m.ID == id);
@@ -168,13 +55,13 @@ namespace Climb.Controllers
                 return BadRequest("Character name has to be a valid string.");
             }
 
-            var alreadyExists = await _context.Character.AnyAsync(c => c.Name == characterName);
+            var alreadyExists = await context.Character.AnyAsync(c => c.Name == characterName);
             if (alreadyExists)
             {
                 return BadRequest($"Character '{characterName}' already exists.");
             }
 
-            var game = await _context.Game.SingleOrDefaultAsync(g => g.ID == id);
+            var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if(game == null)
             {
                 return NotFound();
@@ -188,12 +75,13 @@ namespace Climb.Controllers
                 GameID = id,
                 PicKey = picKey,
             };
-            await _context.AddAsync(character);
-            await _context.SaveChangesAsync();
+            await context.AddAsync(character);
+            await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Details), new {id});
+            return RedirectToAction(nameof(Home), new {id});
         }
 
+        [HttpPost]
         public async Task<IActionResult> AddStage(int id, string stageName)
         {
             if (string.IsNullOrWhiteSpace(stageName))
@@ -201,13 +89,13 @@ namespace Climb.Controllers
                 return BadRequest("Stage name has to be a valid string.");
             }
 
-            var alreadyExists = await _context.Stage.AnyAsync(s => s.Name == stageName);
+            var alreadyExists = await context.Stage.AnyAsync(s => s.Name == stageName);
             if(alreadyExists)
             {
                 return BadRequest($"Stage '{stageName}' already exists.");
             }
 
-            var game = await _context.Game.SingleOrDefaultAsync(g => g.ID == id);
+            var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if (game == null)
             {
                 return NotFound();
@@ -218,10 +106,10 @@ namespace Climb.Controllers
                 Name = stageName,
                 GameID = id,
             };
-            await _context.AddAsync(stage);
-            await _context.SaveChangesAsync();
+            await context.AddAsync(stage);
+            await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction(nameof(Home), new { id });
         }
     }
 }

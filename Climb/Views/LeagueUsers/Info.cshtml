@@ -1,7 +1,7 @@
 ﻿@model LeagueUser
 
 <div align="center">
-	@Html.Partial("../Leagues/Name", Model.League) | @Html.Partial("../Games/Name", Model.League.Game)
+	@Html.Partial("../Leagues/Name", Model.League) | @Html.Partial("../Games/Partials/Name", Model.League.Game)
 	<br/>
 	<span>Rank: @Model.Rank</span>
 	<br/>
