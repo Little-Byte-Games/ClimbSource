@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
-using Climb.Core;
+﻿using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace Climb.Controllers
 {
@@ -40,146 +39,6 @@ namespace Climb.Controllers
             var leagues = await _context.League.Include(l => l.Game).Include(l => l.Admin).ToArrayAsync();
             var viewModel = new GenericViewModel<IEnumerable<League>>(user, leagues);
             return View(viewModel);
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var league = await _context.League
-                .Include(l => l.Game)
-                .Include(l => l.Admin)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
-            {
-                return NotFound();
-            }
-
-            return View(league);
-        }
-
-        public IActionResult Create()
-        {
-            ViewData[nameof(League.GameID)] = new SelectList(_context.Game, nameof(Game.ID), nameof(Game.Name));
-            ViewData[nameof(League.AdminID)] = new SelectList(_context.User, nameof(Models.User.ID), nameof(Models.User.Username));
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,GameID,AdminID")] League league)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(league);
-                await _context.SaveChangesAsync();
-
-                var admin = new LeagueUser { UserID = league.AdminID, League = league };
-                _context.Add(admin);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
-            return View(league);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var league = await _context.League.SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
-            {
-                return NotFound();
-            }
-            ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
-            return View(league);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,GameID,UserID")] League league)
-        {
-            if (id != league.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(league);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LeagueExists(league.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["GameID"] = new SelectList(_context.Game, "ID", "ID", league.GameID);
-            ViewData["UserID"] = new SelectList(_context.User, "ID", "ID", league.AdminID);
-            return View(league);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var league = await _context.League
-                .Include(l => l.Game)
-                .Include(l => l.Admin)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (league == null)
-            {
-                return NotFound();
-            }
-
-            return View(league);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var league = await _context.League.SingleOrDefaultAsync(m => m.ID == id);
-            _context.League.Remove(league);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool LeagueExists(int id)
-        {
-            return _context.League.Any(e => e.ID == id);
-        }
-
-        public async Task<IActionResult> Join(int id)
-        {
-            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == id);
-            var leagueUsers = await _context.LeagueUser.Where(u => u.LeagueID == id && !u.HasLeft).Include(l => l.User).ToListAsync();
-            var users = await _context.User.Where(u => leagueUsers.All(lu => lu.UserID != u.ID)).ToListAsync();
-
-            return View(new LeagueJoinViewModel(league, users, leagueUsers));
         }
 
         [HttpPost]
