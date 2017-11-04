@@ -3,14 +3,13 @@ using Climb.Models;
 
 namespace Climb.ViewModels
 {
-    public class AvailableSetsViewData
+    public class AvailableSetsViewModel : BaseViewModel
     {
-        public readonly User user;
         public readonly List<Set> sets;
 
-        public AvailableSetsViewData(User user, List<Set> sets)
+        public AvailableSetsViewModel(User user, List<Set> sets)
+            : base(user)
         {
-            this.user = user;
             this.sets = sets;
         }
     }

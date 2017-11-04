@@ -1,5 +1,5 @@
 ﻿@using Climb.ViewModels
-@model AvailableSetsViewData
+@model AvailableSetsViewModel
 
 @{
     ViewData["Title"] = "Available Sets";
@@ -11,7 +11,8 @@
 <hr />
 @foreach(var set in Model.sets)
 {
-	@Html.Partial("../Sets/Collapsed", set)
+	var leagueUser = set.GetLeagueUser(Model.user);
+	@Html.Partial("../Sets/Partials/Collapsed", new SetCollapsedViewModel(set, leagueUser))
 }
 
 <div>

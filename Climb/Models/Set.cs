@@ -37,5 +37,10 @@ namespace Climb.Models
         {
             return leagueUser != null && (Player1 == leagueUser || Player2 == leagueUser);
         }
+
+        public LeagueUser GetLeagueUser(User user)
+        {
+            return Player1?.UserID == user.ID ? Player1 : Player2;
+        }
     }
 }
