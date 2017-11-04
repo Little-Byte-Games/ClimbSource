@@ -36,7 +36,7 @@
 				foreach(var set in Model.recentSets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("../Sets/Collapsed", viewModel)
+					@Html.Partial("../Sets/Partials/Collapsed", viewModel)
 				}
 			}
 			else
@@ -77,7 +77,7 @@
 				foreach(var set in Model.selectedSeason.Sets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("../Sets/Collapsed", viewModel)
+					@Html.Partial("../Sets/Partials/Collapsed", viewModel)
 				}
 			}
 			else
