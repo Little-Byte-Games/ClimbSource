@@ -1,67 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using Climb.Models;
+﻿using Climb.Models;
+using Climb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Identity;
 
 namespace Climb.Controllers
 {
-    public partial class SeasonsController : Controller
+    public partial class SeasonsController : ModelController
     {
         private readonly ClimbContext _context;
         private readonly ISeasonService seasonService;
 
-        public SeasonsController(ClimbContext context, ISeasonService seasonService)
+        public SeasonsController(ClimbContext context, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager)
+            : base(userService, userManager)
         {
             _context = context;
             this.seasonService = seasonService;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Season.Include(s => s.Participants).ToListAsync());
-        }
-
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var season = await _context.Season.Include(s => s.Participants).SingleOrDefaultAsync(m => m.ID == id);
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            return View(season);
-        }
-
-        public IActionResult Create()
-        {
-            ViewData["LeagueID"] = new SelectList(_context.League, "ID", "ID");
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID", "LeagueID, StartDate")] Season season)
-        {
-            if (ModelState.IsValid)
-            {
-                var count = await _context.Season.Where(s => s.LeagueID == season.LeagueID).CountAsync();
-                season.Index = count;
-                _context.Add(season);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(season);
         }
 
         [HttpPost]
@@ -79,85 +38,6 @@ namespace Climb.Controllers
             await seasonService.Create(league, startDate);
 
             return RedirectToAction("Leagues", "Compete");
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var season = await _context.Season.SingleOrDefaultAsync(m => m.ID == id);
-            if (season == null)
-            {
-                return NotFound();
-            }
-            return View(season);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID")] Season season)
-        {
-            if (id != season.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(season);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SeasonExists(season.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(season);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var season = await _context.Season
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            return View(season);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var season = await _context.Season.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Season.Remove(season);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SeasonExists(int id)
-        {
-            return _context.Season.Any(e => e.ID == id);
         }
 
         public class JoinList
