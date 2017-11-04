@@ -44,7 +44,7 @@ namespace Climb.Models
             var dictionary = new Dictionary<Character, (decimal, decimal)>();
             foreach(var characterCount in characterCounts)
             {
-                var usage = characterCount.Value.matches / matchCount;
+                var usage = matchCount > 0 ? characterCount.Value.matches / matchCount : 0;
                 var win = characterCount.Value.matches > 0 ? characterCount.Value.wins / characterCount.Value.matches : 0;
 
                 dictionary.Add(characterCount.Key, (usage, win));
