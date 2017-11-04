@@ -5,27 +5,27 @@ using Climb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Controllers
 {
-    public class CompeteController : Controller
+    public class CompeteController : ModelController
     {
         private readonly ClimbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CompeteController(ClimbContext context, UserManager<ApplicationUser> userManager)
+        public CompeteController(ClimbContext context, UserManager<ApplicationUser> userManager, IUserService userService)
+            : base(userService, userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [Authorize]
         public async Task<IActionResult> Schedule(int? leagueID, int? seasonID)
         {
-            var appUser = await _userManager.GetUserAsync(User);
+            var appUser = await userManager.GetUserAsync(User);
             var userID = appUser.UserID;
 
             var user = await _context.User
@@ -61,7 +61,7 @@ namespace Climb.Controllers
         [Authorize]
         public async Task<IActionResult> Home(int? id)
         {
-            var appUser = await _userManager.GetUserAsync(User);
+            var appUser = await userManager.GetUserAsync(User);
             if(id == null)
             {
                 id = appUser.UserID;
@@ -89,7 +89,7 @@ namespace Climb.Controllers
         [Authorize]
         public async Task<IActionResult> Leagues()
         {
-            var appUser = await _userManager.GetUserAsync(User);
+            var appUser = await userManager.GetUserAsync(User);
             var user = await _context.User.Include(u => u.LeagueUsers).SingleOrDefaultAsync(u => u.ID == appUser.UserID);
             var leagues = await _context.League
                 .Include(l => l.Members)
@@ -104,6 +104,12 @@ namespace Climb.Controllers
         [Authorize]
         public async Task<IActionResult> Fight(int id)
         {
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return NotFound();
+            }
+
             var set = await _context.Set
                 .Include(s => s.Matches)
                 .Include(s => s.Season)
@@ -117,7 +123,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            return View(set);
+            var viewModel = new GenericViewModel<Set>(user, set);
+            return View(viewModel);
         }
 
         [HttpPost]

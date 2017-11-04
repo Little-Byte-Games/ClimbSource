@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Climb.Core;
+using Climb.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Climb.Models;
-using Microsoft.Extensions.Configuration;
 using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
@@ -21,12 +20,6 @@ namespace Climb.Controllers
         {
             _context = context;
             this.configuration = configuration;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var climbContext = _context.Set.Include(s => s.Player1).Include(s => s.Player2);
-            return View(await climbContext.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -47,119 +40,6 @@ namespace Climb.Controllers
             }
 
             return View(set);
-        }
-
-        public IActionResult Create()
-        {
-            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID");
-            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID");
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set set)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(set);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(AddMatches), set);
-            }
-            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", set.Player1ID);
-            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", set.Player2ID);
-            return View(set);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var set = await _context.Set.SingleOrDefaultAsync(m => m.ID == id);
-            if (set == null)
-            {
-                return NotFound();
-            }
-            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", set.Player1ID);
-            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", set.Player2ID);
-            return View(set);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Player1ID,Player2ID,UpdatedDate")] Set set)
-        {
-            if (id != set.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(set);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SetExists(set.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Player1ID"] = new SelectList(_context.User, "ID", "ID", set.Player1ID);
-            ViewData["Player2ID"] = new SelectList(_context.User, "ID", "ID", set.Player2ID);
-            return View(set);
-        }
-
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var set = await _context.Set
-                .Include(s => s.Player1)
-                .Include(s => s.Player2)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if (set == null)
-            {
-                return NotFound();
-            }
-
-            return View(set);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var set = await _context.Set.SingleOrDefaultAsync(m => m.ID == id);
-            _context.Set.Remove(set);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SetExists(int id)
-        {
-            return _context.Set.Any(e => e.ID == id);
-        }
-
-        public async Task<IActionResult> AddMatches(int id)
-        {
-            var set = await _context.Set.Include(s => s.Player1).ThenInclude(u => u.User).Include(s => s.Player2).ThenInclude(u => u.User).SingleOrDefaultAsync(m => m.ID == id);
-            return View("../Matches/Create", new SetMatch(set));
         }
 
         [HttpPost]
@@ -253,7 +133,7 @@ namespace Climb.Controllers
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(CompeteController.Home), "Compete");
         }
     }
 

@@ -1,8 +1,8 @@
-﻿@model Set
+﻿@model Climb.ViewModels.GenericViewModel<Set>
 
 @{
 	ViewBag.Title = "Fight";
 	Layout = "_Layout";
 }
 
-@Html.Partial("../Sets/Fight", Model)
+@Html.Partial("../Sets/Partials/Fight", Model.data)
