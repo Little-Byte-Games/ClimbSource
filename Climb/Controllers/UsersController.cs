@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.ViewModels.Users;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Climb.Controllers
@@ -45,6 +46,19 @@ namespace Climb.Controllers
                 .SingleOrDefaultAsync(u => u.ID == appUser.UserID);
 
             var viewModel = CompeteHomeViewModel.Create(user, viewingUser);
+            return View(viewModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Account()
+        {
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new UserAccountViewModel(user);
             return View(viewModel);
         }
 
