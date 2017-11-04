@@ -46,6 +46,7 @@
 		</div>
 		<div class="col-xs-4">
 			<h4 align="center">Seasons</h4>
+			<a class="btn btn-default" asp-controller="Seasons" asp-action="Create" asp-route-leagueID="@Model.league.ID">Create Season</a>
 			<div class="btn-group" align="center">
 				@foreach(var season in Model.league.Seasons)
 				{
