@@ -59,34 +59,6 @@ namespace Climb.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Home(int? id)
-        {
-            var appUser = await userManager.GetUserAsync(User);
-            if(id == null)
-            {
-                id = appUser.UserID;
-            }
-
-            var user = _context.User
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                .SingleOrDefault(u => u.ID == id);
-            if(user == null)
-            {
-                return NotFound();
-            }
-
-            var viewingUser = await _context.User
-                .Include(u => u.LeagueUsers)
-                .SingleOrDefaultAsync(u => u.ID == appUser.UserID);
-
-            var viewModel = CompeteHomeViewModel.Create(user, viewingUser);
-            return View(viewModel);
-        }
-
-        [Authorize]
         public async Task<IActionResult> Leagues()
         {
             var appUser = await userManager.GetUserAsync(User);

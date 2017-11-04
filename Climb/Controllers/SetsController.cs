@@ -133,7 +133,7 @@ namespace Climb.Controllers
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
 
-            return RedirectToAction(nameof(CompeteController.Home), "Compete");
+            return RedirectToAction(nameof(UsersController.Home), "Users");
         }
     }
 

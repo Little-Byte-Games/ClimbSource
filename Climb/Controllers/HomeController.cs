@@ -26,7 +26,7 @@ namespace Climb.Controllers
         {
             if(_signInManager.IsSignedIn(User))
             {
-                return RedirectToAction("Home", "Compete");
+                return RedirectToAction(nameof(UsersController.Home), "Users");
             }
 
             return RedirectToAction("Login", "Account");
