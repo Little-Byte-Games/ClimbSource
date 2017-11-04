@@ -1,39 +1,66 @@
-﻿@model Climb.ViewModels.GenericViewModel<IEnumerable<League>>
+﻿@using Climb.ViewModels
+@model CompeteLeaguesViewModel
+
 @{
-	ViewData["Title"] = "Index";
+	ViewBag.Title = "Leagues";
+	Layout = "_Layout";
 }
-<h2>Index</h2>
-<p>
-	<a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Game</th>
-			<th>Admin</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model.data)
-		{
-			<tr>
-				<td>
-					@Html.DisplayFor(modelItem => item.Name)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Game.ID)
-				</td>
-				<td>
-					@Html.DisplayFor(modelItem => item.Admin.ID)
-				</td>
-				<td>
-					<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-					<a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-					<a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-					<a asp-action="Join" asp-route-id="@item.ID">Join</a>
-				</td>
-			</tr>
-			}
-	</tbody>
-</table>
+
+<script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
+
+<div align="center">
+	<h2>Leagues</h2>
+	<hr />
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-3" align="center">
+			<a class="btn btn-lg btn-danger" type="button" asp-controller="Leagues" asp-action="Create">Create</a>
+			<br />
+			<br />
+			<br />
+			<div id="membershipButtons" class="btn-group-vertical">
+				<button id="membershipButtons.member" class="btn btn-primary" onclick="toggleMembership('member')">Member</button>
+				<button id="membershipButtons.admin" class="btn btn-primary" onclick="toggleMembership('admin')">Admin</button>
+				<button id="membershipButtons.nonMember" class="btn btn-primary" onclick="toggleMembership('nonMember')">Non-member</button>
+			</div>
+		</div>
+		<div id="memberships" class="col-xs-9" align="center">
+			<div id="member">
+				<h4>Member</h4>
+				@{
+					foreach (var league in Model.memberOf)
+					{
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Member, Model.user.ID);
+						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+					}
+				}
+			</div>
+			<div id="admin">
+				<h4>Admin</h4>
+				@{
+					foreach (var league in Model.adminOf)
+					{
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Admin, Model.user.ID);
+						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+					}
+				}
+			</div>
+			<div id="nonMember">
+				<h4>Non-Member</h4>
+				@{
+					foreach (var league in Model.nonmemberOf)
+					{
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.NonMember, Model.user.ID);
+						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+					}
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	window.onload = toggleMembership("member");
+</script>

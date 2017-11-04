@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,8 +35,13 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var leagues = await _context.League.Include(l => l.Game).Include(l => l.Admin).ToArrayAsync();
-            var viewModel = new GenericViewModel<IEnumerable<League>>(user, leagues);
+            var leagues = await _context.League
+                .Include(l => l.Members)
+                .Include(l => l.Admin)
+                .Include(l => l.Game)
+                .ToListAsync();
+
+            var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues);
             return View(viewModel);
         }
 
@@ -58,7 +62,7 @@ namespace Climb.Controllers
 
             await leagueService.JoinLeague(user, league);
 
-            return RedirectToAction("Leagues", "Compete");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
@@ -72,7 +76,7 @@ namespace Climb.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Leagues", "Compete");
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Home(int id)

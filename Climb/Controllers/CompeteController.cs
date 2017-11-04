@@ -59,21 +59,6 @@ namespace Climb.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Leagues()
-        {
-            var appUser = await userManager.GetUserAsync(User);
-            var user = await _context.User.Include(u => u.LeagueUsers).SingleOrDefaultAsync(u => u.ID == appUser.UserID);
-            var leagues = await _context.League
-                .Include(l => l.Members)
-                .Include(l => l.Admin)
-                .Include(l => l.Game)
-                .ToListAsync();
-
-            var viewModel = CompeteLeaguesViewModel.Create(appUser.UserID, user.LeagueUsers, leagues);
-            return View(viewModel);
-        }
-
-        [Authorize]
         public async Task<IActionResult> Fight(int id)
         {
             var user = await GetViewUserAsync();

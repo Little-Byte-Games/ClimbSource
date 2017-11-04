@@ -5,22 +5,21 @@ using Climb.Models;
 
 namespace Climb.ViewModels
 {
-    public class CompeteLeaguesViewModel
+    public class CompeteLeaguesViewModel : BaseViewModel
     {
-        public readonly int userID;
         public readonly ReadOnlyCollection<League> memberOf;
         public readonly ReadOnlyCollection<League> nonmemberOf;
         public readonly ReadOnlyCollection<League> adminOf;
 
-        private CompeteLeaguesViewModel(int userID, IList<League> memberOf, IList<League> nonmemberOf, IList<League> adminOf)
+        private CompeteLeaguesViewModel(User user, IList<League> memberOf, IList<League> nonmemberOf, IList<League> adminOf)
+            : base(user)
         {
-            this.userID = userID;
             this.memberOf = new ReadOnlyCollection<League>(memberOf);
             this.nonmemberOf = new ReadOnlyCollection<League>(nonmemberOf);
             this.adminOf = new ReadOnlyCollection<League>(adminOf);
         }
 
-        public static CompeteLeaguesViewModel Create(int userID, HashSet<LeagueUser> leagueUsers, IEnumerable<League> leagues)
+        public static CompeteLeaguesViewModel Create(User user, HashSet<LeagueUser> leagueUsers, IEnumerable<League> leagues)
         {
             List<League> memberOf = new List<League>();
             List<League> nonmemberOf = new List<League>();
@@ -28,7 +27,7 @@ namespace Climb.ViewModels
 
             foreach(var league in leagues)
             {
-                if (league.AdminID == userID)
+                if (league.AdminID == user.ID)
                 {
                     adminOf.Add(league);
                 }
@@ -46,7 +45,7 @@ namespace Climb.ViewModels
                 }
             }
 
-            return new CompeteLeaguesViewModel(userID, memberOf, nonmemberOf, adminOf);
+            return new CompeteLeaguesViewModel(user, memberOf, nonmemberOf, adminOf);
         }
     }
 }
