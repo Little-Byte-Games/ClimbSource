@@ -1,4 +1,5 @@
-﻿using Climb.Core;
+﻿using System.Collections.Generic;
+using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Climb.Controllers
 {
@@ -160,6 +162,37 @@ namespace Climb.Controllers
             }
 
             return Forbid();
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Schedule(int? leagueID, int? seasonIndex)
+        {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
+            var leagueUser = user.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == leagueID) ?? user.LeagueUsers.FirstOrDefault();
+
+            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID);
+            List<Season> selectedSeasons = null;
+
+            if (leagueUser != null)
+            {
+                var seasons = await _context.Season
+                    .Include(s => s.Participants)
+                    .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                    .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
+                    .ToListAsync();
+                selectedSeasons = seasons.Where(season => season.Participants != null && season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
+            }
+
+            var selectedSeason = selectedSeasons?.SingleOrDefault(s => s.Index == seasonIndex) ?? selectedSeasons?.FirstOrDefault();
+
+            var viewModel = new CompeteScheduleViewModel(user, selectedLeague, selectedSeason, leagues, selectedSeasons, leagueUser);
+            return View(viewModel);
         }
     }
 }

@@ -4,7 +4,7 @@ using Climb.Models;
 
 namespace Climb.ViewModels
 {
-    public class CompeteScheduleViewModel
+    public class CompeteScheduleViewModel : BaseViewModel
     {
         public readonly League selectedLeague;
         public readonly Season selectedSeason;
@@ -12,7 +12,8 @@ namespace Climb.ViewModels
         public readonly ReadOnlyCollection<Season> seasons;
         public readonly LeagueUser leagueUser;
 
-        public CompeteScheduleViewModel(League selectedLeague, Season selectedSeason, IList<League> leagues, IList<Season> seasons, LeagueUser leagueUser)
+        public CompeteScheduleViewModel(User user, League selectedLeague, Season selectedSeason, IList<League> leagues, IList<Season> seasons, LeagueUser leagueUser)
+            : base(user)
         {
             this.selectedLeague = selectedLeague;
             this.selectedSeason = selectedSeason;
