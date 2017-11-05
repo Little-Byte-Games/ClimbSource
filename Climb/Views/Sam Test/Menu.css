@@ -1,0 +1,86 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Pacifico);
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+p {
+    width: 25%;
+    font-size: 20px;
+    margin: 0 50px;
+    padding: 10px;
+}
+
+h1 {
+    display: inline;
+    font-family: Pacifico;
+    padding: 0 25px;
+}
+
+h2 {
+    margin: 20px;
+    font-family: sans-serif;
+}
+
+.menu-wrapper {
+    width: 100%;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0px 1px 5px #888;
+    color: #EEE;
+    background-color: #555;
+}
+
+.menu {
+    width: 100%;
+    /*background-color: red;*/
+}
+
+.menu-items {
+    float: right;
+    padding: 12px 0;
+    /*background-color: green;*/
+}
+
+.menu-items li {
+    display: inline;
+    padding: 23px 25px;
+    /*background-color: blue;*/
+}
+
+.menu-items li:hover {
+    color: #FFF;
+    background-color: #666;
+}
+
+.sub-menu-items {
+    display: none;
+    position: absolute;
+    top: 62px;
+    background-color: #333;
+}
+
+.sub-menu-items li {
+    display: block;
+    text-align: center;
+    /*background-color: mediumpurple;*/
+}
+
+.sub-menu-items li:hover {
+    color: #FFF;
+    background-color: #444;
+}
+
+.content {
+    position: relative;
+    top: 75px;
+    padding: 25px;
+}
+
+.menu-items li:hover .sub-menu-items {
+    display: block;
+} 
