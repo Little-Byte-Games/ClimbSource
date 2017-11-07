@@ -16,7 +16,6 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-3" align="center">
-			<a class="btn btn-lg btn-danger" type="button" asp-controller="Leagues" asp-action="Create">Create</a>
 			<br />
 			<br />
 			<br />
@@ -32,7 +31,7 @@
 				@{
 					foreach(var league in Model.memberOf)
 					{
-						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Member, Model.userID);
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Member, Model.user.ID);
 						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
 					}
 				}
@@ -42,7 +41,7 @@
 				@{
 					foreach(var league in Model.adminOf)
 					{
-						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Admin, Model.userID);
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Admin, Model.user.ID);
 						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
 					}
 				}
@@ -52,7 +51,7 @@
 				@{
 					foreach(var league in Model.nonmemberOf)
 					{
-						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.NonMember, Model.userID);
+						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.NonMember, Model.user.ID);
 						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
 					}
 				}
