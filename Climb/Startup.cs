@@ -41,26 +41,6 @@ namespace Climb
 
             services.AddMvc();
 
-            Console.WriteLine("[YEAGER] Configuring Services");
-            services.AddAuthentication().AddGoogle(googleOptions =>
-            {
-                //googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientId = "479023458299-gskdaocjluc4tvopltqkkdq4qc3g1dic.apps.googleusercontent.com";
-                Console.WriteLine($"[YEAGER] ClientId={googleOptions.ClientId}");
-                if(string.IsNullOrWhiteSpace(googleOptions.ClientId))
-                {
-                    throw new ArgumentNullException(nameof(googleOptions.ClientId), "Google Client ID is missing!");
-                }
-
-                //googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-                googleOptions.ClientSecret = "DlsgWNDkVKCxqZLDnLXJpNrs";
-                Console.WriteLine($"[YEAGER] ClientSecret={googleOptions.ClientSecret}");
-                if (string.IsNullOrWhiteSpace(googleOptions.ClientSecret))
-                {
-                    throw new ArgumentNullException(nameof(googleOptions.ClientSecret), "Google Client secret is missing!");
-                }
-            });
-
             services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new RequireHttpsAttribute());
