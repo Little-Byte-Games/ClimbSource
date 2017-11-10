@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System.Collections.Generic;
+using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels.Games;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Climb.ViewModels;
 
 namespace Climb.Controllers
 {
@@ -23,7 +25,15 @@ namespace Climb.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await context.Game.ToListAsync());
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return UserNotFound();
+            }
+
+            var games = await context.Game.ToArrayAsync();
+            var viewModel = new GenericViewModel<IEnumerable<Game>>(user, games);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Home(int id)

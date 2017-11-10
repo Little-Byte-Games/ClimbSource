@@ -22,5 +22,10 @@ namespace Climb.Controllers
             var appUser = await userManager.GetUserAsync(User);
             return await userService.GetUserForViewAsync(appUser);
         }
+
+        protected IActionResult UserNotFound()
+        {
+            return NotFound("User could not be found!");
+        }
     }
 }
