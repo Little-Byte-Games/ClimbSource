@@ -25,7 +25,7 @@
 				users.Sort();
 				foreach(var leagueUser in users)
 				{
-					@await Html.PartialAsync("./Partials/PowerRank", leagueUser)
+					@await Html.PartialAsync("Partials/PowerRank", leagueUser)
 				}
 			}
 		</div>

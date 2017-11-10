@@ -29,7 +29,7 @@
 					foreach (var league in Model.memberOf)
 					{
 						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Member, Model.user.ID);
-						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+						@Html.Partial("Partials/Collapsed", viewModel)
 					}
 				}
 			</div>
@@ -39,7 +39,7 @@
 					foreach (var league in Model.adminOf)
 					{
 						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.Admin, Model.user.ID);
-						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+						@Html.Partial("Partials/Collapsed", viewModel)
 					}
 				}
 			</div>
@@ -49,7 +49,7 @@
 					foreach (var league in Model.nonmemberOf)
 					{
 						var viewModel = new LeagueCollapsedViewModel(league, League.Membership.NonMember, Model.user.ID);
-						@Html.Partial("../Leagues/Partials/Collapsed", viewModel)
+						@Html.Partial("Partials/Collapsed", viewModel)
 					}
 				}
 			</div>
