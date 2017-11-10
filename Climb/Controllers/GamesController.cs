@@ -12,9 +12,9 @@ namespace Climb.Controllers
     public class GamesController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICDNService cdnService;
+        private readonly ICdnService cdnService;
 
-        public GamesController(ClimbContext context, ICDNService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
+        public GamesController(ClimbContext context, ICdnService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
             : base(userService, userManager)
         {
             this.context = context;

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Climb.Services
 {
-    public interface ICDNService
+    public interface ICdnService
     {
         string GetProfilePic(LeagueUser leagueUser);
         Task<string> UploadProfilePic(IFormFile file);

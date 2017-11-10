@@ -12,10 +12,10 @@ namespace Climb.Controllers
     public class LeagueUsersController : ModelController
     {
         private readonly ClimbContext _context;
-        private readonly ICDNService cdnService;
+        private readonly ICdnService cdnService;
         private readonly LeagueUserService leagueUserService;
 
-        public LeagueUsersController(ClimbContext context, ICDNService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
+        public LeagueUsersController(ClimbContext context, ICdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
             : base(userService, userManager)
         {
             _context = context;

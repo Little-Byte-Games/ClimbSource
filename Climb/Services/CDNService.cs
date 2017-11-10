@@ -1,16 +1,17 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Threading.Tasks;
-using Amazon;
+﻿using Amazon;
 using Amazon.S3.Transfer;
+using Climb.Consts;
 using Climb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Climb.Services
 {
-    public class CDNService : ICDNService
+    public class CdnService : ICdnService
     {
         private readonly string accessKey;
         private readonly string secretKey;
@@ -19,19 +20,19 @@ namespace Climb.Services
         private readonly string profilePics;
         private readonly string characterPics;
 
-        public CDNService(IConfiguration configuration)
+        public CdnService(IConfiguration configuration)
         {
             var awsSection = configuration.GetSection("AWS");
 
             accessKey = awsSection["AccessKey"];
             secretKey = awsSection["SecretKey"];
 
-            rootUrl = awsSection["RootUrl"];
-            bucketName = awsSection["Bucket"];
+            rootUrl = CdnConsts.RootUrl;
+            bucketName = CdnConsts.AppBucket;
             rootUrl += "/" + bucketName;
 
-            profilePics = awsSection["ProfilePics"];
-            characterPics = awsSection["CharacterPics"];
+            profilePics = CdnConsts.ProfilePics;
+            characterPics = CdnConsts.CharacterIcons;
         }
 
         public string GetProfilePic(LeagueUser leagueUser)

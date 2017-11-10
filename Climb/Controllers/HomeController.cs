@@ -13,9 +13,9 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext context;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ICDNService cdnService;
+        private readonly ICdnService cdnService;
 
-        public HomeController(ClimbContext context, SignInManager<ApplicationUser> signInManager, ICDNService cdnService)
+        public HomeController(ClimbContext context, SignInManager<ApplicationUser> signInManager, ICdnService cdnService)
         {
             this.context = context;
             _signInManager = signInManager;
