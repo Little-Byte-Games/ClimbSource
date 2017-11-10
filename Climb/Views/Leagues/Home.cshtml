@@ -41,7 +41,9 @@
 			}
 			else
 			{
-				<div align="center"><span>No recent activity</span></div>
+				<div align="center">
+					<span>No recent activity</span>
+				</div>
 			}
 		</div>
 		<div class="col-xs-4">
@@ -91,6 +93,11 @@
 
 @section Scripts {
 	<script type="text/javascript">
-		$(document).ready(function() { getSeasonStatus(@Model.selectedSeason.ID); });
+		$(document).ready(function() {
+			@{ var seasonID = Model.selectedSeason == null ? -1 : Model.selectedSeason.ID; }
+			if (@seasonID >= 0) {
+				getSeasonStatus(@seasonID);
+			}
+		});
 	</script>
 }
