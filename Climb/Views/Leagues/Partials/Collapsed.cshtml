@@ -2,9 +2,9 @@
 
 <div class="panel panel-default">
 	<div align="center" style="padding: 4px">
-		<span>@Html.Partial("../Games/Partials/Name", Model.league.Game)</span>
+		<span>@Html.Partial("/Views/Games/Partials/Name.cshtml", Model.league.Game)</span>
 		<br />
-		@Html.Partial("../Leagues/Partials/Name", Model.league)
+		@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.league)
 		<br />
 		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.MemberCount</span>
 		<br />
