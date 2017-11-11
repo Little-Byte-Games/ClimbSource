@@ -8,8 +8,15 @@ namespace Climb.Core
     {
         public const int Bye = -1;
 
+        public static List<Round>[] GenerateWithDivisions(ICollection<int>[] users, DateTime startDate)
         {
+            var divisionRounds = new List<Round>[users.Length];
+            for(int i = 0; i < divisionRounds.Length; i++)
+            {
+                divisionRounds[i] = Generate(users[i].Count - 1, users[i], startDate);
+            }
 
+            return divisionRounds;
         }
 
         public static List<Round> Generate(int roundCount, ICollection<int> users, DateTime startDate)
