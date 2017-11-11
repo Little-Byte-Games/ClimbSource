@@ -57,7 +57,7 @@ namespace Climb.Controllers
             context.Update(leagueUser);
             await context.SaveChangesAsync();
 
-            return Content($"Uploaded profile pic to {cdnService.GetProfilePic(leagueUser)}.");
+            return RedirectToAction(nameof(UsersController.Account), "Users");
         }
         #endregion
     }
