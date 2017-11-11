@@ -11,8 +11,8 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20171002031951_Character.PicKey")]
-    partial class CharacterPicKey
+    [Migration("20171110202901_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -434,7 +434,7 @@ namespace Climb.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Game", "Game")
-                        .WithMany()
+                        .WithMany("Leagues")
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

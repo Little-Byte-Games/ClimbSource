@@ -3,7 +3,7 @@
 <div class="panel panel-default" align="center">
 	<span>@Model.CreatedDate.ToShortDateString()</span>
 	<br/>
-	@Html.Partial("../Leagues/Partials/Name", Model.LeagueUser.League)
+	@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.LeagueUser.League)
 	<br/>
 	@{
 		string color;

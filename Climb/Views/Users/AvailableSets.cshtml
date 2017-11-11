@@ -12,9 +12,5 @@
 @foreach(var set in Model.sets)
 {
 	var leagueUser = set.GetLeagueUser(Model.user);
-	@Html.Partial("../Sets/Partials/Collapsed", new SetCollapsedViewModel(set, leagueUser))
+	@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", new SetCollapsedViewModel(set, leagueUser))
 }
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>

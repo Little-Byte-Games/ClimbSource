@@ -1,30 +1,30 @@
-﻿using System.Collections.Generic;
-using Climb.Core;
+﻿using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Climb.Controllers
 {
     public class LeaguesController : ModelController
     {
-        private readonly ClimbContext _context;
+        private readonly ClimbContext context;
         private readonly IConfiguration configuration;
         private readonly ILeagueService leagueService;
 
         public LeaguesController(ClimbContext context, IConfiguration configuration, IUserService userService, ILeagueService leagueService, UserManager<ApplicationUser> userManger)
             : base(userService, userManger)
         {
-            _context = context;
+            this.context = context;
             this.configuration = configuration;
             this.leagueService = leagueService;
         }
@@ -37,7 +37,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var leagues = await _context.League
+            var leagues = await context.League
                 .Include(l => l.Members)
                 .Include(l => l.Admin)
                 .Include(l => l.Game)
@@ -50,13 +50,13 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> Join(int leagueID, int userID)
         {
-            var league = await _context.League.SingleOrDefaultAsync(l => l.ID == leagueID);
+            var league = await context.League.SingleOrDefaultAsync(l => l.ID == leagueID);
             if(league == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(u => u.ID == userID);
+            var user = await context.User.SingleOrDefaultAsync(u => u.ID == userID);
             if(user == null)
             {
                 return NotFound();
@@ -70,12 +70,12 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> Leave(int leagueID, int userID)
         {
-            var leagueUser = await _context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == leagueID && u.UserID == userID);
+            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == leagueID && u.UserID == userID);
             if(leagueUser != null)
             {
                 leagueUser.HasLeft = true;
-                _context.Update(leagueUser);
-                await _context.SaveChangesAsync();
+                context.Update(leagueUser);
+                await context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));
@@ -89,7 +89,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var league = await _context.League
+            var league = await context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
@@ -120,7 +120,7 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> TakeRankSnapshot(int id)
         {
-            var league = await _context.League
+            var league = await context.League
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(l => l.ID == id);
@@ -150,7 +150,7 @@ namespace Climb.Controllers
             var key = contextAccessor.HttpContext.Request.Headers["key"];
             if(key == "steve")
             {
-                var leagues = await _context.League
+                var leagues = await context.League
                     .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                     .Include(l => l.Members).ThenInclude(lu => lu.User)
                     .ToArrayAsync();
@@ -181,7 +181,7 @@ namespace Climb.Controllers
 
             if (leagueUser != null)
             {
-                var seasons = await _context.Season
+                var seasons = await context.Season
                     .Include(s => s.Participants)
                     .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
                     .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)

@@ -3,11 +3,11 @@
 <div class="panel panel-default">
 	<div align="center">
 		<div>
-			@Html.Partial("../Leagues/Partials/Name", Model.set.Season.League)
+			@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.Season.League)
 			|
 			@Model.SeasonName
 		</div>
-		<span>@Html.Partial("../Users/Partials/Name", Model.set.Player1?.User) v @Html.Partial("../Users/Partials/Name", Model.set.Player2?.User)</span>
+		<span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
 		<br/>
 
 		@if(Model.set.IsComplete)

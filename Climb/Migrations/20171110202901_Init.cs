@@ -77,7 +77,8 @@ namespace Climb.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     GameID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PicKey = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -360,6 +361,7 @@ namespace Climb.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LeagueID = table.Column<int>(type: "int", nullable: false),
                     Player1ID = table.Column<int>(type: "int", nullable: true),
                     Player1Score = table.Column<int>(type: "int", nullable: true),
                     Player2ID = table.Column<int>(type: "int", nullable: true),
@@ -370,6 +372,12 @@ namespace Climb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Set", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Set_League_LeagueID",
+                        column: x => x.LeagueID,
+                        principalTable: "League",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Set_LeagueUser_Player1ID",
                         column: x => x.Player1ID,
@@ -536,6 +544,11 @@ namespace Climb.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Season_LeagueID",
                 table: "Season",
+                column: "LeagueID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Set_LeagueID",
+                table: "Set",
                 column: "LeagueID");
 
             migrationBuilder.CreateIndex(

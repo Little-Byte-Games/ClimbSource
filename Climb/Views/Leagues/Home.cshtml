@@ -2,7 +2,7 @@
 @using Climb.ViewModels
 @model LeagueHomeViewModel
 
-@inject ICDNService CDNService
+@inject ICdnService CDNService
 
 @{
 	ViewData["Title"] = "Home";
@@ -25,7 +25,7 @@
 				users.Sort();
 				foreach(var leagueUser in users)
 				{
-					@await Html.PartialAsync("./Partials/PowerRank", leagueUser)
+					@await Html.PartialAsync("Partials/PowerRank", leagueUser)
 				}
 			}
 		</div>
@@ -36,12 +36,14 @@
 				foreach(var set in Model.recentSets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("../Sets/Partials/Collapsed", viewModel)
+					@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
 				}
 			}
 			else
 			{
-				<div align="center"><span>No recent activity</span></div>
+				<div align="center">
+					<span>No recent activity</span>
+				</div>
 			}
 		</div>
 		<div class="col-xs-4">
@@ -78,7 +80,7 @@
 				foreach(var set in Model.selectedSeason.Sets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("../Sets/Partials/Collapsed", viewModel)
+					@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
 				}
 			}
 			else
@@ -91,6 +93,11 @@
 
 @section Scripts {
 	<script type="text/javascript">
-		$(document).ready(function() { getSeasonStatus(@Model.selectedSeason.ID); });
+		$(document).ready(function() {
+			@{ var seasonID = Model.selectedSeason == null ? -1 : Model.selectedSeason.ID; }
+			if (@seasonID >= 0) {
+				getSeasonStatus(@seasonID);
+			}
+		});
 	</script>
 }

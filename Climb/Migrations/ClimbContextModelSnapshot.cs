@@ -433,7 +433,7 @@ namespace Climb.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Game", "Game")
-                        .WithMany()
+                        .WithMany("Leagues")
                         .HasForeignKey("GameID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });

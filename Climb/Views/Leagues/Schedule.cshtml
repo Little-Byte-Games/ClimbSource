@@ -51,7 +51,7 @@
 				foreach(var set in Model.selectedSeason.Sets)
 				{
 					var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
-					@Html.Partial("../Sets/Partials/Collapsed", viewModel)
+					@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
 				}
 			}
 			else

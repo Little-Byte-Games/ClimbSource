@@ -30,7 +30,7 @@
 		@foreach(var leagueUser in Model.user.LeagueUsers)
 		{
 			<div class="panel panel-default">
-				@Html.Partial("../LeagueUsers/Partials/Info", leagueUser)
+				@Html.Partial("/Views/LeagueUsers/Partials/Info.cshtml", leagueUser)
 			</div>
 		}
 	</div>
@@ -41,7 +41,7 @@
 			foreach(var set in Model.overdueSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-				@Html.Partial("../Sets/Partials/Collapsed", viewModel)
+				@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
 			}
 		}
 		
@@ -59,7 +59,7 @@
 			foreach(var set in Model.availableSets)
 			{
 				var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-				@Html.Partial("../Sets/Partials/Collapsed", viewModel)
+				@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
 			}
 		}
 	</div>
@@ -69,7 +69,7 @@
 			var snapshots = Model.GetSortedRankSnapshots();
 			foreach(var snapshot in snapshots)
 			{
-				@Html.Partial("../RankSnapshots/Info", snapshot)
+				@Html.Partial("/Views/RankSnapshots/Info.cshtml", snapshot)
 			}
 		}
 	</div>
