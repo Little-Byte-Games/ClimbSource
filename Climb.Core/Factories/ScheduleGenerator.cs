@@ -4,32 +4,13 @@ using Climb.Core.Extensions;
 
 namespace Climb.Core
 {
-    public struct Set
-    {
-        public readonly int player1;
-        public readonly int player2;
-
-        public Set(int player1, int player2)
-        {
-            this.player1 = player1;
-            this.player2 = player2;
-        }
-    }
-
-    public class Round
-    {
-        public readonly DateTime dueDate;
-        public readonly HashSet<Set> sets = new HashSet<Set>();
-
-        public Round(DateTime dueDate)
-        {
-            this.dueDate = dueDate;
-        }
-    }
-
     public static class ScheduleGenerator
     {
         public const int Bye = -1;
+
+        {
+
+        }
 
         public static List<Round> Generate(int roundCount, ICollection<int> users, DateTime startDate)
         {
