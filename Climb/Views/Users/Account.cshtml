@@ -1,5 +1,8 @@
-﻿@using Climb.ViewModels.Users
+﻿@using Climb.Services
+@using Climb.ViewModels.Users
 @model UserAccountViewModel
+
+@inject ICdnService cdnService
 
 @{
 	ViewBag.Title = "Account";
@@ -20,7 +23,20 @@
 		<div class="form-group"> 
 			<input type="submit" value="Save" class="btn btn-default" /> 
 		</div> 
-	</form> 
+	</form>
+	
+	@foreach(var leagueUser in Model.user.LeagueUsers)
+	{
+		<div>
+			<h3>@leagueUser.League.Name</h3>
+			<img src="@cdnService.GetProfilePic(leagueUser)"/>
+			<form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="id" value="@leagueUser.ID"/>
+				<input type="file" name="file" accept="image/*" />
+				<input type="submit" value="Update"/>
+			</form>
+		</div>
+	}
 </div>
 
 @section Scripts { 

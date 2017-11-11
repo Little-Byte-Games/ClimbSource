@@ -1,5 +1,4 @@
-﻿using System;
-using Climb.Models;
+﻿using Climb.Models;
 using Climb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
