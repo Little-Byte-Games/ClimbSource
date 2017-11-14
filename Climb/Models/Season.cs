@@ -30,6 +30,7 @@ namespace Climb.Models
         public League League { get; set; }
         public HashSet<LeagueUserSeason> Participants { get; set; }
         public HashSet<Set> Sets { get; set; }
+        public HashSet<Division> Divisions { get; set; }
 
         public string DisplayName => $"Season {Index + 1}";
         public bool IsComplete => Sets != null && Sets.All(s => s.IsComplete);

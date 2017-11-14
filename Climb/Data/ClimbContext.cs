@@ -22,6 +22,7 @@ namespace Climb.Models
         public DbSet<LeagueUser> LeagueUser { get; set; }
         public DbSet<LeagueUserSeason> LeagueUserSeason { get; set; }
         public DbSet<RankSnapshot> RankSnapshot { get; set; }
+        public DbSet<Division> Division { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -24,6 +24,19 @@ namespace Climb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Division",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    SeasonID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Division", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Game",
                 columns: table => new
                 {
@@ -261,6 +274,7 @@ namespace Climb.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DivisionID = table.Column<int>(type: "int", nullable: true),
                     Elo = table.Column<int>(type: "int", nullable: false),
                     HasLeft = table.Column<bool>(type: "bit", nullable: false),
                     LeagueID = table.Column<int>(type: "int", nullable: false),
@@ -271,6 +285,12 @@ namespace Climb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LeagueUser", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_LeagueUser_Division_DivisionID",
+                        column: x => x.DivisionID,
+                        principalTable: "Division",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_LeagueUser_League_LeagueID",
                         column: x => x.LeagueID,
@@ -360,6 +380,7 @@ namespace Climb.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DivisionID = table.Column<int>(type: "int", nullable: true),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeagueID = table.Column<int>(type: "int", nullable: false),
                     Player1ID = table.Column<int>(type: "int", nullable: true),
@@ -372,6 +393,12 @@ namespace Climb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Set", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Set_Division_DivisionID",
+                        column: x => x.DivisionID,
+                        principalTable: "Division",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Set_League_LeagueID",
                         column: x => x.LeagueID,
@@ -502,6 +529,11 @@ namespace Climb.Migrations
                 column: "GameID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LeagueUser_DivisionID",
+                table: "LeagueUser",
+                column: "DivisionID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LeagueUser_LeagueID",
                 table: "LeagueUser",
                 column: "LeagueID");
@@ -545,6 +577,11 @@ namespace Climb.Migrations
                 name: "IX_Season_LeagueID",
                 table: "Season",
                 column: "LeagueID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Set_DivisionID",
+                table: "Set",
+                column: "DivisionID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Set_LeagueID",
@@ -618,6 +655,9 @@ namespace Climb.Migrations
 
             migrationBuilder.DropTable(
                 name: "Season");
+
+            migrationBuilder.DropTable(
+                name: "Division");
 
             migrationBuilder.DropTable(
                 name: "League");

@@ -28,7 +28,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Create(int leagueID)
         {
             var user = await GetViewUserAsync();
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -38,6 +38,60 @@ namespace Climb.Controllers
         }
         #endregion
 
+        #region API
+        public class Participant
+        {
+            public int UserID { get; set; }
+            public int DivisionIndex { get; set; }
+        }
+
+        public class CreateData
+        {
+            public int LeagueID { get; set; }
+            public DateTime StartDate { get; set; }
+            public IList<Participant> Participants { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateData data)
+        {
+            var league = await context.League
+                .Include(l => l.Seasons)
+                .SingleOrDefaultAsync(l => l.ID == data.LeagueID);
+            if (league == null)
+            {
+                return NotFound();
+            }
+
+            await seasonService.Create(league, data.StartDate);
+            return Ok($"leagueID={data.LeagueID}, startDate={data.StartDate}, participants={string.Join("; ", data.Participants.Select(p => $"UserID={p.UserID}, Division={p.DivisionIndex}"))}");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAuto(int leagueID)
+        {
+            var league = await context.League
+                .Include(l => l.Seasons)
+                .Include(l => l.Members)
+                .SingleOrDefaultAsync(l => l.ID == leagueID);
+            if (league == null)
+            {
+                return NotFound($"Could not find league with ID '{leagueID}.'");
+            }
+
+            var season = await seasonService.Create(league);
+
+            var participants = new HashSet<Participant>();
+            var i = 0;
+            foreach (var member in league.Members)
+            {
+                participants.Add(new Participant { UserID = member.ID, DivisionIndex = i });
+                i = (i + 1) % 2;
+            }
+            await seasonService.Start(season, participants);
+            return Ok($"leagueID={leagueID}, startDate={season.StartDate}");
+        }
+        #endregion
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
@@ -46,7 +100,7 @@ namespace Climb.Controllers
             var league = await context.League
                 .Include(l => l.Seasons)
                 .SingleOrDefaultAsync(l => l.ID == leagueID);
-            if(league == null)
+            if (league == null)
             {
                 return NotFound();
             }
@@ -73,7 +127,7 @@ namespace Climb.Controllers
             var season = await context.Season
                 .Include(s => s.Participants).ThenInclude(user => user.LeagueUser).ThenInclude(u => u.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
-            if(season == null)
+            if (season == null)
             {
                 return NotFound();
             }
@@ -90,13 +144,13 @@ namespace Climb.Controllers
         public async Task<IActionResult> Join(int seasonID, int userID)
         {
             var season = await context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == seasonID);
-            if(season == null)
+            if (season == null)
             {
                 return NotFound();
             }
 
             var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.ID == userID);
-            if(leagueUser == null)
+            if (leagueUser == null)
             {
                 return NotFound();
             }
@@ -127,45 +181,12 @@ namespace Climb.Controllers
             return RedirectToAction(nameof(Join), new { id = seasonID });
         }
 
-        public async Task<IActionResult> Start(int id)
-        {
-            var season = await context.Season.Include(s => s.Sets)
-                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            var viewData = new SeasonStartViewModel(season);
-            return View(viewData);
-        }
-
-        [HttpPost]
-        [ActionName("Start")]
-        public async Task<IActionResult> StartPost(int id)
-        {
-            var season = await context.Season
-                .Include(s => s.Sets)
-                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            await seasonService.Start(season);
-            
-            return RedirectToAction(nameof(Start), new {id});
-        }
-
         public async Task<IActionResult> GetStatus(int id)
         {
             var season = await context.Season
                 .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == id);
-            if(season == null)
+            if (season == null)
             {
                 return NotFound();
             }

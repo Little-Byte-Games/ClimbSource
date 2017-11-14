@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using static Climb.Controllers.SeasonsController;
 
 namespace UserApp.Controllers
 {
@@ -342,11 +344,15 @@ namespace UserApp.Controllers
                         {
                             await leagueService.JoinLeague(user, league);
                             var season = await seasonService.Create(league);
+
+                            var participants = new HashSet<Participant>();
+                            var i = 0;
                             foreach(var member in league.Members)
                             {
-                                await seasonService.Join(season, member);
+                                participants.Add(new Participant { UserID = member.ID, DivisionIndex = i });
+                                i = (i + 1) % 1;
                             }
-                            await seasonService.Start(season);
+                            await seasonService.Start(season, participants);
                         }
                     }
 

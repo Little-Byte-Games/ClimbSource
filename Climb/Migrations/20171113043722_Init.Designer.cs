@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20171113043722_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,13 +100,9 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Index");
-
                     b.Property<int>("SeasonID");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("SeasonID");
 
                     b.ToTable("Division");
                 });
@@ -446,14 +443,6 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Game", "Game")
                         .WithMany("Characters")
                         .HasForeignKey("GameID")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Climb.Models.Division", b =>
-                {
-                    b.HasOne("Climb.Models.Season", "Season")
-                        .WithMany("Divisions")
-                        .HasForeignKey("SeasonID")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
