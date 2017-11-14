@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Climb.ViewModels.Users;
 using Microsoft.AspNetCore.Authorization;
+using UserApp.Controllers;
 
 namespace Climb.Controllers
 {
@@ -26,6 +27,11 @@ namespace Climb.Controllers
         public async Task<IActionResult> Home(int? id)
         {
             var appUser = await userManager.GetUserAsync(User);
+            if(appUser == null)
+            {
+                return RedirectToAction(nameof(AccountController.Login), "Account");
+            }
+
             if (id == null)
             {
                 id = appUser.UserID;
