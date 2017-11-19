@@ -1,5 +1,6 @@
 ﻿using Climb.Models;
 using Climb.Services;
+using Climb.ViewModels;
 using Climb.ViewModels.Seasons;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,17 +31,36 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return NotFound();
+                return UserNotFound();
             }
 
             var viewModel = new CreateViewModel(user);
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Home(int id)
+        {
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
+                return UserNotFound();
+            }
+
+            var season = await context.Season
+                .Include(s => s.Sets).ThenInclude(s => s.League)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(season == null)
+            {
+                return NotFound($"No season with ID '{id}' found.");
+            }
+
+            var viewModel = new GenericViewModel<Season>(user, season);
+            return View(viewModel);
+        }
         #endregion
 
-
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> CreateForLeague(int leagueID, DateTime? startDate)
         {
             var league = await context.League
@@ -51,9 +71,9 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            await seasonService.Create(league, startDate);
+            var season = await seasonService.Create(league, startDate);
 
-            return RedirectToAction(nameof(LeaguesController.Home), "Leagues");
+            return CreatedAtAction(nameof(CreateForLeague), season);
         }
 
         public class JoinList
@@ -147,7 +167,8 @@ namespace Climb.Controllers
         public async Task<IActionResult> StartPost(int id)
         {
             var season = await context.Season
-                .Include(s => s.Sets)
+                .Include(s => s.League).ThenInclude(l => l.Members)
+                .Include(s => s.Sets).ThenInclude(s => s.League)
                 .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if (season == null)
@@ -155,9 +176,10 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
+            await seasonService.JoinAll(season);
             await seasonService.Start(season);
             
-            return RedirectToAction(nameof(Start), new {id});
+            return Ok("Season started.");
         }
 
         public async Task<IActionResult> GetStatus(int id)

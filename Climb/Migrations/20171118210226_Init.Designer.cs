@@ -11,7 +11,7 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    [Migration("20171110202901_Init")]
+    [Migration("20171118210226_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,8 @@ namespace Climb.Migrations
                     b.Property<int>("LeagueUserID");
 
                     b.Property<int>("SeasonID");
+
+                    b.Property<int>("Standing");
 
                     b.HasKey("LeagueUserID", "SeasonID");
 

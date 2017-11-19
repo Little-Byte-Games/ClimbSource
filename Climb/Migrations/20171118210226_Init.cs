@@ -335,7 +335,8 @@ namespace Climb.Migrations
                 columns: table => new
                 {
                     LeagueUserID = table.Column<int>(type: "int", nullable: false),
-                    SeasonID = table.Column<int>(type: "int", nullable: false)
+                    SeasonID = table.Column<int>(type: "int", nullable: false),
+                    Standing = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

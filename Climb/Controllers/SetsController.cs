@@ -1,5 +1,6 @@
 ﻿using Climb.Core;
 using Climb.Models;
+using Climb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,11 +16,13 @@ namespace Climb.Controllers
     {
         public readonly IConfiguration configuration;
         private readonly ClimbContext _context;
+        private readonly ISeasonService seasonService;
 
-        public SetsController(ClimbContext context, IConfiguration configuration)
+        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService)
         {
             _context = context;
             this.configuration = configuration;
+            this.seasonService = seasonService;
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -63,10 +66,14 @@ namespace Climb.Controllers
         public async Task<IActionResult> Submit(int setID, IList<Match> matches)
         {
             var set = await _context.Set.Include(s => s.Matches)
-                .Include(s => s.Season)
+                .Include(s => s.Season).ThenInclude(s => s.Participants)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == setID);
+            if(set == null)
+            {
+                return NotFound($"Could not find set with ID '{setID}'.");
+            }
 
             set.Player1Score = 0;
             set.Player2Score = 0;
@@ -128,6 +135,11 @@ namespace Climb.Controllers
             _context.UpdateRange(users);
 
             await _context.SaveChangesAsync();
+
+            if(!set.IsExhibition)
+            {
+                await seasonService.UpdateStandings(set.SeasonID.Value);
+            }
 
             var message = $"{set.Player1.User.Username} ({p1Wins}) v {set.Player2.User.Username} ({p2Wins})";
             var apiKey = configuration.GetSection("Slack")["Key"];

@@ -1,0 +1,28 @@
+﻿@using Climb.ViewModels
+@model GenericViewModel<Season>
+
+@{
+	ViewData["Title"] = "Season-Home";
+}
+
+<h1>Seasons - Home</h1>
+
+<div>
+    <h2>Standings</h2>
+    @foreach(var participant in Model.data.Participants)
+    {
+        <div>
+            <span>@participant.Standing</span>
+            <span>@participant.LeagueUser.User.Username</span>
+        </div>
+    }
+</div>
+
+<div>
+    <h2>Sets</h2>
+    @foreach(var set in Model.data.Sets)
+    {
+        var viewModel = new SetCollapsedViewModel(set, null);
+        @Html.Partial("~/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+    }
+</div>

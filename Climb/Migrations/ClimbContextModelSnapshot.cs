@@ -158,6 +158,8 @@ namespace Climb.Migrations
 
                     b.Property<int>("SeasonID");
 
+                    b.Property<int>("Standing");
+
                     b.HasKey("LeagueUserID", "SeasonID");
 
                     b.HasIndex("SeasonID");

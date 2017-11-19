@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,8 +28,11 @@ namespace Climb.Models
         public int Index { get; set; }
         public DateTime StartDate { get; set; }
 
+        [JsonIgnore]
         public League League { get; set; }
+        [JsonIgnore]
         public HashSet<LeagueUserSeason> Participants { get; set; }
+        [JsonIgnore]
         public HashSet<Set> Sets { get; set; }
 
         public string DisplayName => $"Season {Index + 1}";

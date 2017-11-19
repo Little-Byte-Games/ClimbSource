@@ -1,9 +1,10 @@
-﻿using Climb.Models;
+﻿using Climb.Core;
+using Climb.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Core;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -36,6 +37,17 @@ namespace Climb.Services
             await context.AddAsync(leagueUserSeason);
 
             season.Participants.Add(leagueUserSeason);
+            context.Update(season);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task JoinAll(Season season)
+        {
+            season.Participants = new HashSet<LeagueUserSeason>(season.League.Members.Select(m => new LeagueUserSeason
+            {
+                SeasonID = season.ID,
+                LeagueUserID = m.ID
+            }));
             context.Update(season);
             await context.SaveChangesAsync();
         }
@@ -94,6 +106,47 @@ namespace Climb.Services
 
             context.UpdateRange(season.Sets);
             context.Update(season);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateStandings(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.Participants)
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            var points = new Dictionary<int, uint>();
+            foreach (var participant in season.Participants)
+            {
+                points.Add(participant.LeagueUserID, 0);
+            }
+
+            foreach(var set in season.Sets)
+            {
+                if(set.IsComplete)
+                {
+                    points[set.WinnerID.Value]++;
+                }
+            }
+            var sortedPoints = points.OrderByDescending(e => e.Value);
+
+            // TODO: Tie breakers.
+
+            var placing = 1;
+            var lastPoints = uint.MaxValue;
+            foreach(var participant in sortedPoints)
+            {
+                var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
+                leagueUserSeason.Standing = placing;
+                if(lastPoints != participant.Value)
+                {
+                    ++placing;
+                    lastPoints = participant.Value;
+                }
+            }
+
+            context.UpdateRange(season.Participants);
             await context.SaveChangesAsync();
         }
     }
