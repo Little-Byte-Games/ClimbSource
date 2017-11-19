@@ -3,6 +3,7 @@ using Climb.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Set = Climb.Models.Set;
@@ -116,7 +117,7 @@ namespace Climb.Services
                 .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == seasonID);
 
-            var points = new Dictionary<int, uint>();
+            var points = new Dictionary<int, int>();
             foreach (var participant in season.Participants)
             {
                 points.Add(participant.LeagueUserID, 0);
@@ -126,6 +127,7 @@ namespace Climb.Services
             {
                 if(set.IsComplete)
                 {
+                    Debug.Assert(set.WinnerID != null, "set.WinnerID != null");
                     points[set.WinnerID.Value]++;
                 }
             }
@@ -134,11 +136,12 @@ namespace Climb.Services
             // TODO: Tie breakers.
 
             var placing = 1;
-            var lastPoints = uint.MaxValue;
+            var lastPoints = -1;
             foreach(var participant in sortedPoints)
             {
                 var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
                 leagueUserSeason.Standing = placing;
+                leagueUserSeason.Points = participant.Value;
                 if(lastPoints != participant.Value)
                 {
                     ++placing;

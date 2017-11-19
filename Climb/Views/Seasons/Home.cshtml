@@ -1,29 +1,30 @@
 ﻿@using Climb.ViewModels
-@model GenericViewModel<Season>
+@using Climb.ViewModels.Seasons
+@model HomeViewModel
 
 @{
 	ViewData["Title"] = "Season-Home";
-    var leagueUser = Model.user.LeagueUsers.FirstOrDefault(l => l.LeagueID == Model.data.LeagueID);
 }
 
 <h1>Seasons - Home</h1>
 
 <div>
     <h2>Standings</h2>
-    @foreach(var participant in Model.data.Participants)
+    @foreach(var participant in Model.standings)
     {
         <div>
             <span>@participant.Standing</span>
             <span>@participant.LeagueUser.User.Username</span>
+            <span>(@participant.Points)</span>
         </div>
     }
 </div>
 
 <div>
     <h2>Sets</h2>
-    @foreach(var set in Model.data.Sets)
+    @foreach(var set in Model.season.Sets)
     {
-        var viewModel = new SetCollapsedViewModel(set, leagueUser);
+        var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
         @Html.Partial("~/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
 </div>

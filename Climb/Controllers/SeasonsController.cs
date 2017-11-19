@@ -55,7 +55,7 @@ namespace Climb.Controllers
                 return NotFound($"No season with ID '{id}' found.");
             }
 
-            var viewModel = new GenericViewModel<Season>(user, season);
+            var viewModel = HomeViewModel.Create(user, season);
             return View(viewModel);
         }
         #endregion
