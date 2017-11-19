@@ -5,9 +5,12 @@ namespace Climb.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(ClimbContext context)
+        public static void Initialize(ClimbContext context, bool delete)
         {
-            //context.Database.EnsureDeleted();
+            if (delete)
+            {
+                context.Database.EnsureDeleted();
+            }
             context.Database.EnsureCreated();
 
             if(context.User.Any())
