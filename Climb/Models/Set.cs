@@ -33,6 +33,7 @@ namespace Climb.Models
         public bool IsBye => Player1ID == null || Player2ID == null;
         public bool IsExhibition => SeasonID == null;
         public int? WinnerID => Player1Score > Player2Score ? Player1ID : Player1Score < Player2Score ? Player2ID : null;
+        public int? LoserID => Player1Score > Player2Score ? Player2ID : Player1Score < Player2Score ? Player1ID : null;
 
         public bool IsPlaying(LeagueUser leagueUser)
         {
