@@ -112,6 +112,9 @@ namespace Climb.Services
 
         public async Task UpdateStandings(int seasonID)
         {
+            const int winningPoints = 2;
+            const int losingPoints = 1;
+
             var season = await context.Season
                 .Include(s => s.Participants)
                 .Include(s => s.Sets)
@@ -128,7 +131,13 @@ namespace Climb.Services
                 if(set.IsComplete)
                 {
                     Debug.Assert(set.WinnerID != null, "set.WinnerID != null");
-                    points[set.WinnerID.Value]++;
+                    points[set.WinnerID.Value] += winningPoints;
+
+                    if(!set.IsBye)
+                    {
+                        Debug.Assert(set.LoserID != null, "set.LoserID != null");
+                        points[set.LoserID.Value] += losingPoints;
+                    }
                 }
             }
             var sortedPoints = points.OrderByDescending(e => e.Value);
