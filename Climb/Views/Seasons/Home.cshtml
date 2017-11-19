@@ -3,6 +3,7 @@
 
 @{
 	ViewData["Title"] = "Season-Home";
+    var leagueUser = Model.user.LeagueUsers.FirstOrDefault(l => l.LeagueID == Model.data.LeagueID);
 }
 
 <h1>Seasons - Home</h1>
@@ -22,7 +23,7 @@
     <h2>Sets</h2>
     @foreach(var set in Model.data.Sets)
     {
-        var viewModel = new SetCollapsedViewModel(set, null);
+        var viewModel = new SetCollapsedViewModel(set, leagueUser);
         @Html.Partial("~/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
 </div>
