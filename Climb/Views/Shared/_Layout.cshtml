@@ -1,5 +1,7 @@
 ﻿@using Climb.ViewModels
+@using Microsoft.AspNetCore.Hosting
 @model BaseViewModel
+@inject IHostingEnvironment HostingEnvironment
 
 <!DOCTYPE html>
 <html>
@@ -46,13 +48,19 @@
 						<li><a asp-controller="Games" asp-action="Index">Search Games</a></li>
 					</ul>
 				</li>
-				<li>
-					<a asp-controller="Users" asp-action="Home">@Model.user.Username</a>
-					<ul class="sub-menu">
-						<li><a asp-controller="Users" asp-action="Account">Account</a></li>
-						<li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
-					</ul>
-				</li>
+			    <li>
+			        <a asp-controller="Users" asp-action="Home">@Model.user.Username</a>
+			        <ul class="sub-menu">
+			            <li><a asp-controller="Users" asp-action="Account">Account</a></li>
+			            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+			        </ul>
+			    </li>
+			    @if(HostingEnvironment.IsDevelopment())
+			    {
+			        <li>
+			            <a asp-controller="Admin" asp-action="Index">Admin</a>
+			        </li>
+			    }
 			</ul>
 		</nav>
 	</div>
