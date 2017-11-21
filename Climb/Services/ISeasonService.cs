@@ -11,5 +11,6 @@ namespace Climb.Services
         Task JoinAll(Season season);
         Task Start(Season season);
         Task UpdateStandings(int seasonID);
+        Task End(int seasonID);
     }
 }

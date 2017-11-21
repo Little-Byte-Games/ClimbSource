@@ -1,6 +1,5 @@
 ﻿using Climb.Models;
 using Climb.Services;
-using Climb.ViewModels;
 using Climb.ViewModels.Seasons;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +56,16 @@ namespace Climb.Controllers
 
             var viewModel = HomeViewModel.Create(user, season);
             return View(viewModel);
+        }
+        #endregion
+
+        #region API
+        [HttpPost]
+        public async Task<IActionResult> EndSeason(int id)
+        {
+            await seasonService.End(id);
+
+            return Ok($"Season {id} has been ended.");
         }
         #endregion
 

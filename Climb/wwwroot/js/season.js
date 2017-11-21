@@ -12,3 +12,14 @@
         document.getElementById("seasonStatus.overdueCount").innerText = status.overdueCount;
     });
 }
+
+function endSeason(seasonID) {
+    $.post({
+        url: "/Seasons/EndSeason",
+        data: { id: seasonID }
+    }).done((data, statusText, xhr) => {
+        if (xhr.status === 200) {
+            location.reload();
+        }
+    });
+}

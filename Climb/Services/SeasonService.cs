@@ -161,5 +161,22 @@ namespace Climb.Services
             context.UpdateRange(season.Participants);
             await context.SaveChangesAsync();
         }
+
+        public async Task End(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            foreach(var set in season.Sets)
+            {
+                if(!set.IsComplete)
+                {
+                    context.Remove(set);
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
     }
 }
