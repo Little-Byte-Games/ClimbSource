@@ -1,4 +1,6 @@
-﻿@model Climb.ViewModels.SetCollapsedViewModel
+﻿@using Microsoft.AspNetCore.Hosting
+@model Climb.ViewModels.SetCollapsedViewModel
+@inject IHostingEnvironment hostingEnvironment
 
 <div class="panel panel-default">
 	<div align="center">
@@ -23,7 +25,7 @@
 		{
 			<span>@Model.set.DueDate.ToShortDateString()</span>
 
-			if(Model.set.IsPlaying(Model.user))
+			if(Model.set.IsPlaying(Model.user) || hostingEnvironment.IsDevelopment())
 			{
 				<br/>
 				<a asp-controller="Compete" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
