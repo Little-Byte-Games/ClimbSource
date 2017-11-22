@@ -24,7 +24,6 @@ namespace Climb.Services
             var season = new Season {
                 Index = league.Seasons.Count,
                 LeagueID = league.ID,
-                //Participants = new HashSet<LeagueUserSeason>(),
                 StartDate = startDate ?? DateTime.UtcNow.AddDays(7)
             };
             await context.AddAsync(season);
@@ -112,18 +111,16 @@ namespace Climb.Services
 
         public async Task UpdateStandings(int seasonID)
         {
-            const int winningPoints = 2;
-            const int losingPoints = 1;
-
             var season = await context.Season
-                .Include(s => s.Participants)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
                 .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == seasonID);
 
-            var points = new Dictionary<int, int>();
+            var points = new Dictionary<int, SeasonStanding>();
             foreach (var participant in season.Participants)
             {
-                points.Add(participant.LeagueUserID, 0);
+                var leagueUserID = participant.LeagueUserID;
+                points.Add(leagueUserID, new SeasonStanding(leagueUserID, participant.LeagueUser.Elo));
             }
 
             foreach(var set in season.Sets)
@@ -131,30 +128,52 @@ namespace Climb.Services
                 if(set.IsComplete)
                 {
                     Debug.Assert(set.WinnerID != null, "set.WinnerID != null");
-                    points[set.WinnerID.Value] += winningPoints;
+                    points[set.WinnerID.Value].wins++;
 
                     if(!set.IsBye)
                     {
                         Debug.Assert(set.LoserID != null, "set.LoserID != null");
-                        points[set.LoserID.Value] += losingPoints;
+                        points[set.LoserID.Value].losses++;
+                        points[set.WinnerID.Value].BeatOpponent(set.LoserID.Value);
                     }
                 }
             }
-            var sortedPoints = points.OrderByDescending(e => e.Value);
 
-            // TODO: Tie breakers.
+            var tieBreaker = TieBreakerFactory.Create();
+
+            var standingData = points.Values.ToList();
+            while(standingData.Count > 0)
+            {
+                var ties = new List<SeasonStanding>();
+                var currentPoints = standingData[0].GetSeasonPoints();
+                for (int i = standingData.Count - 1; i >= 0; --i)
+                {
+                    if(standingData[i].GetSeasonPoints() == currentPoints)
+                    {
+                        ties.Add(standingData[i]);
+                        standingData.RemoveAt(i);
+                    }
+                }
+
+                if (ties.Count > 0)
+                {
+                    tieBreaker.Break(ties);
+                }
+            }
+
+            var sortedPoints = points.OrderByDescending(p => p.Value);
 
             var placing = 1;
-            var lastPoints = -1;
+            var lastTieBreaker = -1m;
             foreach(var participant in sortedPoints)
             {
                 var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
                 leagueUserSeason.Standing = placing;
-                leagueUserSeason.Points = participant.Value;
-                if(lastPoints != participant.Value)
+                leagueUserSeason.Points = participant.Value.GetSeasonPoints();
+                if(lastTieBreaker != participant.Value.tieBreaker)
                 {
                     ++placing;
-                    lastPoints = participant.Value;
+                    lastTieBreaker = participant.Key;
                 }
             }
 

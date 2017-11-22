@@ -67,6 +67,22 @@ namespace Climb.Controllers
 
             return Ok($"Season {id} has been ended.");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAndStart(int leagueID)
+        {
+            var league = await context.League
+                .Include(l => l.Seasons)
+                .SingleOrDefaultAsync(l => l.ID == leagueID);
+            if (league == null)
+            {
+                return NotFound();
+            }
+
+            var season = await seasonService.Create(league);
+
+            return await StartPost(season.ID);
+        }
         #endregion
 
         [HttpPost]

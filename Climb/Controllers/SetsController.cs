@@ -147,6 +147,13 @@ namespace Climb.Controllers
 
             return RedirectToAction(nameof(UsersController.Home), "Users");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStandings(int id)
+        {
+            await seasonService.UpdateStandings(id);
+            return Ok("Standings updated.");
+        }
     }
 
     public class SetMatch
