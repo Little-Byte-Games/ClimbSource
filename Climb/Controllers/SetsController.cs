@@ -32,7 +32,7 @@ namespace Climb.Controllers
         #region Pages
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if(id == null)
             {
                 return NotFound();
             }
@@ -42,7 +42,7 @@ namespace Climb.Controllers
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .Include(s => s.Matches)
                 .SingleOrDefaultAsync(m => m.ID == id);
-            if (set == null)
+            if(set == null)
             {
                 return NotFound();
             }
@@ -54,7 +54,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Fight(int id)
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
@@ -67,13 +67,22 @@ namespace Climb.Controllers
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
-            if (set == null)
+            if(set == null)
             {
                 return NotFound();
             }
 
             var viewModel = new GenericViewModel<Set>(user, set);
             return View(viewModel);
+        }
+        #endregion
+
+        #region API
+        [HttpPost]
+        public async Task<IActionResult> UpdateStandings(int id)
+        {
+            await seasonService.UpdateStandings(id);
+            return Ok("Standings updated.");
         }
         #endregion
 
@@ -91,7 +100,7 @@ namespace Climb.Controllers
             context.Update(set);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Fight), "Sets", new {id = setID });
+            return RedirectToAction(nameof(Fight), "Sets", new {id = setID});
         }
 
         [HttpPost]
@@ -135,7 +144,6 @@ namespace Climb.Controllers
             }
 
             // TODO: Inflate k-factor
-
 
             const int startingElo = 2000;
             set.Player1.Elo = set.Player1.Elo == 0 ? startingElo : set.Player1.Elo;
@@ -181,17 +189,10 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateStandings(int id)
-        {
-            await seasonService.UpdateStandings(id);
-            return Ok("Standings updated.");
-        }
-
-        [HttpPost]
         public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
         {
             var challenged = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
-            if (challenged == null)
+            if(challenged == null)
             {
                 return NotFound($"No challenged league user with id '{challengedID} found.");
             }
@@ -199,13 +200,13 @@ namespace Climb.Controllers
             var challenger = await context.User
                 .Include(u => u.LeagueUsers)
                 .SingleOrDefaultAsync(u => u.ID == challengerID);
-            if (challenger == null)
+            if(challenger == null)
             {
                 return NotFound($"No challenger user with id '{challengerID} found.");
             }
 
             var challengerLeagueUser = challenger.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == challenged.LeagueID);
-            if (challengerLeagueUser == null)
+            if(challengerLeagueUser == null)
             {
                 return NotFound($"No challenger league user for league ID '{challenged.LeagueID}' found.");
             }
@@ -220,19 +221,7 @@ namespace Climb.Controllers
             await context.Set.AddAsync(set);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Fight), new { id = set.ID });
-        }
-    }
-
-    public class SetMatch
-    {
-        public Set set;
-        public Match match;
-
-        public SetMatch(Set set)
-        {
-            this.set = set;
-            match = new Match();
+            return RedirectToAction(nameof(Fight), new {id = set.ID});
         }
     }
 }
