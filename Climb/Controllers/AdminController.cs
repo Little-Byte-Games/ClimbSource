@@ -16,6 +16,7 @@ namespace Climb.Controllers
             this.environment = environment;
         }
 
+        #region Pages
         public IActionResult Index()
         {
             if (!environment.IsDevelopment())
@@ -24,12 +25,15 @@ namespace Climb.Controllers
             }
             return View();
         }
+        #endregion
 
+        #region API
         [HttpPost]
         public IActionResult ResetDB()
         {
             DbInitializer.Initialize(context, true);
             return Ok("Db reset");
         }
+        #endregion
     }
 }
