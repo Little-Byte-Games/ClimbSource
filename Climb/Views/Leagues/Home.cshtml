@@ -11,6 +11,7 @@
 
 <link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
 <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+<script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
 
 <div align="center">
 	<h1>@Model.league.Name</h1>
@@ -49,10 +50,7 @@
 		<div class="col-xs-4">
 			<h4 align="center">Seasons</h4>
 		    
-            <form asp-controller="Seasons" asp-action="CreateAndStart" method="post">
-		        <input type="hidden" name="leagueID" value="@Model.league.ID"/>
-                <input type="submit" value="Create Season"/>
-		    </form>
+		    <button onclick="createSeason(@Model.league.ID)">Create Season</button>
 
 		    <div class="btn-group" align="center">
 				@foreach(var season in Model.league.Seasons)

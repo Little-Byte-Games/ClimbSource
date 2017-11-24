@@ -164,7 +164,7 @@ namespace Climb.Controllers
             await seasonService.JoinAll(season);
             await seasonService.Start(season);
 
-            return Ok("Season started.");
+            return Ok(season);
         }
         #endregion
 
