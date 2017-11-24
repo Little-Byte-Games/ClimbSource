@@ -29,10 +29,11 @@ namespace Climb.Controllers
             this.leagueService = leagueService;
         }
 
+        #region Pages
         public async Task<IActionResult> Index()
         {
             var user = await GetViewUserAsync();
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
@@ -46,6 +47,95 @@ namespace Climb.Controllers
             var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues);
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Home(int id)
+        {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var league = await context.League
+                .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2)
+                .SingleOrDefaultAsync(l => l.ID == id);
+            if (league == null)
+            {
+                return NotFound();
+            }
+
+            var currentSeason = league.CurrentSeason;
+            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete && !s.IsBye);
+
+            int? seasonID = null;
+            if (currentSeason != null)
+            {
+                seasonID = currentSeason.ID;
+            }
+            else if (league.Seasons?.Count > 0)
+            {
+                seasonID = league.Seasons.Last().ID;
+            }
+
+            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets, seasonID);
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Schedule(int? leagueID, int? seasonIndex)
+        {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
+            var leagueUser = user.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == leagueID) ?? user.LeagueUsers.FirstOrDefault();
+
+            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID);
+            List<Season> selectedSeasons = null;
+
+            if (leagueUser != null)
+            {
+                var seasons = await context.Season
+                    .Include(s => s.Participants)
+                    .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                    .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
+                    .ToListAsync();
+                selectedSeasons = seasons.Where(season => season.Participants != null && season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
+            }
+
+            var selectedSeason = selectedSeasons?.SingleOrDefault(s => s.Index == seasonIndex) ?? selectedSeasons?.FirstOrDefault();
+
+            var viewModel = new CompeteScheduleViewModel(user, selectedLeague, selectedSeason, leagues, selectedSeasons, leagueUser);
+            return View(viewModel);
+        }
+        #endregion
+
+        #region API
+        [HttpPost]
+        public async Task<IActionResult> TakeAllRankSnapshots([FromServices]IHttpContextAccessor contextAccessor)
+        {
+            var key = contextAccessor.HttpContext.Request.Headers["key"];
+            if (key == "steve")
+            {
+                var leagues = await context.League
+                    .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
+                    .Include(l => l.Members).ThenInclude(lu => lu.User)
+                    .ToArrayAsync();
+                foreach (var league in leagues)
+                {
+                    await leagueService.TakeSnapshot(league);
+                }
+                return Accepted();
+            }
+
+            return Forbid();
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> Join(int leagueID, int userID)
@@ -81,42 +171,6 @@ namespace Climb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Home(int id)
-        {
-            var user = await GetViewUserAsync();
-            if(user == null)
-            {
-                return NotFound();
-            }
-
-            var league = await context.League
-                .Include(l => l.Members).ThenInclude(lu => lu.User)
-                .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
-                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
-                .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2)
-                .SingleOrDefaultAsync(l => l.ID == id);
-            if(league == null)
-            {
-                return NotFound();
-            }
-
-            var currentSeason = league.CurrentSeason;
-            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete && !s.IsBye);
-
-            int? seasonID = null;
-            if (currentSeason != null)
-            {
-                seasonID = currentSeason.ID; 
-            }
-            else if (league.Seasons?.Count > 0)
-            {
-                seasonID = league.Seasons.Last().ID;
-            }
-
-            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets, seasonID);
-            return View(viewModel);
-        }
-
         [HttpPost]
         public async Task<IActionResult> TakeRankSnapshot(int id)
         {
@@ -142,57 +196,6 @@ namespace Climb.Controllers
             await SlackController.SendGroupMessage(apiKey, message.ToString());
 
             return RedirectToAction(nameof(Home), new {id});
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> TakeAllRankSnapshots([FromServices]IHttpContextAccessor contextAccessor)
-        {
-            var key = contextAccessor.HttpContext.Request.Headers["key"];
-            if(key == "steve")
-            {
-                var leagues = await context.League
-                    .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
-                    .Include(l => l.Members).ThenInclude(lu => lu.User)
-                    .ToArrayAsync();
-                foreach(var league in leagues)
-                {
-                    await leagueService.TakeSnapshot(league);
-                }
-                return Accepted();
-            }
-
-            return Forbid();
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Schedule(int? leagueID, int? seasonIndex)
-        {
-            var user = await GetViewUserAsync();
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var leagues = user.LeagueUsers.Select(ul => ul.League).ToList();
-            var leagueUser = user.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == leagueID) ?? user.LeagueUsers.FirstOrDefault();
-
-            var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID);
-            List<Season> selectedSeasons = null;
-
-            if (leagueUser != null)
-            {
-                var seasons = await context.Season
-                    .Include(s => s.Participants)
-                    .Include(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
-                    .Include(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                    .ToListAsync();
-                selectedSeasons = seasons.Where(season => season.Participants != null && season.Participants.Any(lus => lus.LeagueUserID == leagueUser.ID)).ToList();
-            }
-
-            var selectedSeason = selectedSeasons?.SingleOrDefault(s => s.Index == seasonIndex) ?? selectedSeasons?.FirstOrDefault();
-
-            var viewModel = new CompeteScheduleViewModel(user, selectedLeague, selectedSeason, leagues, selectedSeasons, leagueUser);
-            return View(viewModel);
         }
     }
 }
