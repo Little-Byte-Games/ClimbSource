@@ -17,7 +17,7 @@
 		<h4>Home of @Model.user.Username</h4>
 		foreach(var leagueUser in Model.possibleExhibitions)
 		{
-			<form method="post" asp-controller="Compete" asp-action="Exhibition" asp-route-challengerID="@Model.viewingUser.ID" asp-route-challengedID="@leagueUser.ID">
+			<form method="post" asp-controller="Sets" asp-action="Exhibition" asp-route-challengerID="@Model.viewingUser.ID" asp-route-challengedID="@leagueUser.ID">
 				<button type="submit" class="btn btn-danger">Fight in @leagueUser.League.Name!</button>
 			</form>
 		}

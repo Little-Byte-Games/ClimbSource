@@ -1,6 +1,9 @@
 ﻿using Climb.Core;
 using Climb.Models;
 using Climb.Services;
+using Climb.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,19 +15,21 @@ using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
 {
-    public class SetsController : Controller
+    public class SetsController : ModelController
     {
+        private readonly ClimbContext context;
         public readonly IConfiguration configuration;
-        private readonly ClimbContext _context;
         private readonly ISeasonService seasonService;
 
-        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService)
+        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager)
+            : base(userService, userManager)
         {
-            _context = context;
+            this.context = context;
             this.configuration = configuration;
             this.seasonService = seasonService;
         }
 
+        #region Pages
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,7 +37,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var set = await _context.Set
+            var set = await context.Set
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .Include(s => s.Matches)
@@ -45,27 +50,54 @@ namespace Climb.Controllers
             return View(set);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Fight(int id)
+        {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var set = await context.Set
+                .Include(s => s.Matches)
+                .Include(s => s.Season)
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
+                .Include(s => s.Player1).ThenInclude(lu => lu.User)
+                .Include(s => s.Player2).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if (set == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new GenericViewModel<Set>(user, set);
+            return View(viewModel);
+        }
+        #endregion
+
         [HttpPost]
         public async Task<IActionResult> AddMatch(int setID)
         {
-            var set = await _context.Set.Include(s => s.Matches).SingleAsync(s => s.ID == setID);
+            var set = await context.Set.Include(s => s.Matches).SingleAsync(s => s.ID == setID);
             var match = new Match
             {
                 Index = set.Matches.Count
             };
 
-            await _context.AddAsync(match);
+            await context.AddAsync(match);
             set.Matches.Add(match);
-            _context.Update(set);
-            await _context.SaveChangesAsync();
+            context.Update(set);
+            await context.SaveChangesAsync();
 
-            return RedirectToAction("Fight", "Compete", new {id = setID });
+            return RedirectToAction(nameof(Fight), "Sets", new {id = setID });
         }
 
         [HttpPost]
         public async Task<IActionResult> Submit(int setID, IList<Match> matches)
         {
-            var set = await _context.Set.Include(s => s.Matches)
+            var set = await context.Set.Include(s => s.Matches)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
@@ -94,11 +126,11 @@ namespace Climb.Controllers
                 if(oldMatch == null)
                 {
                     set.Matches.Add(match);
-                    _context.Update(match);
+                    context.Update(match);
                 }
                 else
                 {
-                    _context.Entry(oldMatch).CurrentValues.SetValues(match);
+                    context.Entry(oldMatch).CurrentValues.SetValues(match);
                 }
             }
 
@@ -116,9 +148,9 @@ namespace Climb.Controllers
             set.Player1.Elo = newElo.Item1;
             set.Player2.Elo = newElo.Item2;
 
-            _context.Update(set);
+            context.Update(set);
 
-            var users = await _context.LeagueUser.Where(lu => lu.LeagueID == set.LeagueID).ToListAsync();
+            var users = await context.LeagueUser.Where(lu => lu.LeagueID == set.LeagueID).ToListAsync();
             users.Sort();
             var rank = 0;
             var lastElo = -1;
@@ -132,9 +164,9 @@ namespace Climb.Controllers
                 }
                 member.Rank = rank;
             }
-            _context.UpdateRange(users);
+            context.UpdateRange(users);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             if(!set.IsExhibition)
             {
@@ -153,6 +185,42 @@ namespace Climb.Controllers
         {
             await seasonService.UpdateStandings(id);
             return Ok("Standings updated.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
+        {
+            var challenged = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
+            if (challenged == null)
+            {
+                return NotFound($"No challenged league user with id '{challengedID} found.");
+            }
+
+            var challenger = await context.User
+                .Include(u => u.LeagueUsers)
+                .SingleOrDefaultAsync(u => u.ID == challengerID);
+            if (challenger == null)
+            {
+                return NotFound($"No challenger user with id '{challengerID} found.");
+            }
+
+            var challengerLeagueUser = challenger.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == challenged.LeagueID);
+            if (challengerLeagueUser == null)
+            {
+                return NotFound($"No challenger league user for league ID '{challenged.LeagueID}' found.");
+            }
+
+            var set = new Set
+            {
+                Player1ID = challengerLeagueUser.ID,
+                Player2ID = challengedID,
+                DueDate = DateTime.Now.Date,
+                LeagueID = challengerLeagueUser.LeagueID,
+            };
+            await context.Set.AddAsync(set);
+            await context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Fight), new { id = set.ID });
         }
     }
 
