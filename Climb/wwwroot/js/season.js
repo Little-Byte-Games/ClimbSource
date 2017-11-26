@@ -23,3 +23,7 @@ function endSeason(seasonID) {
         }
     });
 }
+
+function goToSeason(seasonID) {
+    window.location.href = "/Seasons/Home/" + seasonID;
+}

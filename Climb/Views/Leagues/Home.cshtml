@@ -56,7 +56,7 @@
 				@foreach(var season in Model.league.Seasons)
 				{
 					var active = season.ID == Model.selectedSeason.ID ? "active" : "";
-					<button id="season-@season.ID" type="button" class="btn btn-default @active" onclick="getSeasonStatus(@season.ID)">@season.DisplayName</button>
+					<button id="season-@season.ID" type="button" class="btn btn-default @active" onclick="goToSeason(@season.ID)">@season.DisplayName</button>
 				}
 			</div>
 			@if(Model.selectedSeason != null)
