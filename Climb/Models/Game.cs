@@ -35,6 +35,11 @@ namespace Climb.Models
 
             foreach(var match in matches)
             {
+                if(match.Player1CharacterID == null || match.Player2CharacterID == null)
+                {
+                    continue;
+                }
+
                 ++characterCounts[match.Player1Character].matches;
                 ++characterCounts[match.Player2Character].matches;
                 characterCounts[match.WinningCharacter].wins += match.IsDitto ? 2 : 1;

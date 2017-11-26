@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Climb.Models;
+using Microsoft.EntityFrameworkCore;
+using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Models;
-using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 
 namespace Climb.Services
 {
@@ -33,7 +33,12 @@ namespace Climb.Services
             {
                 var character = match.Set.Player1ID == id ? match.Player1Character : match.Player2Character;
 
-                if(characterUsage.ContainsKey(character))
+                if(character == null)
+                {
+                    continue;
+                }
+
+                if (characterUsage.ContainsKey(character))
                 {
                     ++characterUsage[character];
                 }
