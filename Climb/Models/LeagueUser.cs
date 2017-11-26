@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 
 namespace Climb.Models
 {
@@ -26,11 +26,17 @@ namespace Climb.Models
         public bool HasLeft { get; set; }
         public int Rank { get; set; }
 
+        [JsonIgnore]
         public User User { get; set; }
+        [JsonIgnore]
         public League League { get; set; }
+        [JsonIgnore]
         public HashSet<LeagueUserSeason> Seasons { get; set; }
+        [JsonIgnore]
         public HashSet<Set> P1Sets { get; set; }
+        [JsonIgnore]
         public HashSet<Set> P2Sets { get; set; }
+        [JsonIgnore]
         public HashSet<RankSnapshot> RankSnapshots { get; set; }
 
         public int CompareTo(LeagueUser other)
