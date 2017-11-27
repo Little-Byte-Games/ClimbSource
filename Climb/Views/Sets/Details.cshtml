@@ -1,66 +1,10 @@
 ﻿@model Set
 
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = "Sets - Details";
+    Layout = "_Layout";
 }
 
-<h2>Details</h2>
+<h1 align="center">Set - Details</h1>
 
-<div>
-	<h4>Set</h4>
-	<hr />
-	<dl class="dl-horizontal">
-		<dt>
-			@Html.DisplayNameFor(model => model.UpdatedDate)
-		</dt>
-		<dd>
-			@Html.DisplayFor(model => model.UpdatedDate)
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Player1)
-		</dt>
-		<dd>
-			@Model.Player1.User.Username
-		</dd>
-		<dt>
-			@Html.DisplayNameFor(model => model.Player2)
-		</dt>
-		<dd>
-			@Model.Player2.User.Username
-		</dd>
-	</dl>
-</div>
-
-
-<form asp-action="AddMatch">
-	<input type="hidden" name="setID" value="@Model.ID" />
-	<div class="form-group">
-		<input type="submit" value="Add Match" class="btn btn-default" />
-	</div>
-</form>
-
-<form asp-action="Submit">
-	<input type="hidden" name="setID" value="@Model.ID" />
-	
-	@{ int i = 0;}
-	@foreach(var match in Model.Matches)
-	{
-	@*@Html.Partial("../Matches/MatchForm", match);*@
-
-		<tr>
-			<td>
-				@{ var index = match.Index + 1;}
-				<h4>Match @index</h4>
-				<input type="number" value="@match.ID" name="[@i].ID"/>
-				<input type="number" value="@match.Index" name="[@i].Index"/>
-				<input type="number" value="@match.Player1Score" name="[@i].Player1Score"/>
-				<input type="number" value="@match.Player2Score" name="[@i].Player2Score"/>
-				@{ ++i;}
-			</td>
-		</tr>
-	}
-	<br/>
-	<div class="form-group">
-		<input type="submit" value="Submit" class="btn btn-default"/>
-	</div>
-</form>
+@Html.Partial("/Views/Sets/Partials/Fight.cshtml", Model)

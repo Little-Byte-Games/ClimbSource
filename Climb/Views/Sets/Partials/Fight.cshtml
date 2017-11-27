@@ -55,7 +55,7 @@
 		</div>
 		<div class="add-match">
 			<form asp-controller="Sets" asp-action="AddMatch" method="post">
-				<input type="hidden" name="setID" value="@Model.ID"/>
+				<input type="hidden" name="id" value="@Model.ID"/>
 				<div class="form-group">
 					<input type="submit" value="Add Match" class="btn btn-primary"/>
 				</div>
@@ -63,7 +63,7 @@
 		</div>
 
 		<form asp-controller="Sets" asp-action="Submit" method="post">
-			<input type="hidden" name="setID" value="@Model.ID"/>
+			<input type="hidden" name="id" value="@Model.ID"/>
 			<div class="match-wrapper">
 				<div class="match-container">
 					<div class="match-header">

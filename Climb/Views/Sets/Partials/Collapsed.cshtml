@@ -3,34 +3,35 @@
 @inject IHostingEnvironment hostingEnvironment
 
 <div class="panel panel-default">
-	<div align="center">
-		<div>
-			@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
-			|
-			@Model.SeasonName
-		</div>
-		<span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
-		<br/>
+    <div align="center">
+        @Model.set.ID
+        <div>
+            @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
+            |
+            @Model.SeasonName
+        </div>
+        <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
+        <br/>
 
-		@if(Model.set.IsComplete)
-		{
-			<span>@Model.set.Player1Score - @Model.set.Player2Score</span>
-			if(!Model.set.IsBye)
-			{
-				<br/>
-				<a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
-			}
-		}
-		else
-		{
-			<span>@Model.set.DueDate.ToShortDateString()</span>
+        @if(Model.set.IsComplete)
+        {
+            <span>@Model.set.Player1Score - @Model.set.Player2Score</span>
+            if(!Model.set.IsBye)
+            {
+                <br/>
+                <a asp-controller="Sets" asp-action="Details" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
+            }
+        }
+        else
+        {
+            <span>@Model.set.DueDate.ToShortDateString()</span>
 
-			if(Model.set.IsPlaying(Model.user) || hostingEnvironment.IsDevelopment())
-			{
-				<br/>
-				<a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
-			}
-		}
+            if(Model.set.IsPlaying(Model.user))// || hostingEnvironment.IsDevelopment())
+            {
+                <br/>
+                <a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
+            }
+        }
 
-	</div>
+    </div>
 </div>

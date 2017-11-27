@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +19,17 @@ namespace Climb.Controllers
     public class SetsController : ModelController
     {
         private readonly ClimbContext context;
-        public readonly IConfiguration configuration;
+        private readonly IConfiguration configuration;
         private readonly ISeasonService seasonService;
+        private readonly ISetService setService;
 
-        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager)
+        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager, ISetService setService)
             : base(userService, userManager)
         {
             this.context = context;
             this.configuration = configuration;
             this.seasonService = seasonService;
+            this.setService = setService;
         }
 
         #region Pages
@@ -84,12 +87,46 @@ namespace Climb.Controllers
             await seasonService.UpdateStandings(id);
             return Ok("Standings updated.");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Submit(int id, IList<Match> matches)
+        {
+            var set = await context.Set.Include(s => s.Matches)
+                .Include(s => s.Season).ThenInclude(s => s.Participants)
+                .Include(s => s.Player1).ThenInclude(p => p.User)
+                .Include(s => s.Player2).ThenInclude(p => p.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if (set == null)
+            {
+                return NotFound($"Could not find set with ID '{id}'.");
+            }
+
+            try
+            {
+                await setService.Put(set, matches);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                return BadRequest($"Set {id} could not be submitted.");
+            }
+
+
+            return Ok(JsonConvert.SerializeObject(set));
+        }
         #endregion
 
         [HttpPost]
-        public async Task<IActionResult> AddMatch(int setID)
+        public async Task<IActionResult> AddMatch(int id)
         {
-            var set = await context.Set.Include(s => s.Matches).SingleAsync(s => s.ID == setID);
+            var set = await context.Set
+                .Include(s => s.Matches)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(set == null)
+            {
+                return NotFound($"Set with ID '{id}' not found.");
+            }
+
             var match = new Match
             {
                 Index = set.Matches.Count
@@ -100,11 +137,12 @@ namespace Climb.Controllers
             context.Update(set);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Fight), "Sets", new {id = setID});
+            return RedirectToAction(nameof(Fight), "Sets", new {id = id});
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(int setID, IList<Match> matches)
+        [Obsolete("Use Submit")]
+        public async Task<IActionResult> Submit_OLD(int setID, IList<Match> matches)
         {
             var set = await context.Set.Include(s => s.Matches)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
@@ -116,10 +154,20 @@ namespace Climb.Controllers
                 return NotFound($"Could not find set with ID '{setID}'.");
             }
 
+            if(matches.Count == 0)
+            {
+                return BadRequest($"Can't submit set {setID} without any matches.");
+            }
+
+            //if(set.Matches.Count > 0)
+            //{
+            //    return BadRequest($"Set '{setID}' has already been submitted. Try editing instead.");
+            //}
+
             set.Player1Score = 0;
             set.Player2Score = 0;
 
-            set.UpdatedDate = DateTime.Now;
+            set.UpdatedDate = DateTime.UtcNow;
             foreach(var match in matches)
             {
                 if(match.Player1Score > 0 && match.Player1Score > match.Player2Score)
