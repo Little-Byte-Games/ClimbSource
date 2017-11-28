@@ -1,22 +1,26 @@
 ﻿@using Climb.Services
-@model Set
+@using Climb.ViewModels.Matches
+@using Climb.ViewModels.Sets
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model SetFightViewModel
 @inject ICdnService CDNService
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
+<script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
 
 <div class="form-container">
 	<div class="form">
 		<div class="player-container">
 			<div class="player">
 				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player1)"/>
+					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.set.Player1)"/>
 				</div>
 				<div class="player-info">
 					<div class="player-info-name">
-						<span>@Model.Player1Name</span>
+						<span>@Model.set.Player1Name</span>
 					</div>
 					<div class="player-info-rank">
-						<span>#@Model.Player1.Rank</span>
+						<span>#@Model.set.Player1.Rank</span>
 						<span>↓</span>
 					</div>
 				</div>
@@ -25,24 +29,24 @@
 			<div class="player">
 				<div class="player-info">
 					<div class="player-info-name text-right">
-						<span>@Model.Player2Name</span>
+						<span>@Model.set.Player2Name</span>
 					</div>
 					<div class="player-info-rank">
 						<span>↑</span>
-						<span>#@Model.Player2.Rank</span>
+						<span>#@Model.set.Player2.Rank</span>
 					</div>
 				</div>
 				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player2)"/>
+					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.set.Player2)"/>
 				</div>
 			</div>
 		</div>
 		<div class="header">
-			<span>@Model.League.Name</span>
+			<span>@Model.set.League.Name</span>
 			<span>&nbsp;|&nbsp;</span>
-			<span>@(Model.Season?.DisplayName ?? "Exhibition")</span>
+			<span>@(Model.set.Season?.DisplayName ?? "Exhibition")</span>
 			<span>&nbsp;|&nbsp;</span>
-			<span>@Model.DueDate.ToShortDateString()</span>
+			<span>@Model.set.DueDate.ToShortDateString()</span>
 		</div>
 		<div class="set-count-container">
 			<div class="set-count">
@@ -54,16 +58,11 @@
 			</div>
 		</div>
 		<div class="add-match">
-			<form asp-controller="Sets" asp-action="AddMatch" method="post">
-				<input type="hidden" name="id" value="@Model.ID"/>
-				<div class="form-group">
-					<input type="submit" value="Add Match" class="btn btn-primary"/>
-				</div>
-			</form>
+			<button class="btn btn-primary" onclick="addMatch()">Add Match</button>
 		</div>
 
 		<form asp-controller="Sets" asp-action="Submit" method="post">
-			<input type="hidden" name="id" value="@Model.ID"/>
+			<input type="hidden" name="id" value="@Model.set.ID"/>
 			<div class="match-wrapper">
 				<div class="match-container">
 					<div class="match-header">
@@ -74,11 +73,14 @@
 						<div class="match-form-stage">Stage</div>
 					</div>
 
-					<div class="matches">
-						@foreach(var match in Model.Matches)
-						{
-							@Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", match)
-						}
+					<div id="matches" class="matches">
+                        @for(int i = 0; i < Model.matches.Length; i++)
+                        {
+                            // TODO: Change display instead?
+                            <div class="match" @(Model.matches[i] == null ? "hidden" : "")>
+                                @Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", new MatchFormViewModel(i, Model.set, Model.matches[i]))
+                            </div>
+                        }
 					</div>
 				</div>
 			</div>

@@ -18,6 +18,8 @@ namespace Climb.Controllers
 {
     public class SetsController : ModelController
     {
+        public const int MaxMatchCount = 5;
+
         private readonly ClimbContext context;
         private readonly IConfiguration configuration;
         private readonly ISeasonService seasonService;
@@ -137,7 +139,7 @@ namespace Climb.Controllers
             context.Update(set);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Fight), "Sets", new {id = id});
+            return RedirectToAction(nameof(Fight), "Sets", new {id});
         }
 
         [HttpPost]

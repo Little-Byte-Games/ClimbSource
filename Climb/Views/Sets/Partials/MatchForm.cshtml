@@ -1,45 +1,48 @@
-﻿@model Match
+﻿@using Climb.ViewModels.Matches
+@model MatchFormViewModel
 
-<link href="/css/fight.css" rel="Stylesheet" type="text/css" />	
+<link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 
 <div class="row">
-	<div class="col-md-4">
-		<input type="hidden" value="@Model.ID" name="[@Model.Index].ID" />
-		<input type="hidden" value="@Model.Index" name="[@Model.Index].Index"/>
+    <div class="col-md-4">
+        <input type="hidden" value="@Model.index" name="[@Model.index].index"/>
 
-		<table>
-			<tr>
-				<td class="match-form-score">
-					<input type="number" value="@Model.Player1Score" name="[@Model.Index].Player1Score" class="form-control"/>
-				</td>
-				<td class="match-form-score">
-					<input type="number" value="@Model.Player2Score" name="[@Model.Index].Player2Score" class="form-control" />
-				</td>
-				<td class="match-form-character">
-					<select name="[@Model.Index].Player1CharacterID" class="form-control">
-						@foreach(var character in Model.Set.League.Game.Characters)
-						{
-							<option value="@character.ID">@character</option>
-						}
-					</select>
-				</td>
-				<td class="match-form-character">
-					<select name="[@Model.Index].Player2CharacterID" class="form-control">
-						@foreach (var character in Model.Set.League.Game.Characters)
-						{
-							<option value="@character.ID">@character</option>
-						}
-					</select>
-				</td>
-				<td class="match-form-stage">
-					<select name="[@Model.Index].StageID" class="form-control">
-						@foreach (var stage in Model.Set.League.Game.Stages)
-						{
-							<option value="@stage.ID">@stage</option>
-						}
-					</select>
-				</td>
-			</tr>
-		</table>
-	</div>
+        <table>
+            <tr>
+                <td class="match-form-score">
+                    <input type="number" value="@Model.player1Score" name="[@Model.index].Player1Score" class="form-control"/>
+                </td>
+                <td class="match-form-score">
+                    <input type="number" value="@Model.player2Score" name="[@Model.index].Player2Score" class="form-control"/>
+                </td>
+                <td class="match-form-character">
+                    <select name="[@Model.index].Player1CharacterID" class="form-control" value="@Model.player1Character">
+                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+                        @foreach(var character in Model.set.League.Game.Characters)
+                        {
+                            <option value="@character.ID">@character</option>
+                        }
+                    </select>
+                </td>
+                <td class="match-form-character">
+                    <select name="[@Model.index].Player2CharacterID" class="form-control" value="@Model.player2Character">
+                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+                        @foreach(var character in Model.set.League.Game.Characters)
+                        {
+                            <option value="@character.ID">@character</option>
+                        }
+                    </select>
+                </td>
+                <td class="match-form-stage">
+                    <select name="[@Model.index].stageID" class="form-control" value="@Model.stage">
+                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+                        @foreach(var stage in Model.set.League.Game.Stages)
+                        {
+                            <option value="@stage.ID">@stage</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
