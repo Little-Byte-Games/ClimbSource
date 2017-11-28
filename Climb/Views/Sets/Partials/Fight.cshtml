@@ -1,9 +1,10 @@
-﻿@using Climb.Services
+﻿@using Climb.Controllers
+@using Climb.Services
 @using Climb.ViewModels.Matches
 @using Climb.ViewModels.Sets
 @using Microsoft.AspNetCore.Mvc.Rendering
 @model SetFightViewModel
-@inject ICdnService CDNService
+@inject ICdnService cdnService
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 <script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
@@ -13,7 +14,7 @@
 		<div class="player-container">
 			<div class="player">
 				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.set.Player1)"/>
+					<img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player1)"/>
 				</div>
 				<div class="player-info">
 					<div class="player-info-name">
@@ -37,7 +38,7 @@
 					</div>
 				</div>
 				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.set.Player2)"/>
+					<img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
 				</div>
 			</div>
 		</div>
@@ -74,10 +75,9 @@
 					</div>
 
 					<div id="matches" class="matches">
-                        @for(int i = 0; i < Model.matches.Length; i++)
+                        @for(int i = 0; i < SetsController.MaxMatchCount; i++)
                         {
-                            // TODO: Change display instead?
-                            <div class="match" @(Model.matches[i] == null ? "hidden" : "")>
+                            <div class="match" @(Model.matches[i] == null ? Html.Raw("style=\"display: none\"") : null)>
                                 @Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", new MatchFormViewModel(i, Model.set, Model.matches[i]))
                             </div>
                         }

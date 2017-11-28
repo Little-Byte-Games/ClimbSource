@@ -91,7 +91,7 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(int id, IList<Match> matches)
+        public async Task<IActionResult> Submit(int id, List<Match> matches)
         {
             var set = await context.Set.Include(s => s.Matches)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
@@ -102,6 +102,8 @@ namespace Climb.Controllers
             {
                 return NotFound($"Could not find set with ID '{id}'.");
             }
+
+            matches.RemoveAll(m => m.Player1CharacterID < 0 || m.Player2CharacterID < 0 || m.StageID < 0);
 
             try
             {

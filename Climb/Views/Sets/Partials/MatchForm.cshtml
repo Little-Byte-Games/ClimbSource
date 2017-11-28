@@ -2,45 +2,70 @@
 @model MatchFormViewModel
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
+<script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
 
 <div class="row">
     <div class="col-md-4">
-        <input type="hidden" value="@Model.index" name="[@Model.index].index"/>
+        <input type="hidden" value="@Model.index" name="matches[@Model.index].index"/>
 
         <table>
             <tr>
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player1Score" name="[@Model.index].Player1Score" class="form-control"/>
+                    <input type="number" value="@Model.player1Score" name="matches[@Model.index].Player1Score" class="form-control"/>
                 </td>
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player2Score" name="[@Model.index].Player2Score" class="form-control"/>
+                    <input type="number" value="@Model.player2Score" name="matches[@Model.index].Player2Score" class="form-control"/>
                 </td>
                 <td class="match-form-character">
-                    <select name="[@Model.index].Player1CharacterID" class="form-control" value="@Model.player1Character">
+                    <select name="matches[@Model.index].Player1CharacterID" class="form-control" value="@Model.player1Character">
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @foreach(var character in Model.set.League.Game.Characters)
+                        @foreach (var character in Model.set.League.Game.Characters)
                         {
-                            <option value="@character.ID">@character</option>
+                            if (character.ID == Model.player1Character)
+                            {
+                                <option value="@character.ID" selected>@character</option>
+                            }
+                            else
+                            {
+                                <option value="@character.ID">@character</option>
+                            }
                         }
                     </select>
                 </td>
                 <td class="match-form-character">
-                    <select name="[@Model.index].Player2CharacterID" class="form-control" value="@Model.player2Character">
+                    <select name="matches[@Model.index].Player2CharacterID" class="form-control">
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @foreach(var character in Model.set.League.Game.Characters)
+                        @foreach (var character in Model.set.League.Game.Characters)
                         {
-                            <option value="@character.ID">@character</option>
+                            if(character.ID == Model.player2Character)
+                            {
+                                <option value="@character.ID" selected>@character</option>
+                            }
+                            else
+                            {
+                                <option value="@character.ID">@character</option>
+                            }
                         }
                     </select>
                 </td>
                 <td class="match-form-stage">
-                    <select name="[@Model.index].stageID" class="form-control" value="@Model.stage">
+                    <select name="matches[@Model.index].stageID" class="form-control" value="@Model.stage">
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @foreach(var stage in Model.set.League.Game.Stages)
+                        @foreach (var stage in Model.set.League.Game.Stages)
                         {
-                            <option value="@stage.ID">@stage</option>
+                            if (stage.ID == Model.stage)
+                            {
+                                <option value="@stage.ID" selected>@stage</option>
+                            }
+                            else
+                            {
+                                <option value="@stage.ID">@stage</option>
+                            }
                         }
                     </select>
+                </td>
+                <td>
+                    <button class="btn btn-danger" type="button" onclick="removeMatch(@Model.index)">X</button>
                 </td>
             </tr>
         </table>
