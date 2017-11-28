@@ -1,7 +1,11 @@
-﻿using Climb.Data;
+﻿using System;
+using System.Threading.Tasks;
+using Climb.Data;
 using Climb.Models;
+using Climb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Controllers
 {
@@ -9,11 +13,13 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext context;
         private readonly IHostingEnvironment environment;
+        private readonly ILeagueService leagueService;
 
-        public AdminController(ClimbContext context, IHostingEnvironment environment)
+        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService)
         {
             this.context = context;
             this.environment = environment;
+            this.leagueService = leagueService;
         }
 
         #region Pages
@@ -33,6 +39,29 @@ namespace Climb.Controllers
         {
             DbInitializer.Initialize(context, true);
             return Ok("Db reset");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TakeRankSnapshots()
+        {
+            var leagues = await context.League
+                .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
+                .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .ToArrayAsync();
+
+            try
+            {
+                foreach (var league in leagues)
+                {
+                    await leagueService.TakeSnapshot(league);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception);
+            }
+
+            return Ok("Snapshots taken");
         }
         #endregion
     }

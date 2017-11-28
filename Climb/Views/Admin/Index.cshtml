@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -7,26 +6,30 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width"/>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/js/admin.js"></script>
-    <link href="/css/admin.css" rel="Stylesheet" type="text/css" />
+    <link href="/css/admin.css" rel="Stylesheet" type="text/css"/>
     <title>Index</title>
 </head>
 <body>
-    <div id="modal">
-        <div class="modal-content">
-            <span id="closeModal">CLOSE</span>
-            <h3 id="modalAction"></h3>
-            <p id="modalResult"></p>
-        </div>
+<div id="modal">
+    <div class="modal-content">
+        <span id="closeModal">CLOSE</span>
+        <h3 id="modalAction"></h3>
+        <p id="modalResult"></p>
     </div>
+</div>
 
-    <a asp-controller="Users" asp-action="Home">Home</a>
-    <h1>Admin</h1>
-    <div>
-        <h2>DB</h2>
-        <button onclick="resetDB()">Reset</button>
-    </div>
+<a asp-controller="Users" asp-action="Home">Home</a>
+<h1>Admin</h1>
+<div>
+    <h2>DB</h2>
+    <button onclick="resetDB()">Reset</button>
+</div>
+<div>
+    <h2>League</h2>
+    <button onclick="takeSnapshots()">Take Snapshots</button>
+</div>
 </body>
 </html>
