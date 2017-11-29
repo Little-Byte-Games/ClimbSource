@@ -35,26 +35,6 @@ namespace Climb.Controllers
         }
 
         #region Pages
-        public async Task<IActionResult> Details(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
-            var set = await context.Set
-                .Include(s => s.Player1).ThenInclude(p => p.User)
-                .Include(s => s.Player2).ThenInclude(p => p.User)
-                .Include(s => s.Matches)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if(set == null)
-            {
-                return NotFound();
-            }
-
-            return View(set);
-        }
-
         [Authorize]
         public async Task<IActionResult> Fight(int id)
         {
