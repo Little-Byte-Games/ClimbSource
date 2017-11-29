@@ -5,6 +5,7 @@ using Climb.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -95,34 +96,11 @@ namespace Climb.Controllers
                 return BadRequest($"Set {id} could not be submitted.");
             }
 
+            await SendSetCompletedMessage(set);
 
             return Ok(JsonConvert.SerializeObject(set));
         }
         #endregion
-
-        [HttpPost]
-        public async Task<IActionResult> AddMatch(int id)
-        {
-            var set = await context.Set
-                .Include(s => s.Matches)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if(set == null)
-            {
-                return NotFound($"Set with ID '{id}' not found.");
-            }
-
-            var match = new Match
-            {
-                Index = set.Matches.Count
-            };
-
-            await context.AddAsync(match);
-            set.Matches.Add(match);
-            context.Update(set);
-            await context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Fight), "Sets", new {id});
-        }
 
         [HttpPost]
         [Obsolete("Use Submit")]
@@ -133,12 +111,12 @@ namespace Climb.Controllers
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == setID);
-            if(set == null)
+            if (set == null)
             {
                 return NotFound($"Could not find set with ID '{setID}'.");
             }
 
-            if(matches.Count == 0)
+            if (matches.Count == 0)
             {
                 return BadRequest($"Can't submit set {setID} without any matches.");
             }
@@ -152,19 +130,19 @@ namespace Climb.Controllers
             set.Player2Score = 0;
 
             set.UpdatedDate = DateTime.UtcNow;
-            foreach(var match in matches)
+            foreach (var match in matches)
             {
-                if(match.Player1Score > 0 && match.Player1Score > match.Player2Score)
+                if (match.Player1Score > 0 && match.Player1Score > match.Player2Score)
                 {
                     ++set.Player1Score;
                 }
-                else if(match.Player2Score > 0 && match.Player2Score > match.Player1Score)
+                else if (match.Player2Score > 0 && match.Player2Score > match.Player1Score)
                 {
                     ++set.Player2Score;
                 }
 
                 var oldMatch = set.Matches.SingleOrDefault(m => match.ID == m.ID);
-                if(oldMatch == null)
+                if (oldMatch == null)
                 {
                     set.Matches.Add(match);
                     context.Update(match);
@@ -194,10 +172,10 @@ namespace Climb.Controllers
             users.Sort();
             var rank = 0;
             var lastElo = -1;
-            for(var i = 0; i < users.Count; i++)
+            for (var i = 0; i < users.Count; i++)
             {
                 LeagueUser member = users[i];
-                if(member.Elo != lastElo)
+                if (member.Elo != lastElo)
                 {
                     lastElo = member.Elo;
                     rank = i + 1;
@@ -208,16 +186,22 @@ namespace Climb.Controllers
 
             await context.SaveChangesAsync();
 
-            if(!set.IsExhibition)
+            if (!set.IsExhibition)
             {
                 await seasonService.UpdateStandings(set.SeasonID.Value);
             }
 
-            var message = $"{set.Player1.User.Username} ({p1Wins}) v {set.Player2.User.Username} ({p2Wins})";
-            var apiKey = configuration.GetSection("Slack")["Key"];
-            await SlackController.SendGroupMessage(apiKey, message);
+            await SendSetCompletedMessage(set);
 
             return RedirectToAction(nameof(UsersController.Home), "Users");
+        }
+
+        private async Task SendSetCompletedMessage(Set set)
+        {
+            var message = $"{set.Player1.User.Username} ({set.Player1Score}) v {set.Player2.User.Username} ({set.Player2Score})";
+            message += $"\n\n{Url.Action(new UrlActionContext() {Action = nameof(Fight), Values = new { id = set.ID }, Protocol = "https"})}";
+            var apiKey = configuration.GetSection("Slack")["Key"];
+            await SlackController.SendGroupMessage(apiKey, message);
         }
 
         [HttpPost]
