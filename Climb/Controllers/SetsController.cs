@@ -199,7 +199,7 @@ namespace Climb.Controllers
         private async Task SendSetCompletedMessage(Set set)
         {
             var message = $"{set.Player1.User.Username} ({set.Player1Score}) v {set.Player2.User.Username} ({set.Player2Score})";
-            message += $"\n\n{Url.Action(new UrlActionContext() {Action = nameof(Fight), Values = new { id = set.ID }, Protocol = "https"})}";
+            message += $"\n\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new { id = set.ID }, Protocol = "https"})}";
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
         }
