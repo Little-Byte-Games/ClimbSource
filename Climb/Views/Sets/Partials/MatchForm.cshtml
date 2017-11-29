@@ -11,10 +11,10 @@
         <table>
             <tr>
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player1Score" name="matches[@Model.index].Player1Score" class="form-control"/>
+                    <input type="number" value="@Model.player1Score" name="matches[@Model.index].Player1Score" class="form-control player-score-1" onchange="scoreUpdated()"/>
                 </td>
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player2Score" name="matches[@Model.index].Player2Score" class="form-control"/>
+                    <input type="number" value="@Model.player2Score" name="matches[@Model.index].Player2Score" class="form-control player-score-2" onchange="scoreUpdated()"/>
                 </td>
                 <td class="match-form-character">
                     <select name="matches[@Model.index].Player1CharacterID" class="form-control" value="@Model.player1Character">
