@@ -7,6 +7,10 @@
     <UserSecretsId>aspnet-Climb-AA3EE316-0A0C-4126-9AE8-5F8D37A7F17B</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.11" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.362" />
