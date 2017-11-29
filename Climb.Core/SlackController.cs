@@ -23,8 +23,9 @@ namespace Climb.Core
                 };
                 await client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
             }
-            catch(Exception)
+            catch(Exception exception)
             {
+                Console.WriteLine($"Slack error!\n{exception}");
             }
         }
     }
