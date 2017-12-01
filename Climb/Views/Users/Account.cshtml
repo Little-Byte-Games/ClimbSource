@@ -29,12 +29,22 @@
 	{
 		<div>
 			<h3>@leagueUser.League.Name</h3>
-			<img src="@cdnService.GetProfilePic(leagueUser)"/>
-			<form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
-				<input type="hidden" name="id" value="@leagueUser.ID"/>
-				<input type="file" name="file" accept="image/*" />
-				<input type="submit" value="Update"/>
-			</form>
+		    <div>
+		        <img src="@cdnService.GetProfilePic(leagueUser)"/>
+		        <form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
+		            <input type="hidden" name="id" value="@leagueUser.ID"/>
+		            <input type="file" name="file" accept="image/*" />
+		            <input type="submit" value="Update"/>
+		        </form>
+		    </div>
+		    <div>
+		        <h4>Slack Username</h4>
+		        <form asp-controller="LeagueUsers" asp-action="UpdateSlackUsername" method="post">
+		            <input type="hidden" name="id" value="@leagueUser.ID" />
+                    <input type="text" name="slackUsername" value="@leagueUser.SlackUsername"/>
+                    <input type="submit" value="Update" />
+		        </form>
+		    </div>
 		</div>
 	}
 </div>

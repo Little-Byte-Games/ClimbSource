@@ -25,6 +25,7 @@ namespace Climb.Models
         public string ProfilePicKey { get; set; }
         public bool HasLeft { get; set; }
         public int Rank { get; set; }
+        public string SlackUsername { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
@@ -38,6 +39,9 @@ namespace Climb.Models
         public HashSet<Set> P2Sets { get; set; }
         [JsonIgnore]
         public HashSet<RankSnapshot> RankSnapshots { get; set; }
+
+        [JsonIgnore]
+        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? User.Username : $"<@{SlackUsername}>({User.Username})";
 
         public int CompareTo(LeagueUser other)
         {

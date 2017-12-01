@@ -44,10 +44,27 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
+        public async Task<IActionResult> UpdateSlackUsername(int id, string slackUsername)
         {
             var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
             if(leagueUser == null)
+            {
+                return NotFound($"No league user with ID '{id}' found.");
+            }
+
+            leagueUser.SlackUsername = slackUsername;
+            context.Update(leagueUser);
+            await context.SaveChangesAsync();
+
+            return Ok(new {id, slackUsername});
+        }
+        #endregion
+
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
+        {
+            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
+            if (leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
             }
@@ -58,6 +75,5 @@ namespace Climb.Controllers
 
             return RedirectToAction(nameof(UsersController.Account), "Users");
         }
-        #endregion
     }
 }
