@@ -16,6 +16,7 @@ namespace Climb.Models
         public DateTime? UpdatedDate { get; set; }
         public int? Player1Score { get; set; }
         public int? Player2Score { get; set; }
+        public bool IsLocked { get; set; }
 
         [InverseProperty("P1Sets")]
         [ForeignKey("Player1ID")]
@@ -26,7 +27,6 @@ namespace Climb.Models
         public ICollection<Match> Matches { get; set; }
         [JsonIgnore]
         public Season Season { get; set; }
-
         [JsonIgnore]
         public League League { get; set; }
 

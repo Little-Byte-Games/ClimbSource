@@ -45,6 +45,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> TakeRankSnapshots()
         {
             var leagues = await context.League
+                .Include(l => l.Sets)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Members).ThenInclude(lu => lu.User)
                 .ToArrayAsync();
