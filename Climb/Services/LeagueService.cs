@@ -44,7 +44,7 @@ namespace Climb.Services
         public async Task<HashSet<RankSnapshot>> TakeSnapshot(League league)
         {
             var memberEloDeltas = new Dictionary<int, int>();
-            var unlockedSets = league.Sets.Where(s => !s.IsLocked).ToList();
+            var unlockedSets = league.Sets.Where(s => !s.IsLocked && s.IsComplete).ToList();
             context.UpdateRange(unlockedSets);
             context.UpdateRange(league.Members);
 
