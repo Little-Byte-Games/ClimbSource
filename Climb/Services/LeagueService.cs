@@ -51,7 +51,7 @@ namespace Climb.Services
             CalculateEloDeltas(memberEloDeltas, unlockedSets);
             AssignElo(league, memberEloDeltas);
             UpdateRanks(league.Members.ToList());
-            HashSet<RankSnapshot> rankSnapshots = await TakeSnapshotakeSnap(league);
+            HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             await context.SaveChangesAsync();
 
@@ -82,7 +82,7 @@ namespace Climb.Services
             }
         }
 
-        private async Task<HashSet<RankSnapshot>> TakeSnapshotakeSnap(League league)
+        private async Task<HashSet<RankSnapshot>> CreateSnapshots(League league)
         {
             var createdDate = DateTime.Now;
             var rankSnapshots = new HashSet<RankSnapshot>();
