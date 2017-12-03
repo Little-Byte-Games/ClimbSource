@@ -2,9 +2,11 @@
 @using Climb.Services
 @using Climb.ViewModels.Matches
 @using Climb.ViewModels.Sets
+@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.Rendering
 @model SetFightViewModel
 @inject ICdnService cdnService
+@inject IHostingEnvironment environment
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 
@@ -80,7 +82,13 @@
                     <div id="matches" class="matches">
                         @for(int i = 0; i < SetsController.MaxMatchCount; i++)
                         {
-                            <div class="match" @(Model.matches[i] == null ? Html.Raw("style=\"display: none\"") : null)>
+                            var matchFound = Model.matches[i] != null;
+                            if(environment.IsDevelopment() && i == 0 && !matchFound)
+                            {
+                                matchFound = true;
+                            }
+
+                            <div class="match" @(matchFound ? null : Html.Raw("style=\"display: none\""))>
                                 @Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", new MatchFormViewModel(i, Model.set, Model.matches[i]))
                             </div>
                         }

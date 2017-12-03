@@ -1,5 +1,7 @@
 ﻿@using Climb.ViewModels.Matches
+@using Microsoft.AspNetCore.Hosting
 @model MatchFormViewModel
+@inject IHostingEnvironment environment
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 <script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
@@ -21,7 +23,7 @@
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
                         @foreach (var character in Model.set.League.Game.Characters)
                         {
-                            if (character.ID == Model.player1Character)
+                            if (character.ID == Model.player1Character || environment.IsDevelopment())
                             {
                                 <option value="@character.ID" selected>@character</option>
                             }
@@ -37,7 +39,7 @@
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
                         @foreach (var character in Model.set.League.Game.Characters)
                         {
-                            if(character.ID == Model.player2Character)
+                            if(character.ID == Model.player2Character || environment.IsDevelopment())
                             {
                                 <option value="@character.ID" selected>@character</option>
                             }
@@ -53,7 +55,7 @@
                         <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
                         @foreach (var stage in Model.set.League.Game.Stages)
                         {
-                            if (stage.ID == Model.stage)
+                            if (stage.ID == Model.stage || environment.IsDevelopment())
                             {
                                 <option value="@stage.ID" selected>@stage</option>
                             }
