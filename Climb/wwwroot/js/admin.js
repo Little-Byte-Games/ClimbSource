@@ -1,4 +1,16 @@
-﻿function openModal(message) {
+﻿var actionTime = 0;
+var isRunning = false;
+
+setInterval(function () {
+    if (!isRunning) return;
+    actionTime++;
+    document.getElementById("modal-time").innerHTML = actionTime + "s";
+}, 1000);
+
+function openModal(message) {
+    actionTime = 0;
+    isRunning = true;
+
     document.getElementById("closeModal").style.display = "none";
     document.getElementById("modalAction").innerHTML = message;
     document.getElementById("modal").style.display = "block";
@@ -9,6 +21,8 @@ function closeModal() {
 }
 
 function displayResult(message) {
+    isRunning = false;
+
     document.getElementById("modalResult").innerHTML = message;
     document.getElementById("closeModal").style.display = "block";
 }
