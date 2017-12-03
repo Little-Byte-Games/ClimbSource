@@ -42,7 +42,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return NotFound();
+                return UserNotFound();
             }
 
             var set = await context.Set
@@ -55,7 +55,7 @@ namespace Climb.Controllers
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(set == null)
             {
-                return NotFound();
+                return NotFound($"Could not find Set with ID '{id}'.");
             }
 
             var viewModel = new GenericViewModel<Set>(user, set);
@@ -82,6 +82,11 @@ namespace Climb.Controllers
             if (set == null)
             {
                 return NotFound($"Could not find set with ID '{id}'.");
+            }
+
+            if (set.IsLocked)
+            {
+                return BadRequest($"Set {id} is locked.");
             }
 
             matches.RemoveAll(m => m.Player1CharacterID < 0 || m.Player2CharacterID < 0 || m.StageID < 0);

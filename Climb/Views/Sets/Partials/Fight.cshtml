@@ -57,9 +57,13 @@
                 <span id="player-2-score">0</span>
             </div>
         </div>
-        <div class="add-match">
-            <button class="btn btn-primary" onclick="addMatch()">Add Match</button>
-        </div>
+        
+        @if(!Model.set.IsLocked)
+        {
+            <div class="add-match">
+                <button class="btn btn-primary" onclick="addMatch()">Add Match</button>
+            </div>
+        }
 
         <form asp-controller="Sets" asp-action="Submit" method="post">
             <input type="hidden" name="id" value="@Model.set.ID"/>
@@ -83,9 +87,12 @@
                     </div>
                 </div>
             </div>
-            <div class="submit form-group">
-                <input id="submit-button" type="submit" value="Submit" class="btn btn-danger"/>
-            </div>
+            @if(!Model.set.IsLocked)
+            {
+                <div class="submit form-group">
+                    <input id="submit-button" type="submit" value="Submit" class="btn btn-danger"/>
+                </div>
+            }
         </form>
     </div>
 </div>
