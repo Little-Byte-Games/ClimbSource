@@ -1,4 +1,6 @@
-﻿namespace Climb.Models
+﻿using Newtonsoft.Json;
+
+namespace Climb.Models
 {
     public class Stage
     {
@@ -6,6 +8,7 @@
         public string Name { get; set; }
         public int GameID { get; set; }
 
+        [JsonIgnore]
         public Game Game { get; set; }
 
         public override string ToString()

@@ -37,7 +37,7 @@ namespace Climb.Controllers
         [HttpPost]
         public IActionResult ResetDB()
         {
-            DbInitializer.Initialize(context, true);
+            DbInitializer.Initialize(context, environment, true);
             return Ok("Db reset");
         }
 

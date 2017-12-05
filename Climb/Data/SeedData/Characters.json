@@ -1,0 +1,324 @@
+[
+    // SB4
+    {
+        "Name": "Bayonetta",
+        "GameID": 1,
+        "PicKey": "78841de7-ccb3-4553-b204-995194bd7626_2017-12-05-04-32.png"
+    },
+    {
+        "Name": "Cloud",
+        "GameID": 1,
+        "PicKey": "2f993e71-bcd1-48be-8cdd-87477050dc11_2017-12-05-04-32.png"
+    },
+    {
+        "Name": "Diddy Kong",
+        "GameID": 1,
+        "PicKey": "0a41b966-a6ca-404f-891e-d864feb61ef1_2017-12-05-04-32.png"
+    },
+    {
+        "Name": "Donkey Kong",
+        "GameID": 1,
+        "PicKey": "57a32c7d-a4ee-4d6f-aa93-c818dfb1d1d5_2017-12-05-04-33.png"
+    },
+    {
+        "Name": "Link",
+        "GameID": 1,
+        "PicKey": "665577a0-e03a-4d2c-963f-8962764e7fbf_2017-12-05-04-33.png"
+    },
+    {
+        "Name": "Mario",
+        "GameID": 1,
+        "PicKey": "628b44d7-78e8-42e5-829f-bf602dac792e_2017-12-05-04-36.png"
+    },
+    {
+        "Name": "Luigi",
+        "GameID": 1,
+        "PicKey": "daf8ce1b-e8a1-4b23-95b9-f3d0e4378740_2017-12-05-04-36.png"
+    },
+    {
+        "Name": "Peach",
+        "GameID": 1,
+        "PicKey": "82d6ab84-1ee0-40d6-889f-1be712e8da7c_2017-12-05-04-37.png"
+    },
+    {
+        "Name": "Bowser",
+        "GameID": 1,
+        "PicKey": "68eb8adf-ddc8-4e19-8fb7-68e4742e9cc6_2017-12-05-04-37.png"
+    },
+    {
+        "Name": "Dr. Mario",
+        "GameID": 1,
+        "PicKey": "772ef899-fc81-4736-bc85-041fe16377f1_2017-12-05-04-37.png"
+    },
+    {
+        "Name": "Yoshi",
+        "GameID": 1,
+        "PicKey": "58565cd0-0179-4921-aeb3-8d7ee91b485d_2017-12-05-04-37.png"
+    },
+    {
+        "Name": "Sheik",
+        "GameID": 1,
+        "PicKey": "1aaae999-e08e-4b71-b943-9ea8982f19e2_2017-12-05-04-37.png"
+    },
+    {
+        "Name": "Ganondorf",
+        "GameID": 1,
+        "PicKey": "516b40c1-4601-4b3d-bfca-d63576e18424_2017-12-05-04-38.png"
+    },
+    {
+        "Name": "Toon Link",
+        "GameID": 1,
+        "PicKey": "8995051d-4c0f-44f4-a55a-2c4d6c6c4c35_2017-12-05-04-39.png"
+    },
+    {
+        "Name": "Meta Knight",
+        "GameID": 1,
+        "PicKey": "ebe88297-88ec-471b-897f-98231bfe464a_2017-12-05-04-39.png"
+    },
+    {
+        "Name": "King Dedede",
+        "GameID": 1,
+        "PicKey": "97f90998-4af1-4c61-b7bd-fd7dc5dfdd8c_2017-12-05-04-39.png"
+    },
+    {
+        "Name": "Fox",
+        "GameID": 1,
+        "PicKey": "426b0484-c36e-4223-a0ad-b4c1fa8f29a2_2017-12-05-04-40.png"
+    },
+    {
+        "Name": "Falco",
+        "GameID": 1,
+        "PicKey": "0ee6ca73-c233-466b-8beb-2bb46647666a_2017-12-05-04-40.png"
+    },
+    {
+        "Name": "Pikachu",
+        "GameID": 1,
+        "PicKey": "ce8c8dd8-47ae-48ff-927e-7bf18c06ce43_2017-12-05-04-40.png"
+    },
+    {
+        "Name": "Lucario",
+        "GameID": 1,
+        "PicKey": "d66ceb4f-dc34-468a-9bfa-c1d49f208ab1_2017-12-05-04-41.png"
+    },
+    {
+        "Name": "Captain Falcon",
+        "GameID": 1,
+        "PicKey": "726b353c-32eb-44fa-9f29-20c048a80a3a_2017-12-05-04-41.png"
+    },
+    {
+        "Name": "Ness",
+        "GameID": 1,
+        "PicKey": "52296d43-993b-4a9a-ac64-9a03f067b23a_2017-12-05-04-41.png"
+    },
+    {
+        "Name": "Lucas",
+        "GameID": 1,
+        "PicKey": "ce287c44-cf10-41ed-a146-89ce21237902_2017-12-05-04-41.png"
+    },
+    {
+        "Name": "Marth",
+        "GameID": 1,
+        "PicKey": "912fe4f5-f2a5-46cd-8803-3eeb0b03e1e0_2017-12-05-04-42.png"
+    },
+    {
+        "Name": "Samus",
+        "GameID": 1,
+        "PicKey": "8234ff08-f595-43cd-b963-5e34251a51b4_2017-12-05-04-42.png"
+    },
+    {
+        "Name": "Zero Suit Samus",
+        "GameID": 1,
+        "PicKey": "e3c51d77-5c57-4a13-8878-0955d3b53b98_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Kirby",
+        "GameID": 1,
+        "PicKey": "19660715-ad24-4e49-8a83-e30027ad3495_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Jigglypuff",
+        "GameID": 1,
+        "PicKey": "38e063f3-3a3e-40cf-92f5-081f15e433a8_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Mewtwo",
+        "GameID": 1,
+        "PicKey": "891564eb-22a6-4796-80f4-33cf8087528d_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Charizard",
+        "GameID": 1,
+        "PicKey": "4799490e-325d-4d35-ad21-33091261a0c8_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Roy",
+        "GameID": 1,
+        "PicKey": "e725096f-5736-4c97-8f38-1dce5b85c46a_2017-12-05-04-43.png"
+    },
+    {
+        "Name": "Ike",
+        "GameID": 1,
+        "PicKey": "2a1c5fe4-4cb6-4501-8dcb-39ae3785d092_2017-12-05-04-44.png"
+    },
+    {
+        "Name": "Mr. Game & Watch",
+        "GameID": 1,
+        "PicKey": "c97e33d3-31eb-4742-8177-05bc37ea7839_2017-12-05-04-44.png"
+    },
+    {
+        "Name": "Pit",
+        "GameID": 1,
+        "PicKey": "fefde31f-7bc7-4ec5-a25b-30b3ed0ab07d_2017-12-05-04-44.png"
+    },
+    {
+        "Name": "Wario",
+        "GameID": 1,
+        "PicKey": "12be6c9c-cc03-49bc-b47c-0b89f2ecab50_2017-12-05-04-45.png"
+    },
+    {
+        "Name": "Olimar",
+        "GameID": 1,
+        "PicKey": "4c463ac5-5ffd-48d6-b974-acdacbfe30c8_2017-12-05-04-45.png"
+    },
+    {
+        "Name": "R.O.B.",
+        "GameID": 1,
+        "PicKey": "86c53254-3eb8-4a80-a055-5a585b5aec62_2017-12-05-04-45.png"
+    },
+    {
+        "Name": "Sonic",
+        "GameID": 1,
+        "PicKey": "9081b696-d633-4532-9d5c-3b57b0c9cb46_2017-12-05-04-45.png"
+    },
+    {
+        "Name": "Rosalina & Luma",
+        "GameID": 1,
+        "PicKey": "233c0d4e-ad85-4993-8d87-e4d2f9dc2866_2017-12-05-04-45.png"
+    },
+    {
+        "Name": "Bowser Jr.",
+        "GameID": 1,
+        "PicKey": "53f26cce-789f-4a19-9bbb-5d273fdee186_2017-12-05-04-46.png"
+    },
+    {
+        "Name": "Greninja",
+        "GameID": 1,
+        "PicKey": "2885999f-6013-4c33-ba5a-ca29219a08e4_2017-12-05-04-46.png"
+    },
+    {
+        "Name": "Robin",
+        "GameID": 1,
+        "PicKey": "8fff1139-f367-4593-afc4-c57856aac175_2017-12-05-04-46.png"
+    },
+    {
+        "Name": "Lucina",
+        "GameID": 1,
+        "PicKey": "1e13bb19-d440-401f-b300-05363a731475_2017-12-05-04-46.png"
+    },
+    {
+        "Name": "Corrin",
+        "GameID": 1,
+        "PicKey": "76d05571-209e-477d-a12d-feea22c3bbcb_2017-12-05-04-47.png"
+    },
+    {
+        "Name": "Palutena",
+        "GameID": 1,
+        "PicKey": "6d0e584e-22b8-48b6-be0f-9ec27e36fd2a_2017-12-05-04-47.png"
+    },
+    {
+        "Name": "Dark Pit",
+        "GameID": 1,
+        "PicKey": "d2db2dd6-48c2-4ba9-86a3-b6778b162a5b_2017-12-05-04-47.png"
+    },
+    {
+        "Name": "Villager",
+        "GameID": 1,
+        "PicKey": "3929d680-b4e5-4ac7-9e1c-c7aeddcf5c6a_2017-12-05-04-47.png"
+    },
+    {
+        "Name": "Little Mac",
+        "GameID": 1,
+        "PicKey": "54aa3eea-da1f-4697-95d4-668de941a11d_2017-12-05-04-47.png"
+    },
+    {
+        "Name": "Wii Fit Trainer",
+        "GameID": 1,
+        "PicKey": "eb7d3df0-867a-47dc-8b56-99b297f27fae_2017-12-05-04-48.png"
+    },
+    {
+        "Name": "Shulk",
+        "GameID": 1,
+        "PicKey": "4ebab1aa-6dd8-496d-816b-3ac908295e4a_2017-12-05-04-48.png"
+    },
+    {
+        "Name": "Duck Hunt",
+        "GameID": 1,
+        "PicKey": "eaf9d9e6-6a64-47f4-9eb5-7501e614f2ad_2017-12-05-04-48.png"
+    },
+    {
+        "Name": "Mega Man",
+        "GameID": 1,
+        "PicKey": "75bf009b-65b0-4514-bf3c-e0ef2550ea4f_2017-12-05-04-48.png"
+    },
+    {
+        "Name": "Pac-Man",
+        "GameID": 1,
+        "PicKey": "cf5c98d5-a65e-4d81-8073-225ad115dd2a_2017-12-05-04-49.png"
+    },
+    {
+        "Name": "Ryu",
+        "GameID": 1,
+        "PicKey": "b88ea1cc-06ec-409e-8c9a-00aa3376ccbb_2017-12-05-04-49.png"
+    },
+    //SFV
+    {
+        "Name": "Ryu",
+        "GameID": 2,
+        "PicKey": "e47a1ffe-3692-425d-9aec-093543ec2041_2017-12-05-06-18.png"
+    },
+    {
+        "Name": "Chun-Li",
+        "GameID": 2,
+        "PicKey": "19539ea1-864f-47e8-805b-0ec1f06580a2_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "Nash",
+        "GameID": 2,
+        "PicKey": "1e5a2c78-17ac-4624-85df-593a9aa56a09_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "M. Bison",
+        "GameID": 2,
+        "PicKey": "6a167713-d650-4bc2-a03f-ad872b85191a_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "Cammy",
+        "GameID": 2,
+        "PicKey": "123984cb-f674-447c-8013-5188faff00ad_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "Birdie",
+        "GameID": 2,
+        "PicKey": "c6792b30-9e96-45b8-b42f-19f01388d89c_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "Ken",
+        "GameID": 2,
+        "PicKey": "b13f647a-ec0e-4fbf-a165-7a421b074f0d_2017-12-05-06-19.png"
+    },
+    {
+        "Name": "Necalli",
+        "GameID": 2,
+        "PicKey": "ffe4c9c4-7f2f-45d3-a5d9-72844462a9e1_2017-12-05-06-20.png"
+    },
+    {
+        "Name": "Vega",
+        "GameID": 2,
+        "PicKey": "28c45c9a-9d3f-4da3-87ef-4da0f72df49e_2017-12-05-06-20.png"
+    },
+    {
+        "Name": "R. Mika",
+        "GameID": 2,
+        "PicKey": "ad2b9df9-bdeb-4d03-868c-846ec52ecbe6_2017-12-05-06-20.png"
+    }
+]
