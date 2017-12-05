@@ -20,6 +20,11 @@ namespace Climb.Services
 
         public async Task<User> GetUserForViewAsync(ApplicationUser appUser)
         {
+            if(appUser == null)
+            {
+                return null;
+            }
+
             var user = await userDb
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
