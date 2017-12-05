@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-using Climb.Models;
+﻿using Climb.Models;
 using Climb.Services;
+using Climb.ViewModels;
 using Climb.ViewModels.Games;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
-using Climb.ViewModels;
 
 namespace Climb.Controllers
 {
@@ -23,6 +25,7 @@ namespace Climb.Controllers
             this.cdnService = cdnService;
         }
 
+        #region Pages
         public async Task<IActionResult> Index()
         {
             var user = await GetViewUserAsync();
@@ -56,6 +59,7 @@ namespace Climb.Controllers
             var viewModel = new HomeViewModel(user, game);
             return View(viewModel);
         }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> AddCharacter(int id, string characterName, IFormFile file)
@@ -65,7 +69,7 @@ namespace Climb.Controllers
                 return BadRequest("Character name has to be a valid string.");
             }
 
-            var alreadyExists = await context.Character.AnyAsync(c => c.Name == characterName);
+            var alreadyExists = await context.Character.AnyAsync(c => c.GameID == id && c.Name == characterName);
             if (alreadyExists)
             {
                 return BadRequest($"Character '{characterName}' already exists.");
@@ -74,7 +78,7 @@ namespace Climb.Controllers
             var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if(game == null)
             {
-                return NotFound();
+                return NotFound($"Could not find Game with ID '{id}'.");
             }
 
             var picKey = await cdnService.UploadCharacterPic(file);
@@ -85,7 +89,7 @@ namespace Climb.Controllers
                 GameID = id,
                 PicKey = picKey,
             };
-            await context.AddAsync(character);
+            context.Add(character);
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Home), new {id});
@@ -108,7 +112,7 @@ namespace Climb.Controllers
             var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if (game == null)
             {
-                return NotFound();
+                return NotFound($"Could not find Game with ID '{id}'.");
             }
 
             var stage = new Stage
@@ -116,7 +120,7 @@ namespace Climb.Controllers
                 Name = stageName,
                 GameID = id,
             };
-            await context.AddAsync(stage);
+            context.Add(stage);
             await context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Home), new { id });
