@@ -1,8 +1,17 @@
-﻿@model Climb.ViewModels.GenericViewModel<Set>
+﻿@using Climb.Controllers
+@using Climb.ViewModels
+@using Climb.ViewModels.Sets
+@model GenericViewModel<Set>
 
 @{
 	ViewBag.Title = "Fight";
 	Layout = "_Layout";
 }
 
-@Html.Partial("/Views/Sets/Partials/Fight.cshtml", Model.data)
+@Html.Partial("/Views/Sets/Partials/Fight.cshtml", SetFightViewModel.Create(Model.data, SetsController.MaxMatchCount))
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(scoreUpdated);
+    </script>
+}

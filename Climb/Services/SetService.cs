@@ -27,9 +27,7 @@ namespace Climb.Services
 
             set.UpdatedDate = DateTime.UtcNow;
             await UpdateMatches(set, matches, context);
-            UpdateScore(set);
-            UpdateElo(set);
-            await UpdateRank(set, context);
+            UpdateSetScore(set);
 
             if (!set.IsExhibition)
             {
@@ -53,7 +51,7 @@ namespace Climb.Services
             await context.AddRangeAsync(set.Matches);
         }
 
-        private static void UpdateScore(Set set)
+        private static void UpdateSetScore(Set set)
         {
             set.Player1Score = 0;
             set.Player2Score = 0;
@@ -69,39 +67,6 @@ namespace Climb.Services
                     ++set.Player2Score;
                 }
             }
-        }
-
-        private static void UpdateElo(Set set)
-        {
-            const int startingElo = 2000;
-            set.Player1.Elo = set.Player1.Elo == 0 ? startingElo : set.Player1.Elo;
-            set.Player2.Elo = set.Player2.Elo == 0 ? startingElo : set.Player2.Elo;
-
-            var p1Wins = set.Matches.Count(m => m.Player1Score > m.Player2Score);
-            var p2Wins = set.Matches.Count(m => m.Player2Score > m.Player1Score);
-            var player1Won = p1Wins >= p2Wins;
-            var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Elo, set.Player2.Elo, player1Won);
-            set.Player1.Elo = newElo.Item1;
-            set.Player2.Elo = newElo.Item2;
-        }
-
-        private static async Task UpdateRank(Set set, ClimbContext context)
-        {
-            var users = await context.LeagueUser.Where(lu => lu.LeagueID == set.LeagueID).ToListAsync();
-            users.Sort();
-            var rank = 0;
-            var lastElo = -1;
-            for (var i = 0; i < users.Count; i++)
-            {
-                LeagueUser member = users[i];
-                if (member.Elo != lastElo)
-                {
-                    lastElo = member.Elo;
-                    rank = i + 1;
-                }
-                member.Rank = rank;
-            }
-            context.UpdateRange(users);
         }
     }
 }

@@ -8,6 +8,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Climb.Services
 {
@@ -16,11 +17,12 @@ namespace Climb.Services
         private readonly string accessKey;
         private readonly string secretKey;
         private readonly string rootUrl;
+        private readonly string environment;
         private readonly string bucketName;
         private readonly string profilePics;
         private readonly string characterPics;
 
-        public CdnService(IConfiguration configuration)
+        public CdnService(IConfiguration configuration, IHostingEnvironment environment)
         {
             var awsSection = configuration.GetSection("AWS");
 
@@ -30,6 +32,20 @@ namespace Climb.Services
             rootUrl = CdnConsts.RootUrl;
             bucketName = CdnConsts.AppBucket;
             rootUrl += "/" + bucketName;
+
+            if(environment.IsDevelopment())
+            {
+                this.environment = "dev";
+            }
+            else if(environment.IsProduction())
+            {
+                this.environment = "rel";
+            }
+            else
+            {
+                throw new NotSupportedException($"Environment {environment.EnvironmentName} does not have a corresponding CDN bucket.");
+            }
+            rootUrl += "/" + this.environment;
 
             profilePics = CdnConsts.ProfilePics;
             characterPics = CdnConsts.CharacterIcons;
@@ -70,7 +86,7 @@ namespace Climb.Services
         private async Task UploadFile(IFormFile file, string folder, string fileKey)
         {
             var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
-            await transfer.UploadAsync(file.OpenReadStream(), bucketName + "/" + folder, fileKey);
+            await transfer.UploadAsync(file.OpenReadStream(), string.Join("/", bucketName, environment, folder), fileKey);
         }
     }
 }

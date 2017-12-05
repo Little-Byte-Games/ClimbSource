@@ -40,20 +40,6 @@ namespace Climb.Data
             context.Game.AddRange(games);
             context.SaveChanges();
 
-            var characters = new[]
-            {
-                new Character{Name = "Mario", Game = games[0], PicKey = "stock_90_mario_01.png"}, 
-                new Character{Name = "Sonic", Game = games[0], PicKey = "stock_90_sonic_01.png"},
-                new Character{Name = "Link", Game = games[0], PicKey = "stock_90_link_01.png"},
-
-                //https://game.capcom.com/cfn/sfv/character
-                new Character{Name = "Ryu", Game = games[1], PicKey = "ryu.png"},
-                new Character{Name = "Ken", Game = games[1], PicKey = "ken.png"},
-                new Character{Name = "Gief", Game = games[1], PicKey = "zgf.png"},
-            };
-            context.Character.AddRange(characters);
-            context.SaveChanges();
-
             var stages = new[]
             {
                 new Stage {Name = "Final Destination", Game = games[0]},

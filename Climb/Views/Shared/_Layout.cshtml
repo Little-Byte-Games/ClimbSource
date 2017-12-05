@@ -49,7 +49,7 @@
 					</ul>
 				</li>
 			    <li>
-			        <a asp-controller="Users" asp-action="Home">@Model.user.Username</a>
+			        <a asp-controller="Users" asp-action="Home" asp-route-id="@Model.user.ID">@Model.user.Username</a>
 			        <ul class="sub-menu">
 			            <li><a asp-controller="Users" asp-action="Account">Account</a></li>
 			            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>

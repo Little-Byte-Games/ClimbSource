@@ -11,13 +11,14 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20171201053525_LeagueUser.SlackUsername")]
+    partial class LeagueUserSlackUsername
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Climb.Models.ApplicationUser", b =>
@@ -251,8 +252,6 @@ namespace Climb.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DueDate");
-
-                    b.Property<bool>("IsLocked");
 
                     b.Property<int>("LeagueID");
 

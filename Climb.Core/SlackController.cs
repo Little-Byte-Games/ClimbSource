@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Climb.Core
 {
@@ -23,8 +23,9 @@ namespace Climb.Core
                 };
                 await client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
             }
-            catch(Exception)
+            catch(Exception exception)
             {
+                Console.WriteLine($"Slack error!\n{exception}");
             }
         }
     }
