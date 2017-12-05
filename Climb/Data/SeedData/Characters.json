@@ -320,5 +320,90 @@
         "Name": "R. Mika",
         "GameID": 2,
         "PicKey": "sfv_rmika.png"
+    },
+    {
+        "Name": "Rashid",
+        "GameID": 2,
+        "PicKey": "sfv_rashid.png"
+    },
+    {
+        "Name": "Abigail",
+        "GameID": 2,
+        "PicKey": "sfv_abigail.png"
+    },
+    {
+        "Name": "Akuma",
+        "GameID": 2,
+        "PicKey": "sfv_akuma.png"
+    },
+    {
+        "Name": "Alex",
+        "GameID": 2,
+        "PicKey": "sfv_alex.png"
+    },
+    {
+        "Name": "Balrog",
+        "GameID": 2,
+        "PicKey": "sfv_balrog.png"
+    },
+    {
+        "Name": "Dhalsim",
+        "GameID": 2,
+        "PicKey": "sfv_dhalsim.png"
+    },
+    {
+        "Name": "Ed",
+        "GameID": 2,
+        "PicKey": "sfv_ed.png"
+    },
+    {
+        "Name": "F.A.N.G.",
+        "GameID": 2,
+        "PicKey": "sfv_fang.png"
+    },
+    {
+        "Name": "Guile",
+        "GameID": 2,
+        "PicKey": "sfv_guile.png"
+    },
+    {
+        "Name": "Ibuki",
+        "GameID": 2,
+        "PicKey": "sfv_ibuki.png"
+    },
+    {
+        "Name": "Juri",
+        "GameID": 2,
+        "PicKey": "sfv_juri.png"
+    },
+    {
+        "Name": "Karin",
+        "GameID": 2,
+        "PicKey": "sfv_karin.png"
+    },
+    {
+        "Name": "Kolin",
+        "GameID": 2,
+        "PicKey": "sfv_kolin.png"
+    },
+    {
+        "Name": "Laura",
+        "GameID": 2,
+        "PicKey": "sfv_laura.png"
+    },
+    {
+        "Name": "Urien",
+        "GameID": 2,
+        "PicKey": "sfv_urien.png"
+    },
+    {
+        "Name": "Zangief",
+        "GameID": 2,
+        "PicKey": "sfv_zangief.png"
+    },
+    {
+        "Name": "Zeku",
+        "GameID": 2,
+        "PicKey": "sfv_zeku.png"
     }
 ]
