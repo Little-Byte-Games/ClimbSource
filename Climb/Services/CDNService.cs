@@ -2,13 +2,14 @@
 using Amazon.S3.Transfer;
 using Climb.Consts;
 using Climb.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Climb.Services
 {
@@ -78,8 +79,9 @@ namespace Climb.Services
         private static string GenerateFileKey(IFormFile file)
         {
             var fileExtension = Path.GetExtension(file.FileName);
-            var fileKey = $"{Guid.NewGuid()}_{DateTime.UtcNow.ToString("yyyy-MM-dd-HH-mm", CultureInfo.InvariantCulture)}{fileExtension}";
-            fileKey = fileKey.ToLowerInvariant();
+            var fileName = Path.GetInvalidFileNameChars().Aggregate(Path.GetFileNameWithoutExtension(file.FileName), (current, c) => current.Replace(c, '_'));
+            fileName = fileName.Replace(".", "");
+            var fileKey = $"{fileName}_{Guid.NewGuid()}{fileExtension}";
             return fileKey;
         }
 
