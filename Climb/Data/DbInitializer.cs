@@ -64,8 +64,8 @@ namespace Climb.Data
         {
             var leagues = new[]
             {
-                new League {Admin = users[0], Name = "Popcap Smash", GameID = 0},
-                new League {Admin = users[2], Name = "Local SFV", GameID = 1},
+                new League {Admin = users[0], Name = "Popcap Smash", GameID = 1},
+                new League {Admin = users[2], Name = "Local SFV", GameID = 2},
             };
             context.League.AddRange(leagues);
             context.SaveChanges();
