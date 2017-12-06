@@ -30,7 +30,7 @@ namespace Climb
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<ICdnService, CdnService>();
+            services.AddTransient<ICdnService, FileStorageCdn>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILeagueUserService, LeagueUserService>();
             services.AddTransient<ILeagueService, LeagueService>();
