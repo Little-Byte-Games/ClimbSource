@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +21,8 @@ namespace Climb.Services
         private readonly string bucketName;
         private readonly string profilePics;
         private readonly string characterPics;
+
+        public int MaxFileSize => 15 * 1024;
 
         public CdnService(IConfiguration configuration, IHostingEnvironment environment)
         {
@@ -87,10 +88,9 @@ namespace Climb.Services
 
         private async Task UploadFile(IFormFile file, string folder, string fileKey)
         {
-            const int maxFileSize = 15 * 1024;
-            if(file.Length > maxFileSize)
+            if(file.Length > MaxFileSize)
             {
-                throw new ArgumentException($"Fill size {file.Length:N0}B exceeds limit {maxFileSize:N0}B.");
+                throw new ArgumentException($"Fill size {file.Length:N0}B exceeds limit {MaxFileSize:N0}B.");
             }
 
             var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
