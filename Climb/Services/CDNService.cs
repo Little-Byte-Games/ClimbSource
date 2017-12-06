@@ -87,6 +87,12 @@ namespace Climb.Services
 
         private async Task UploadFile(IFormFile file, string folder, string fileKey)
         {
+            const int maxFileSize = 15 * 1024;
+            if(file.Length > maxFileSize)
+            {
+                throw new ArgumentException($"Fill size {file.Length:N0}B exceeds limit {maxFileSize:N0}B.");
+            }
+
             var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
             await transfer.UploadAsync(file.OpenReadStream(), string.Join("/", bucketName, environment, folder), fileKey);
         }
