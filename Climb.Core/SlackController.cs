@@ -9,6 +9,7 @@ namespace Climb.Core
     public static class SlackController
     {
         private const string ApiPath = @"https://hooks.slack.com/services/";
+        private const string ConversationsPath = @"https://slack.com/api/conversations.open/";
         private static readonly HttpClient client = new HttpClient();
 
         public static async Task SendGroupMessage(string apiKey, string message)
@@ -27,6 +28,11 @@ namespace Climb.Core
             {
                 Console.WriteLine($"Slack error!\n{exception}");
             }
+        }
+
+        public static async Task SendConversationMessage(string apiKey, string message, params string[] users)
+        {
+            
         }
     }
 }

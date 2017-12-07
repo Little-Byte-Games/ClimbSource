@@ -1,8 +1,6 @@
-﻿using Climb.Core;
-using Climb.Models;
+﻿using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Climb.Controllers
@@ -129,6 +126,26 @@ namespace Climb.Controllers
                 foreach (var league in leagues)
                 {
                     await leagueService.TakeSnapshot(league);
+                }
+                return Accepted();
+            }
+
+            return Forbid();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendSetReminders([FromServices] IHttpContextAccessor contextAccessor)
+        {
+            var key = contextAccessor.HttpContext.Request.Headers["key"];
+            if(key == "steve")
+            {
+                var leagues = await context.League
+                    .Include(l => l.CurrentSeason).ThenInclude(s => s.Participants).ThenInclude(lu => lu.LeagueUser)
+                    .Include(l => l.CurrentSeason).ThenInclude(s => s.Sets)
+                    .ToArrayAsync();
+                foreach(var league in leagues)
+                {
+                    await leagueService.SendSetReminders(league);
                 }
                 return Accepted();
             }

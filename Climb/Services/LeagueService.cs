@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Set = Climb.Models.Set;
 
 namespace Climb.Services
 {
@@ -75,7 +76,32 @@ namespace Climb.Services
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
-        private static void CalculateEloDeltas(Dictionary<int, int> memberEloDeltas, List<Models.Set> unlockedSets)
+        public async Task SendSetReminders(League league)
+        {
+            var currentSeason = league.CurrentSeason;
+            if(currentSeason == null)
+            {
+                return;
+            }
+
+            var nextSets = new HashSet<Set>();
+            foreach(var set in currentSeason.Sets.Where(s => !s.IsComplete))
+            {
+                if(!nextSets.Any(s => s.IsPlaying(set.Player1ID) || s.IsPlaying(set.Player2ID)))
+                {
+                    nextSets.Add(set);
+                }
+            }
+
+            foreach(var set in nextSets)
+            {
+                var message = $"You guys have set to play in {set.League.Name}!";
+                var apiKey = configuration.GetSection("Slack")["Key"];
+                await SlackController.SendGroupMessage(apiKey, message);
+            }
+        }
+
+        private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, List<Set> unlockedSets)
         {
             foreach (var set in unlockedSets)
             {
@@ -88,7 +114,7 @@ namespace Climb.Services
             }
         }
 
-        private static void AssignElo(League league, Dictionary<int, int> memberEloDeltas)
+        private static void AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
         {
             foreach (var member in league.Members)
             {
