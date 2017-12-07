@@ -5,17 +5,21 @@ using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Climb.Services
 {
     public class LeagueService : ILeagueService
     {
         private readonly ClimbContext context;
+        private readonly IConfiguration configuration;
 
-        public LeagueService(ClimbContext context)
+        public LeagueService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
+            this.configuration = configuration;
         }
 
         public async Task<LeagueUser> JoinLeague(User user, League league)
@@ -56,6 +60,19 @@ namespace Climb.Services
             await context.SaveChangesAsync();
 
             return rankSnapshots;
+        }
+
+        public async Task SendSnapshotUpdate(HashSet<RankSnapshot> rankSnapshots, League league)
+        {
+            var orderedSnapshots = rankSnapshots.OrderBy(lu => lu.Rank);
+            var message = new StringBuilder();
+            message.AppendLine($"*{league.Name} PR*");
+            foreach (var snapshot in orderedSnapshots)
+            {
+                message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
+            }
+            var apiKey = configuration.GetSection("Slack")["Key"];
+            await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
         private static void CalculateEloDeltas(Dictionary<int, int> memberEloDeltas, List<Models.Set> unlockedSets)

@@ -54,7 +54,8 @@ namespace Climb.Controllers
             {
                 foreach (var league in leagues)
                 {
-                    await leagueService.TakeSnapshot(league);
+                    var rankSnapshots = await leagueService.TakeSnapshot(league);
+                    await leagueService.SendSnapshotUpdate(rankSnapshots, league);
                 }
             }
             catch (Exception exception)

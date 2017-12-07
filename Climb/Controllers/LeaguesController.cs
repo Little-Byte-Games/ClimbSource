@@ -184,16 +184,7 @@ namespace Climb.Controllers
             }
 
             var rankSnapshots = await leagueService.TakeSnapshot(league);
-
-            var orderedSnapshots = rankSnapshots.OrderBy(lu => lu.Rank);
-            var message = new StringBuilder();
-            message.AppendLine($"*{league.Name} PR*");
-            foreach(var snapshot in orderedSnapshots)
-            {
-                message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
-            }
-            var apiKey = configuration.GetSection("Slack")["Key"];
-            await SlackController.SendGroupMessage(apiKey, message.ToString());
+            await leagueService.SendSnapshotUpdate(rankSnapshots, league);
 
             return RedirectToAction(nameof(Home), new {id});
         }
