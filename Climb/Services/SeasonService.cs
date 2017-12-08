@@ -1,13 +1,13 @@
 ﻿using Climb.Core;
+using Climb.Core.Challonge;
 using Climb.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Core.Controllers;
-using Microsoft.Extensions.Configuration;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -206,13 +206,21 @@ namespace Climb.Services
         {
             var season = await context.Season
                 .Include(s => s.League)
-                .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser)
+                .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(s => s.ID == seasonID);
 
             var challongeKey = configuration.GetSection("Challonge")["Key"];
-            var tournament = await ChallongeController.CreateTournament(challongeKey, season.League.Name, season.DisplayName, season.Participants.Select(lus => lus.LeagueUser.ChallongeUsername));
-            season.ChallongeID = tournament.id;
+            var tournament = await ChallongeController.CreateTournament(challongeKey, $"{season.League.Name}:{season.DisplayName}", season.Participants.Select(lus => (lus.LeagueUserID, lus.LeagueUser.ChallongeUsername, lus.LeagueUser.User.Username)));
+            season.ChallongeID = tournament.tournamentID;
             season.ChallongeUrl = tournament.tournamentUrl;
+
+            context.UpdateRange(season.Participants);
+            foreach(var participant in season.Participants)
+            {
+                var id = tournament.participantIDs[participant.LeagueUserID];
+                participant.ChallongeID = id;
+            }
+
             context.Update(season);
             await context.SaveChangesAsync();
         }
