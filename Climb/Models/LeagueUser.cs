@@ -26,6 +26,7 @@ namespace Climb.Models
         public bool HasLeft { get; set; }
         public int Rank { get; set; }
         public string SlackUsername { get; set; }
+        public string ChallongeUsername { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
