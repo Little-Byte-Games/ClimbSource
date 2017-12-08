@@ -140,8 +140,8 @@ namespace Climb.Controllers
             if(key == "steve")
             {
                 var leagues = await context.League
-                    .Include(l => l.CurrentSeason).ThenInclude(s => s.Participants).ThenInclude(lu => lu.LeagueUser)
-                    .Include(l => l.CurrentSeason).ThenInclude(s => s.Sets)
+                    .Include(l => l.Seasons).ThenInclude(s => s.Participants).ThenInclude(lu => lu.LeagueUser).ThenInclude(lu => lu.User)
+                    .Include(l => l.Seasons).ThenInclude(s => s.Sets)
                     .ToArrayAsync();
                 foreach(var league in leagues)
                 {

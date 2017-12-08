@@ -56,3 +56,19 @@ function takeSnapshots() {
         }
     });
 }
+
+function sendSetReminders() {
+    openModal("Sending Set Reminders");
+    $.post({
+        url: "/Admin/SendSetReminders",
+        data: {
+            key: "steve"
+        },
+        success(response) {
+            displayResult(response);
+        },
+        error(response) {
+            displayResult(JSON.stringify(response));
+        }
+    });
+}

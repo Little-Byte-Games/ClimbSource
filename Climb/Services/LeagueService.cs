@@ -1,13 +1,13 @@
 ﻿using Climb.Core;
 using Climb.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -15,12 +15,12 @@ namespace Climb.Services
     public class LeagueService : ILeagueService
     {
         private readonly ClimbContext context;
-        private readonly IConfiguration configuration;
+        private readonly string apiKey;
 
         public LeagueService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
-            this.configuration = configuration;
+            apiKey = configuration.GetSection("Slack")["Key"];
         }
 
         public async Task<LeagueUser> JoinLeague(User user, League league)
@@ -72,7 +72,6 @@ namespace Climb.Services
             {
                 message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
             }
-            var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
@@ -93,12 +92,13 @@ namespace Climb.Services
                 }
             }
 
-            foreach(var set in nextSets)
+            var message = new StringBuilder();
+            message.AppendLine($"*{currentSeason.League.Name}:{currentSeason.DisplayName} Sets*");
+            foreach (var set in nextSets)
             {
-                var message = $"You guys have set to play in {set.League.Name}!";
-                var apiKey = configuration.GetSection("Slack")["Key"];
-                await SlackController.SendGroupMessage(apiKey, message);
+                message.AppendLine($"{set.Player1.GetSlackName} v {set.Player2.GetSlackName}");
             }
+            await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
         private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, List<Set> unlockedSets)
