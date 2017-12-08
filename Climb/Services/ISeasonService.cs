@@ -12,5 +12,6 @@ namespace Climb.Services
         Task Start(Season season);
         Task UpdateStandings(int seasonID);
         Task End(int seasonID);
+        Task CreateTournament(int seasonID);
     }
 }

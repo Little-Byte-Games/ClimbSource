@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Core.Controllers;
+using Microsoft.Extensions.Configuration;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -13,10 +15,12 @@ namespace Climb.Services
     public class SeasonService : ISeasonService
     {
         private readonly ClimbContext context;
+        private readonly IConfiguration configuration;
 
-        public SeasonService(ClimbContext context)
+        public SeasonService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
+            this.configuration = configuration;
         }
 
         public async Task<Season> Create(League league, DateTime? startDate = null)
@@ -195,6 +199,21 @@ namespace Climb.Services
                 }
             }
 
+            await context.SaveChangesAsync();
+        }
+
+        public async Task CreateTournament(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.League)
+                .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            var challongeKey = configuration.GetSection("Challonge")["Key"];
+            var tournament = await ChallongeController.CreateTournament(challongeKey, season.League.Name, season.DisplayName, season.Participants.Select(lus => lus.LeagueUser.ChallongeUsername));
+            season.ChallongeID = tournament.id;
+            season.ChallongeUrl = tournament.tournamentUrl;
+            context.Update(season);
             await context.SaveChangesAsync();
         }
     }

@@ -5,28 +5,14 @@ using System.Linq;
 
 namespace Climb.Models
 {
-    public class SeasonStatus
-    {
-        public readonly int totalSetCount;
-        public readonly int overdueCount;
-        public readonly int availableCount;
-        public readonly int completedCount;
-
-        public SeasonStatus(int totalSetCount, int overdueCount, int availableCount, int completedCount)
-        {
-            this.totalSetCount = totalSetCount;
-            this.overdueCount = overdueCount;
-            this.availableCount = availableCount;
-            this.completedCount = completedCount;
-        }
-    }
-
     public class Season
     {
         public int ID { get; set; }
         public int LeagueID { get; set; }
         public int Index { get; set; }
         public DateTime StartDate { get; set; }
+        public int ChallongeID { get; set; }
+        public string ChallongeUrl { get; set; }
 
         [JsonIgnore]
         public League League { get; set; }

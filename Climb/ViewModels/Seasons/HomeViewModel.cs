@@ -10,6 +10,8 @@ namespace Climb.ViewModels.Seasons
         public readonly LeagueUser leagueUser;
         public readonly ReadOnlyCollection<LeagueUserSeason> standings;
 
+        public string BracketUrl => $"http://challonge.com/{season.ChallongeUrl}.svg";
+
         protected HomeViewModel(User user, Season season, LeagueUser leagueUser, ReadOnlyCollection<LeagueUserSeason> standings)
             : base(user)
         {
