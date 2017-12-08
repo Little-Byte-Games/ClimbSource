@@ -95,5 +95,38 @@ namespace Climb.Core.Challonge
             ParticipantCreateResponse participantCreateResponse = JsonConvert.DeserializeObject<ParticipantCreateResponse>(content);
             return participantCreateResponse.participant.id;
         }
+
+        public static async Task UpdateBracket(string apiKey, int tournamentID, int participantID, int seed)
+        {
+            HttpResponseMessage response;
+            try
+            {
+                var url = $"https://api.challonge.com/v1/tournaments/{tournamentID}/participants/{participantID}.json?api_key={apiKey}";
+                var objectMessage = new
+                {
+                    participant = new
+                    {
+                        seed,
+                    }
+                };
+                response = await client.PutAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"Challonge error!\n{exception}");
+                throw;
+            }
+
+            if (response == null)
+            {
+                throw new Exception("Null response");
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                throw new Exception(content);
+            }
+        }
     }
 }

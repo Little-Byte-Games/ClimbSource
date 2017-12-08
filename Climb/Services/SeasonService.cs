@@ -15,12 +15,13 @@ namespace Climb.Services
     public class SeasonService : ISeasonService
     {
         private readonly ClimbContext context;
-        private readonly IConfiguration configuration;
+        private readonly string challongeKey;
 
         public SeasonService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
-            this.configuration = configuration;
+
+            challongeKey = configuration.GetSection("Challonge")["Key"];
         }
 
         public async Task<Season> Create(League league, DateTime? startDate = null)
@@ -174,6 +175,9 @@ namespace Climb.Services
                 var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
                 leagueUserSeason.Standing = placing;
                 leagueUserSeason.Points = participant.Value.GetSeasonPoints();
+
+                await ChallongeController.UpdateBracket(challongeKey, season.ChallongeID, leagueUserSeason.ChallongeID, placing);
+
                 if(lastTieBreaker != participant.Value.tieBreaker)
                 {
                     ++placing;
@@ -209,7 +213,6 @@ namespace Climb.Services
                 .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(s => s.ID == seasonID);
 
-            var challongeKey = configuration.GetSection("Challonge")["Key"];
             var tournament = await ChallongeController.CreateTournament(challongeKey, $"{season.League.Name}:{season.DisplayName}", season.Participants.Select(lus => (lus.LeagueUserID, lus.LeagueUser.ChallongeUsername, lus.LeagueUser.User.Username)));
             season.ChallongeID = tournament.tournamentID;
             season.ChallongeUrl = tournament.tournamentUrl;
