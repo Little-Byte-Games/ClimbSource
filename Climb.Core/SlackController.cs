@@ -9,23 +9,25 @@ namespace Climb.Core
     public static class SlackController
     {
         private const string ApiPath = @"https://hooks.slack.com/services/";
-        private static readonly HttpClient client = new HttpClient();
 
         public static async Task SendGroupMessage(string apiKey, string message)
         {
-            try
+            using(var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromSeconds(1);
-                var url = ApiPath + apiKey;
-                var objectMessage = new
+                try
                 {
-                    text = message
-                };
-                await client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
-            }
-            catch(Exception exception)
-            {
-                Console.WriteLine($"Slack error!\n{exception}");
+                    client.Timeout = TimeSpan.FromSeconds(1);
+                    var url = ApiPath + apiKey;
+                    var objectMessage = new
+                    {
+                        text = message
+                    };
+                    await client.PostAsync(url, new StringContent(JsonConvert.SerializeObject(objectMessage), Encoding.UTF8, "application/json"));
+                }
+                catch(Exception exception)
+                {
+                    Console.WriteLine($"Slack error!\n{exception}");
+                }
             }
         }
     }

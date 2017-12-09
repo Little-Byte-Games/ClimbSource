@@ -65,6 +65,29 @@ namespace Climb.Controllers
 
             return Ok("Snapshots taken");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SendSetReminders()
+        {
+            var leagues = await context.League
+                .Include(l => l.Seasons).ThenInclude(s => s.Participants).ThenInclude(lu => lu.LeagueUser).ThenInclude(lu => lu.User)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets)
+                .ToArrayAsync();
+
+            try
+            {
+                foreach (var league in leagues)
+                {
+                    await leagueService.SendSetReminders(league);
+                }
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception);
+            }
+
+            return Ok("Set reminders sent");
+        }
         #endregion
     }
 }

@@ -1,25 +1,26 @@
 ﻿using Climb.Core;
 using Climb.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Set = Climb.Models.Set;
 
 namespace Climb.Services
 {
     public class LeagueService : ILeagueService
     {
         private readonly ClimbContext context;
-        private readonly IConfiguration configuration;
+        private readonly string apiKey;
 
         public LeagueService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
-            this.configuration = configuration;
+            apiKey = configuration.GetSection("Slack")["Key"];
         }
 
         public async Task<LeagueUser> JoinLeague(User user, League league)
@@ -71,11 +72,36 @@ namespace Climb.Services
             {
                 message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
             }
-            var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
-        private static void CalculateEloDeltas(Dictionary<int, int> memberEloDeltas, List<Models.Set> unlockedSets)
+        public async Task SendSetReminders(League league)
+        {
+            var currentSeason = league.CurrentSeason;
+            if(currentSeason == null)
+            {
+                return;
+            }
+
+            var nextSets = new HashSet<Set>();
+            foreach(var set in currentSeason.Sets.Where(s => !s.IsComplete))
+            {
+                if(!nextSets.Any(s => s.IsPlaying(set.Player1ID) || s.IsPlaying(set.Player2ID)))
+                {
+                    nextSets.Add(set);
+                }
+            }
+
+            var message = new StringBuilder();
+            message.AppendLine($"*{currentSeason.League.Name}:{currentSeason.DisplayName} Sets*");
+            foreach (var set in nextSets)
+            {
+                message.AppendLine($"{set.Player1.GetSlackName} v {set.Player2.GetSlackName}");
+            }
+            await SlackController.SendGroupMessage(apiKey, message.ToString());
+        }
+
+        private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, List<Set> unlockedSets)
         {
             foreach (var set in unlockedSets)
             {
@@ -88,7 +114,7 @@ namespace Climb.Services
             }
         }
 
-        private static void AssignElo(League league, Dictionary<int, int> memberEloDeltas)
+        private static void AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
         {
             foreach (var member in league.Members)
             {
