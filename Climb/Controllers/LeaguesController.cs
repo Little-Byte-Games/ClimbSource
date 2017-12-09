@@ -125,7 +125,8 @@ namespace Climb.Controllers
                     .ToArrayAsync();
                 foreach (var league in leagues)
                 {
-                    await leagueService.TakeSnapshot(league);
+                    var rankSnapshots = await leagueService.TakeSnapshot(league);
+                    await leagueService.SendSnapshotUpdate(rankSnapshots, league);
                 }
                 return Accepted();
             }
