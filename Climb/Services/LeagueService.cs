@@ -70,7 +70,7 @@ namespace Climb.Services
             message.AppendLine($"*{league.Name} PR*");
             foreach (var snapshot in orderedSnapshots)
             {
-                message.AppendLine($"{snapshot.Rank} ({snapshot.DisplayDeltaRank}) {snapshot.LeagueUser.User.Username}");
+                message.AppendLine($"{snapshot.Rank} [{snapshot.DisplayDeltaRank}] {snapshot.LeagueUser.GetSlackName}");
             }
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
