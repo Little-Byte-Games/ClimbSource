@@ -1,92 +1,337 @@
-﻿
-.clearfix:after {
-	display:block;
-	clear:both;
+﻿@import url(https://fonts.googleapis.com/css?family=Pacifico);
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
- 
-/*----- Menu Outline -----*/
-.menu-wrap {
-	width:100%;
-	box-shadow:0px 1px 3px rgba(0,0,0,0.2);
-	background:#3e3436;
+
+.body-content {
+    top: 57px;
+    position: absolute;
 }
- 
+
+p {
+    padding: 5px;
+    min-width: 300px;
+    font-size: 20px;
+    text-align: justify;
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 {
+    padding: 0 25px;
+    display: inline;
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 2em;
+    color: #FFF;
+}
+
+h3 {
+    padding: 10px;
+    font-size: 1.5em;
+    color: #FFF;
+    background-color: #FF8800;
+}
+
+h4 {
+    padding: 10px;
+}
+
+h1, h2, h3, h4, .dropdown, .dropdown-items, .profile-head {
+    font-family: "Helvetica", sans-serif;
+}
+
+/* ////////// */
+/* Main Page Content */
+/* ////////// */
+
+.content {
+    display: grid;
+    grid-template-areas: "header header header" "banner banner banner" "left center right" "footer footer footer";
+    width: auto;
+    position: relative;
+    top: 55px;
+    background-color: #EEE;
+    align-items: start;
+}
+
+.content-header {
+    grid-area: header;
+    background-color: #FF8800;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.content-left {
+    grid-area: left;
+}
+
+.content-center {
+    grid-area: center;
+    display: grid;
+    grid-template-areas: "title" "date" "content" "link";
+    grid-template-rows: auto auto 1fr auto;
+    align-content: space-between;
+}
+
+    grid-area: right;
+.content-right {
+}
+
+.content-left, .content-center, .content-right {
+    margin: 50px;
+    background-color: #FFF;
+    box-shadow: 0px 0px 20px #CCC;
+}
+
+.content-left p, .content-right p {
+    margin: 0 50px;
+    /*background-color: green;*/
+}
+
+.content-footer {
+    padding: 25px 0;
+    grid-area: footer;
+    background-color: #555;
+    box-shadow: 0px 1px 3px #000;
+}
+
+.content-footer p {
+    text-align: center;
+}
+
+/* ////////// */
+/* Player/League Profile */
+/* ////////// */
+
+.profile-head {
+    font-weight: bold;
+    font-size: 0.75em;
+    text-transform: uppercase;
+}
+
+.profile-text {
+    font-size: 1.5em;
+    overflow: auto;
+    text-justify: none;
+    /*background-color: hotpink;*/
+}
+
+.profile-pic {
+    margin: 10px;
+    border: 10px solid #FF8800;
+    position: relative;
+    float: left;
+    width: 225px;
+    height: 225px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-pic img, .event-pic img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.profile-pic img.portrait, .event-pic img.portrait {
+    width: 100%;
+    height: auto;
+}
+
+.profile-pic img.landscape, .event-pic img.landscape {
+    object-fit: cover;
+}
+
+.logo {
+    font-family: "Pacifico", sans-serif;
+    font-weight: lighter;
+    letter-spacing: 0.06em;
+    color: #FF8800;
+    /*background-color: black;*/
+}
+
+.deemphasize {
+    font-style: italic;
+    color: #BBB;
+}
+
+.quote {
+    margin: 25px;
+    color: #FF5500;
+    display: block;
+}
+
+.quote::before {
+    content: "Boyblue:\2003 \201C ";
+}
+
+.quote::after {
+    content: " \201D";
+}
+
+.archive-link {
+    font-size: 20px;
+    padding: 25px;
+    text-decoration: overline;
+    align-self: end;
+    justify-self: end;
+}
+
+.archive-link::after {
+    content: "\2192";
+}
+
+.event-content {
+    grid-area: content;
+    display: grid;
+    grid-gap: 50px;
+    align-content: start;
+    margin: 0 50px;
+}
+
+.feature-content {
+    grid-area: content;
+    display: grid;
+    grid-gap: 25px;
+    align-content: start;
+}
+
+.event-pic {
+    grid-area: icon;
+    margin: 0 20px 0 0;
+    border: 5px solid #FF8800;
+    position: relative;
+    float: left;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.event {
+    display: grid;
+    grid-template-areas: "icon header header" "icon paragraph paragraph" "empty link1 link2";
+    align-content: start;
+    /*background-color: aqua;*/
+}
+
+.event p {
+    grid-area: paragraph;
+    padding: 20px;
+    background-color: hsl(25, 50%, 90%);
+    /*background-color: deepskyblue;*/
+}
+
+.event h3 {
+    grid-area: header;
+    padding: 10px;
+    color: hsl(25, 50%, 30%);
+    background-color: hsl(25, 50%, 80%);
+}
+
+.link {
+    padding: 10px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.event .link.first {
+    grid-area: link1;
+    margin: 10px 0 0 0;
+    justify-self: center;
+    text-align: center;
+    /*background-color: dodgerblue;*/
+}
+
+.event .link.second {
+    grid-area: link2;
+    margin: 10px 0 0 0;
+    justify-self: center;
+    text-align: center;
+    /*background-color: dodgerblue;*/
+}
+
+.grid-banner {
+    grid-area: banner;
+    justify-self: center;
+}
+
+
+/* ////////// */
+/* Menu Bar */
+/* ////////// */
+.menu-bar {
+    width: 100%;
+    min-width: 605px;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    justify-content: space-between;
+    box-shadow: 0px 1px 3px #000;
+    color: #EEE;
+    background-color: #555;
+}
+
 .menu {
-	width:1000px;
-	margin:0px auto;
+    padding: 0px 0px;
+    float: right;
+    /*background-color: green;*/
 }
- 
-.menu li {
-	margin:0px;
-	list-style:none;
-	font-family:'Ek Mukta';
-	float: right;
+
+.dropdown {
+    padding: 19px 25px;
+    position: relative;
+    top: 20px;
+    display: inline;
+    font-weight: bold;
+    /*background-color: blue;*/
 }
- 
-.menu a {
-	transition:all linear 0.15s;
-	color:#919191;
+
+.dropdown a {
+    text-decoration: none;
+    color: #EEE;
 }
- 
-.menu li:hover > a, .menu .current-item > a {
-	text-decoration:none;
-	color:orangered;
+
+.dropdown:hover {
+    color: #FFF;
+    background-color: #666;
 }
- 
-.menu .arrow {
-	font-size:11px;
-	line-height:0%;
+
+.dropdown-items {
+    display: none;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    font-weight: normal;
+    background-color: #333;
 }
- 
-/*----- Top Level -----*/
-.menu > ul > li {
-	float:left;
-	display:inline-block;
-	position:relative;
-	font-size:19px;
+
+.dropdown-items li {
+    display: block;
+    padding: 20px;
+    text-align: center;
+    background-color: transparent;
 }
- 
-.menu > ul > li > a {
-	padding:10px 40px;
-	display:inline-block;
-	text-shadow:0px 1px 0px rgba(0,0,0,0.4);
+
+.dropdown-items li:hover {
+    color: #FFF;
+    background-color: #444;
 }
- 
-.menu > ul > li:hover > a, .menu > ul > .current-item > a {
-	background:#2e2728;
-}
- 
-/*----- Bottom Level -----*/
-.menu li:hover .sub-menu {
-	z-index:1;
-	opacity:1;
-}
- 
-.sub-menu {
-	width:160%;
-	padding:5px 0px;
-	position:absolute;
-	top:100%;
-	left:0px;
-	z-index:-1;
-	opacity:0;
-	transition:opacity linear 0.15s;
-	box-shadow:0px 2px 3px rgba(0,0,0,0.2);
-	background:#2e2728;
-}
- 
-.sub-menu li {
-	display:block;
-	font-size:16px;
-}
- 
-.sub-menu li a 
-.sub-menu li form a 
-{
-	padding:10px 30px;
-	display:block;
-}
- 
-.sub-menu li a:hover, .sub-menu .current-item a {
-	background:#3e3436;
+
+.menu div:hover .dropdown-items {
+    display: inline-block;
 }
