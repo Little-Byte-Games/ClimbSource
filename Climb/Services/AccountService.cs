@@ -32,7 +32,7 @@ namespace Climb.Services
             {
                 logger.LogInformation("User created a new account with password.");
 
-                await signInManager.SignInAsync(applicationUser, isPersistent: false);
+                await signInManager.PasswordSignInAsync(applicationUser, password, isPersistent: false, lockoutOnFailure: false);
                 logger.LogInformation("User created a new account with password.");
             }
 

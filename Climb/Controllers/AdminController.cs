@@ -95,9 +95,15 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount()
         {
-            await accountService.CreateUser("a@a.com", "Abc_123");
-
-            return Ok();
+            try
+            {
+                await accountService.CreateUser("a@a.com", "Abc_123");
+            }
+            catch (Exception exception)
+            {
+                return BadRequest($"Could not create Admin User. {exception}");
+            }
+            return Ok("Admin User Created");
         }
         #endregion
     }
