@@ -1,0 +1,339 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Pacifico);
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+p {
+    padding: 5px;
+    min-width: 300px;
+    font-size: 20px;
+    text-align: justify;
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 {
+    padding: 0 25px;
+    display: inline;
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 2em;
+    color: #FFF;
+}
+
+h3 {
+    padding: 10px;
+    font-size: 1.5em;
+    color: #FFF;
+    background-color: #FF8800;
+}
+
+h4 {
+    padding: 10px;
+}
+
+h1, h2, h3, h4, .dropdown, .dropdown-items, .profile-head {
+    font-family: "Helvetica", sans-serif;
+}
+
+/* ////////// */
+/* Main Page Content */
+/* ////////// */
+
+.content {
+    display: grid;
+    grid-template-areas: "header header header" "banner banner banner" "left center right" "footer footer footer";
+    width: auto;
+    position: relative;
+    top: 55px;
+    background-color: #EEE;
+    align-items: start;
+}
+
+.content-header {
+    grid-area: header;
+    background-color: #FF8800;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.content-left {
+    grid-area: left;
+}
+
+.content-center {
+    grid-area: center;
+    display: grid;
+    grid-template-areas: "title" "date" "content" "link";
+    grid-template-rows: auto auto 1fr auto;
+    align-content: space-between;
+}
+
+.content-right {
+    grid-area: right;
+}
+
+.content-left, .content-center, .content-right {
+    margin: 50px;
+    background-color: #FFF;
+    box-shadow: 0px 0px 20px #CCC;
+}
+
+.content-left p, .content-right p {
+    margin: 0 50px;
+    /*background-color: green;*/
+}
+
+.content-footer {
+    padding: 25px 0;
+    grid-area: footer;
+    background-color: #555;
+    box-shadow: 0px 1px 3px #000;
+}
+
+.content-footer p {
+    text-align: center;
+}
+
+/* ////////// */
+/* Player/League Profile */
+/* ////////// */
+
+.profile-head {
+    font-weight: bold;
+    font-size: 0.75em;
+    text-transform: uppercase;
+}
+
+.profile-text {
+    font-size: 1.5em;
+    overflow: auto;
+    text-justify: none;
+    /*background-color: hotpink;*/
+}
+
+.profile-pic {
+    margin: 10px;
+    border: 10px solid #FF8800;
+    position: relative;
+    float: left;
+    width: 225px;
+    height: 225px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-pic img, .event-pic img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 100%;
+    width: auto;
+    -webkit-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+}
+
+.profile-pic img.portrait, .event-pic img.portrait {
+    width: 100%;
+    height: auto;
+}
+
+.profile-pic img.landscape, .event-pic img.landscape {
+    object-fit: cover;
+}
+
+.logo {
+    font-family: "Pacifico", sans-serif;
+}
+
+.deemphasize {
+    font-style: italic;
+    color: #BBB;
+}
+
+.quote {
+    margin: 25px;
+    color: #FF5500;
+    display: block;
+}
+
+.quote::before {
+    content: "Boyblue:\2003 \201C ";
+}
+
+.quote::after {
+    content: " \201D";
+}
+
+.archive-link {
+    font-size: 20px;
+    padding: 25px;
+    text-decoration: overline;
+    align-self: end;
+    justify-self: end;
+}
+
+.archive-link::after {
+    content: "\2192";
+}
+
+.logo {
+    font-weight: lighter;
+    letter-spacing: 0.06em;
+    color: #FF8800;
+    /*background-color: black;*/
+}
+
+
+
+.event-content {
+    grid-area: content;
+    display: grid;
+    grid-gap: 50px;
+    align-content: start;
+    margin: 0 50px;
+}
+
+.feature-content {
+    grid-area: content;
+    display: grid;
+    grid-gap: 25px;
+    align-content: start;
+}
+
+.event-pic {
+    grid-area: icon;
+    margin: 0 20px 0 0;
+    border: 5px solid #FF8800;
+    position: relative;
+    float: left;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.event {
+    display: grid;
+    grid-template-areas: "icon header header"
+                         "icon paragraph paragraph" 
+                         "empty link1 link2";
+    align-content: start;
+    /*background-color: aqua;*/
+}
+
+.event p {
+    grid-area: paragraph;
+    padding: 20px;
+    background-color: hsl(25, 50%, 90%);
+    /*background-color: deepskyblue;*/
+}
+
+.event h3 {
+    grid-area: header;
+    padding: 10px;
+    color: hsl(25, 50%, 30%);
+    background-color: hsl(25, 50%, 80%);
+}
+
+.link {
+    padding: 10px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.event .link.first {
+    grid-area: link1;
+    margin: 10px 0 0 0;
+    justify-self: center;
+    text-align: center;
+    /*background-color: dodgerblue;*/
+}
+
+.event .link.second {
+    grid-area: link2;
+    margin: 10px 0 0 0;
+    justify-self: center;
+    text-align: center;
+    /*background-color: dodgerblue;*/
+}
+
+.grid-banner {
+    grid-area: banner;
+    justify-self: center;
+}
+
+
+/* ////////// */
+/* Menu Bar */
+/* ////////// */
+.menu-bar {
+    width: 100%;
+    min-width: 605px;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    justify-content: space-between;
+    box-shadow: 0px 1px 3px #000;
+    color: #EEE;
+    background-color: #555;
+}
+
+.menu {
+    padding: 0px 0px;
+    float: right;
+    /*background-color: green;*/
+}
+
+.dropdown {
+    padding: 19px 25px;
+    position: relative;
+    top: 20px;
+    display: inline;
+    font-weight: bold;
+    /*background-color: blue;*/
+  }
+
+.dropdown a {
+    text-decoration: none;
+    color: #EEE;
+}
+
+.dropdown:hover {
+    color: #FFF;
+    background-color: #666;
+}
+
+.dropdown-items {
+    display: none;
+    position: absolute;
+    top: 55px;
+    right: 0;
+    font-weight: normal;
+    background-color: #333;
+}
+
+.dropdown-items li {
+    display: block;
+    padding: 20px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.dropdown-items li:hover {
+    color: #FFF;
+    background-color: #444;
+}
+
+.menu div:hover .dropdown-items {
+    display: inline-block;
+} 
