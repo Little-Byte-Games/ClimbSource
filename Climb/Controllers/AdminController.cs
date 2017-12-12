@@ -15,12 +15,14 @@ namespace Climb.Controllers
         private readonly ClimbContext context;
         private readonly IHostingEnvironment environment;
         private readonly ILeagueService leagueService;
+        private readonly IAccountService accountService;
 
-        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService)
+        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService, IAccountService accountService)
         {
             this.context = context;
             this.environment = environment;
             this.leagueService = leagueService;
+            this.accountService = accountService;
         }
 
         #region Pages
@@ -91,16 +93,11 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAdminAccount()
+        public async Task<IActionResult> CreateAdminAccount()
         {
-            var model = new RegisterViewModel
-            {
-                Email = "a@a.com",
-                Password = "Abc_123",
-                ConfirmPassword = "Abc_123",
-            };
+            await accountService.CreateUser("a@a.com", "Abc_123");
 
-            return RedirectToAction("Register", "Account", new { viewModel = model, returnUrl = string.Empty});
+            return Ok();
         }
         #endregion
     }
