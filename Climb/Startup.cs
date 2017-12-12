@@ -36,6 +36,7 @@ namespace Climb
             services.AddTransient<ILeagueService, LeagueService>();
             services.AddTransient<ISeasonService, SeasonService>();
             services.AddTransient<ISetService, SetService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

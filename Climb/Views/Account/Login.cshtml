@@ -1,17 +1,20 @@
-﻿@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using Climb.Models.AccountViewModels
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
+@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Identity
-@model Climb.Models.AccountViewModels.LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> signInManager
+@inject IHostingEnvironment hostingEnvironment
 
 @{
 	ViewData["Title"] = "Log in";
 }
 
 <h2>@ViewData["Title"]</h2>
+@if(hostingEnvironment.IsDevelopment())
+{
+    <button onclick="createAdminAccount()">Create admin account</button>
+}
 <div class="row">
 	<div class="col-md-4">
 		<section>
@@ -56,7 +59,7 @@
 			<h4>Use another service to log in.</h4>
 			<hr />
 			@{
-				var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+				var loginProviders = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 				if (loginProviders.Count == 0)
 				{
 					<div>
@@ -85,5 +88,19 @@
 </div>
 
 @section Scripts {
-	@await Html.PartialAsync("_ValidationScriptsPartial")
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function createAdminAccount() {
+            $.post({
+                url: '/Admin/CreateAdminAccount',
+                success() {
+                    window.location.href = "/Users/Home";
+                },
+                error(response) {
+                    alert(response);
+                    alert(JSON.stringify(response));
+                }
+            });
+        }
+    </script>
 }

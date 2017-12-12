@@ -80,7 +80,9 @@
 	font-size:16px;
 }
  
-.sub-menu li a {
+.sub-menu li a 
+.sub-menu li form a 
+{
 	padding:10px 30px;
 	display:block;
 }

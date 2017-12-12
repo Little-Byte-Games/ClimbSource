@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Climb.Data;
+﻿using Climb.Data;
 using Climb.Models;
+using Climb.Models.AccountViewModels;
 using Climb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace Climb.Controllers
 {
@@ -14,12 +15,14 @@ namespace Climb.Controllers
         private readonly ClimbContext context;
         private readonly IHostingEnvironment environment;
         private readonly ILeagueService leagueService;
+        private readonly IAccountService accountService;
 
-        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService)
+        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService, IAccountService accountService)
         {
             this.context = context;
             this.environment = environment;
             this.leagueService = leagueService;
+            this.accountService = accountService;
         }
 
         #region Pages
@@ -87,6 +90,20 @@ namespace Climb.Controllers
             }
 
             return Ok("Set reminders sent");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAdminAccount()
+        {
+            try
+            {
+                await accountService.CreateUser("a@a.com", "Abc_123");
+            }
+            catch (Exception exception)
+            {
+                return BadRequest($"Could not create Admin User. {exception}");
+            }
+            return Ok("Admin User Created");
         }
         #endregion
     }
