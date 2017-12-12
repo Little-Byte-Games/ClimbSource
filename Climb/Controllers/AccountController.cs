@@ -229,6 +229,7 @@ namespace UserApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+                // TODO: Move to service.
                 var user = new User { Username = model.Email };
                 await context.User.AddAsync(user);
                 await context.SaveChangesAsync();

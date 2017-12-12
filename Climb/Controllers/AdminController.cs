@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Climb.Data;
+﻿using Climb.Data;
 using Climb.Models;
+using Climb.Models.AccountViewModels;
 using Climb.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace Climb.Controllers
 {
@@ -87,6 +88,19 @@ namespace Climb.Controllers
             }
 
             return Ok("Set reminders sent");
+        }
+
+        [HttpPost]
+        public IActionResult CreateAdminAccount()
+        {
+            var model = new RegisterViewModel
+            {
+                Email = "a@a.com",
+                Password = "Abc_123",
+                ConfirmPassword = "Abc_123",
+            };
+
+            return RedirectToAction("Register", "Account", new { viewModel = model, returnUrl = string.Empty});
         }
         #endregion
     }

@@ -1,7 +1,7 @@
 ﻿@using Climb.ViewModels
 @using Microsoft.AspNetCore.Hosting
 @model BaseViewModel
-@inject IHostingEnvironment HostingEnvironment
+@inject IHostingEnvironment hostingEnvironment
 
 <!DOCTYPE html>
 <html>
@@ -52,10 +52,14 @@
 			        <a asp-controller="Users" asp-action="Home" asp-route-id="@Model.user.ID">@Model.user.Username</a>
 			        <ul class="sub-menu">
 			            <li><a asp-controller="Users" asp-action="Account">Account</a></li>
-			            <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+			            <li>
+			                <form id="logout-form" asp-controller="Account" asp-action="Logout" method="post">
+			                    <a onclick="document.getElementById('logout-form').submit()">Logout</a>
+			                </form>
+			            </li>
 			        </ul>
 			    </li>
-			    @if(HostingEnvironment.IsDevelopment())
+			    @if(hostingEnvironment.IsDevelopment())
 			    {
 			        <li>
 			            <a asp-controller="Admin" asp-action="Index">Admin</a>
