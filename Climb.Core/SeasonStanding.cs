@@ -5,6 +5,9 @@ namespace Climb.Core
 {
     public class SeasonStanding : IComparable<SeasonStanding>
     {
+        public const int WinningPoints = 2;
+        public const int LosingPoints = 1;
+
         public readonly int leagueUserID;
         public readonly int elo;
         private readonly Dictionary<int, int> beatenOpponents = new Dictionary<int, int>();
@@ -43,10 +46,7 @@ namespace Climb.Core
 
         public int GetSeasonPoints()
         {
-            const int winningPoints = 2;
-            const int losingPoints = 1;
-
-            return wins * winningPoints + losses * losingPoints;
+            return wins * WinningPoints + losses * LosingPoints;
         }
     }
 }

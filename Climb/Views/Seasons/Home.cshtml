@@ -22,9 +22,9 @@
     @foreach(var participant in Model.standings)
     {
         <div>
-            <span>@participant.Standing</span>
-            <span>@participant.LeagueUser.User.Username</span>
-            <span>(@participant.Points)</span>
+            <span>@participant.user.Standing</span>
+            <span>@participant.user.LeagueUser.User.Username</span>
+            <span>(@participant.user.Points of @participant.possiblePoints)</span>
         </div>
     }
 </div>
