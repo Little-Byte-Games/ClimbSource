@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20171213042550_Game.Url")]
+    partial class GameUrl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,8 +134,6 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ChallongeUsername");
-
                     b.Property<int>("Elo");
 
                     b.Property<bool>("HasLeft");
@@ -163,8 +162,6 @@ namespace Climb.Migrations
                     b.Property<int>("LeagueUserID");
 
                     b.Property<int>("SeasonID");
-
-                    b.Property<int>("ChallongeID");
 
                     b.Property<int>("Points");
 
@@ -237,10 +234,6 @@ namespace Climb.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("ChallongeID");
-
-                    b.Property<string>("ChallongeUrl");
 
                     b.Property<int>("Index");
 
