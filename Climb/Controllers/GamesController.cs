@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Climb.Controllers
@@ -39,7 +37,20 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Home(int id)
+        [HttpGet("[controller]/Home/{id:int}")]
+        public async Task<IActionResult> HomeID(int id)
+        {
+            var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
+            if(game != null)
+            {
+                return RedirectToActionPermanent("Home", new {url = game.Url});
+            }
+
+            return NotFound($"Could not find Game with ID '{id}'.");
+        }
+
+        [HttpGet("[controller]/Home/{url}")]
+        public async Task<IActionResult> Home(string url)
         {
             var user = await GetViewUserAsync();
             if (user == null)
@@ -50,10 +61,10 @@ namespace Climb.Controllers
             var game = await context.Game
                 .Include(g => g.Characters)
                 .Include(g => g.Stages)
-                .SingleOrDefaultAsync(m => m.ID == id);
-            if(game == null)
+                .SingleOrDefaultAsync(m => m.Url == url);
+            if (game == null)
             {
-                return NotFound();
+                return NotFound($"Could not find Game with URL '{url}'.");
             }
 
             var viewModel = new HomeViewModel(user, game);
