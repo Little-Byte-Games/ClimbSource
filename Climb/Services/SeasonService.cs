@@ -66,7 +66,7 @@ namespace Climb.Services
             season.Sets = new HashSet<Set>();
 
             var participants = season.Participants.Select(lus => lus.LeagueUser.ID).ToList();
-            var rounds = ScheduleGenerator.Generate(10, participants, season.StartDate, true);
+            var rounds = ScheduleGenerator.Generate(participants.Count - 1, participants, season.StartDate, true);
             foreach (var round in rounds)
             {
                 foreach (var setData in round.sets)

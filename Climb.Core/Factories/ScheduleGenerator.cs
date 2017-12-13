@@ -35,8 +35,9 @@ namespace Climb.Core
         {
             var participants = GetParticipants(users);
 
-            int fullSeasonSegments = roundCount / (participants.Count - 1);
-            int partialRounds = roundCount % (participants.Count - 1);
+            var unplayableParticipants = removeByes && users.Count % 2 != 0 ? 2 : 1;
+            int fullSeasonSegments = roundCount / (participants.Count - unplayableParticipants);
+            int partialRounds = roundCount % (participants.Count - unplayableParticipants);
 
             var rounds = new List<Round>();
             IEnumerable<Round> createdRounds;
