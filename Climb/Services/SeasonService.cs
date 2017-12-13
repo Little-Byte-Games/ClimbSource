@@ -213,7 +213,7 @@ namespace Climb.Services
                 .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(s => s.ID == seasonID);
 
-            var tournament = await ChallongeController.CreateTournament(challongeKey, $"{season.League.Name}:{season.DisplayName}", season.Participants.Select(lus => (lus.LeagueUserID, lus.LeagueUser.ChallongeUsername, lus.LeagueUser.User.Username)));
+            var tournament = await ChallongeController.CreateTournament(challongeKey, $"{season.League.Name}: {season.DisplayName}", season.Participants.Select(lus => (lus.LeagueUserID, lus.LeagueUser.ChallongeUsername, lus.LeagueUser.User.Username)));
             season.ChallongeID = tournament.tournamentID;
             season.ChallongeUrl = tournament.tournamentUrl;
 
