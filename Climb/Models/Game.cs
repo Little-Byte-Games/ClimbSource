@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Climb.Models
 {
@@ -15,6 +15,7 @@ namespace Climb.Models
 
         public int ID { get; set; }
         public string Name { get; set; }
+        public string Url { get; set; }
 
         public HashSet<Character> Characters { get; set; }
         public HashSet<Stage> Stages { get; set; }

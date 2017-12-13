@@ -1,8 +1,10 @@
 [
     {
-        "Name": "Smash Bros 4"
+        "Name": "Smash Bros 4",
+        "Url": "sb4"
     },
     {
-        "Name": "Street Fighter V"
+        "Name": "Street Fighter V",
+        "Url": "sfv"
     }
 ]
