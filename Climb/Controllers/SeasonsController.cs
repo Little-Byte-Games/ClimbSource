@@ -113,8 +113,10 @@ namespace Climb.Controllers
             }
 
             var season = await seasonService.Create(league);
+            await StartPost(season.ID);
+            await seasonService.CreateTournament(season.ID);
 
-            return await StartPost(season.ID);
+            return Ok($"Season {season.ID} created.");
         }
 
         [HttpPost]
