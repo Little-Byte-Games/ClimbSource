@@ -1,0 +1,55 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:700|Montserrat');
+
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX1168215.jpg")
+}
+
+.panel {
+    width: 500px;
+    height: 400px;
+    background: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 0 10px 15px black;
+    background-color: orangered;
+}
+
+.sub-title {
+    text-align: center;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 40px;
+    color: whitesmoke;
+    padding: 12px 0;
+}
+
+.panel-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 25px;
+    align-content: space-between;
+    background-color: whitesmoke;
+}
+
+.panel-form-input {
+    padding: 10px 0;
+}
+
+a {
+    font-size: 14px;
+}
+
+.panel-form-input > button {
+    width: 200px;
+    height: 50px;
+    align-self: center;
+}

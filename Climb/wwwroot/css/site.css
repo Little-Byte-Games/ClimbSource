@@ -99,12 +99,18 @@ h1, h2, h3, h4, .dropdown, .dropdown-items, .profile-head {
 .content-footer {
     padding: 25px 0;
     grid-area: footer;
-    background-color: #555;
+    background-color: #333333;
     box-shadow: 0px 1px 3px #000;
+    width: 100%;
+    color: whitesmoke;
 }
 
 .content-footer p {
     text-align: center;
+}
+
+.content-footer a {
+    color: orangered;
 }
 
 /* ////////// */

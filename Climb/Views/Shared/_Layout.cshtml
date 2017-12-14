@@ -64,7 +64,7 @@
                 </ul>
             </div>
             <div class="dropdown">
-                @if(HostingEnvironment.IsDevelopment())
+                @if(hostingEnvironment.IsDevelopment())
                 {
                     <a asp-controller="Admin" asp-action="Index">Admin</a>
                 }
@@ -116,7 +116,7 @@
 <div class="container body-content">
     @RenderBody()
     <hr/>
-    <footer>
+    <footer class="content-footer">
         <p>&copy; 2017 - Climb <a href="mailto:steve.yeager@littlebytegames.com?subject=Climb%20Feedback%20(Don't%20Change)" target="_blank">Got Feedback? Bugs? Ideas? Email me!</a>
         </p>
     </footer>
