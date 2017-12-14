@@ -23,7 +23,8 @@ namespace Climb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ClimbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                    options.UseInMemoryDatabase("Test"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
