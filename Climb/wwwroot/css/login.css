@@ -36,7 +36,6 @@
     flex-direction: column;
     align-items: center;
     padding-top: 25px;
-    align-content: space-between;
     background-color: whitesmoke;
 }
 
@@ -52,4 +51,10 @@ a {
     width: 200px;
     height: 50px;
     align-self: center;
+}
+
+.input-error {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
 }
