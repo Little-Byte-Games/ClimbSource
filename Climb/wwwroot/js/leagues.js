@@ -19,10 +19,13 @@
 function createSeason(leagueID) {
     $.post({
         url: "/Seasons/CreateAndStart",
-        data: { leagueID: leagueID }
-    }).done((data, statusText, xhr) => {
-        if (xhr.status === 200) {
-            location.href = "/Seasons/Home/" + data.id;
+        data: { leagueID: leagueID },
+        success: function (response) {
+            var season = JSON.parse(response);
+            location.href = "/Seasons/Home/" + season.ID;
+        },
+        error: function(response) {
+            alert(JSON.stringify(response));
         }
     });
 }

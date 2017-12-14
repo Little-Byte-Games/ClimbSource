@@ -116,7 +116,7 @@ namespace Climb.Controllers
             await StartPost(season.ID);
             await seasonService.CreateTournament(season.ID);
 
-            return Ok($"Season {season.ID} created.");
+            return Created(Url.Action("Home", new {id = season.ID}), JsonConvert.SerializeObject(season));
         }
 
         [HttpPost]
