@@ -21,11 +21,13 @@
                     <div class="panel-form-input">
                         <label asp-for="Email"></label>
                         <input asp-for="Email"/>
-                        <span asp-validation-for="Email"></span>
+                        <br/>
+                        <span class="input-error" asp-validation-for="Email"></span>
                     </div>
                     <div class="panel-form-input">
                         <label asp-for="Password"></label>
-                        <input asp-for="Password"/>
+                        <input asp-for="Password" />
+                        <br />
                         <span asp-validation-for="Password"></span>
                     </div>
                     <div class="panel-form-input">
