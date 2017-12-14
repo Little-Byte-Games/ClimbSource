@@ -17,24 +17,21 @@
             <h4 class="sub-title">CLIMB</h4>
             <div class="panel-form">
                 <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-                    <div asp-validation-summary="All"></div>
                     <div class="panel-form-input">
                         <label asp-for="Email"></label>
                         <input asp-for="Email"/>
-                        <br/>
-                        <span class="input-error" asp-validation-for="Email"></span>
                     </div>
+                    <span class="input-error" asp-validation-for="Email"></span>
                     <div class="panel-form-input">
                         <label asp-for="Password"></label>
-                        <input asp-for="Password" />
-                        <br />
-                        <span asp-validation-for="Password"></span>
+                        <input asp-for="Password"/>
                     </div>
+                    <span class="input-error" asp-validation-for="Password"></span>
                     <div class="panel-form-input">
                         <label asp-for="RememberMe">
-                            <input asp-for="RememberMe"/>
                             @Html.DisplayNameFor(m => m.RememberMe)
                         </label>
+                        <input asp-for="RememberMe"/>
                     </div>
                     <div class="panel-form-input">
                         <button type="submit">Log in</button>
