@@ -81,8 +81,8 @@ h1, h2, h3, h4, .dropdown, .dropdown-items, .profile-head {
     align-content: space-between;
 }
 
-    grid-area: right;
 .content-right {
+    grid-area: right;
 }
 
 .content-left, .content-center, .content-right {
