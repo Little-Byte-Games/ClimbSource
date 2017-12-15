@@ -1,10 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:700|Montserrat');
-
-* {
-    font-family: 'Montserrat', sans-serif;
-}
-
-a {
+﻿a {
     font-size: 14px;
     color: orangered;
 }
