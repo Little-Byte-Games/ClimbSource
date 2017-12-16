@@ -35,6 +35,7 @@
 
 .user-content {
     width: 100%;
+    margin-bottom: 40px;
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
@@ -42,8 +43,6 @@
 
 .user-column {
     width: 30%;
-    height: 1000px;
-    background: red;
 }
 
 .user-column h3 {
