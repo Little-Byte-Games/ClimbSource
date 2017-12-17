@@ -45,7 +45,7 @@
     width: 30%;
 }
 
-.user-column h3 {
+.user-column h3, h4 {
     text-align: center;
 }
 

@@ -41,6 +41,23 @@
         </div>
         <div class="user-column">
             <h3>Sets</h3>
+            <h4>Overdue</h4>
+            @foreach(var set in Model.overdueSets)
+            {
+                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+            }
+            <h4>Available</h4>
+            @{ i = 0; }
+            @foreach(var set in Model.availableSets)
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+                <div class="@row">
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
         </div>
     </div>
 </div>
