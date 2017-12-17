@@ -38,12 +38,15 @@ h2 {
 h3 {
     padding: 10px;
     font-size: 1.5em;
-    color: #FFF;
-    background-color: #FF8800;
+    color: whitesmoke;
+    background-color: orangered;
 }
 
 h4 {
     padding: 10px;
+    font-size: 1.2em;
+    color: whitesmoke;
+    background-color: orange;
 }
 
 
