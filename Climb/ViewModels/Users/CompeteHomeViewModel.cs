@@ -40,7 +40,7 @@ namespace Climb.ViewModels
             DateTime now = DateTime.Now;
             List<LeagueUserSet> overdueSets = new List<LeagueUserSet>();
             List<LeagueUserSet> availableSets = new List<LeagueUserSet>();
-            foreach (var leagueUser in user.LeagueUsers.Where(lu => !lu.HasLeft))
+            foreach (var leagueUser in homeUser.LeagueUsers.Where(lu => !lu.HasLeft))
             {
                 var season = leagueUser.League.Seasons.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
                 if(season == null)
