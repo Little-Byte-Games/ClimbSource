@@ -1,5 +1,7 @@
-﻿@using Climb.ViewModels
+﻿@using Climb.Services
+@using Climb.ViewModels
 @model CompeteHomeViewModel
+@inject ICdnService cdnService
 
 @{
     ViewBag.Title = Model.homeUser.Username;
@@ -23,7 +25,7 @@
                     var row = i % 2 == 0 ? "row-even" : "row-odd";
                     <div class="league-user @row">
                         <div class="league-user-info">
-                            <img class="league-user-profile-image" src="https://goo.gl/TytbTk"/>
+                            <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)"/>
                             <span class="league-user-username">@Model.homeUser.Username</span>
                             <span class="league-user-league-name">(@leagueUser.League.Name)</span>
                         </div>
