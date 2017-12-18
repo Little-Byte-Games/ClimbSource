@@ -1,0 +1,24 @@
+@using Climb.ViewModels
+@model BaseViewModel
+
+<link href="/css/home_layout.css" type="text/css" rel="stylesheet" />
+@RenderSection("Styles", required: true)
+
+@Html.Partial("~/Views/Shared/Navbar.cshtml", Model)
+
+<div class="body-container">
+    <div class="body-banner">
+        @RenderSection("Body_Banner")
+    </div>
+    <div class="body-content">
+        <div class="content-column">
+            @RenderSection("User_Content_Left")
+        </div>
+        <div class="content-column">
+            @RenderSection("User_Content_Middle")
+        </div>
+        <div class="content-column">
+            @RenderSection("User_Content_Right")
+        </div>
+    </div>
+</div>

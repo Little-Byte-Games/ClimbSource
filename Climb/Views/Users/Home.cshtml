@@ -5,130 +5,133 @@
 
 @{
     ViewBag.Title = Model.homeUser.Username;
-    Layout = "_Layout";
+    Layout = "_HomeLayout";
 }
 
-<link href="/css/user/home.css" type="text/css" rel="stylesheet"/>
+@section Styles {
+    <link href="/css/user/home.css" type="text/css" rel="stylesheet"/>
+}
 
-<div class="body-container">
+@section Body_Banner {
     <div class="user-header">
         <img class="user-header-image" src="https://goo.gl/YXRMeV"/>
         <img class="profile-image" src="https://goo.gl/TytbTk"/>
     </div>
-    <div class="user-content">
-        <div class="user-column">
-            <h3>Leagues</h3>
-            <div>
-                @{ var i = 0; }
-                @foreach(var leagueUser in Model.homeUser.LeagueUsers)
-                {
-                    var row = i % 2 == 0 ? "row-even" : "row-odd";
-                    <div class="league-user @row">
-                        <div class="league-user-info">
-                            <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)"/>
-                            <span class="league-user-username">@Model.homeUser.Username</span>
-                            <span class="league-user-league-name">(@leagueUser.League.Name)</span>
-                        </div>
-                        <div class="league-user-rank">
-                            <span class="league-user-rank-number">@leagueUser.Rank</span>
-                            <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", leagueUser.GetRankTrend())</span>
-                        </div>
-                    </div>
-                    ++i;
-                }
-            </div>
-        </div>
-        <div class="user-column">
-            <h3>Activity</h3>
-        </div>
-        <div class="user-column">
-            <h3>Sets</h3>
-            <h4>Overdue</h4>
-            @foreach(var set in Model.overdueSets)
-            {
-                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-            }
-            <h4>Available</h4>
-            @{ i = 0; }
-            @foreach(var set in Model.availableSets)
-            {
-                var row = i % 2 == 0 ? "row-even" : "row-odd";
-                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-                <div class="@row">
-                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+}
+
+@section User_Content_Left {
+    <h3>Leagues</h3>
+    <div>
+        @{ var i = 0; }
+        @foreach(var leagueUser in Model.homeUser.LeagueUsers)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="league-user @row">
+                <div class="league-user-info">
+                    <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)"/>
+                    <span class="league-user-username">@Model.homeUser.Username</span>
+                    <span class="league-user-league-name">(@leagueUser.League.Name)</span>
                 </div>
-                ++i;
-            }
-        </div>
+                <div class="league-user-rank">
+                    <span class="league-user-rank-number">@leagueUser.Rank</span>
+                    <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", leagueUser.GetRankTrend())</span>
+                </div>
+            </div>
+            ++i;
+        }
     </div>
-</div>
+}
+
+@section User_Content_Middle {
+    <h3>Activity</h3>
+}
+
+@section User_Content_Right {
+    <h3>Sets</h3>
+    <h4>Overdue</h4>
+    @foreach(var set in Model.overdueSets)
+    {
+        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+        @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+    }
+    <h4>Available</h4>
+    @{ var i = 0; }
+    @foreach(var set in Model.availableSets)
+    {
+        var row = i % 2 == 0 ? "row-even" : "row-odd";
+        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+        <div class="@row">
+            @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+        </div>
+        ++i;
+    }
+}
 
 @*<div align="center">
-    <h2>Home</h2>
-    @if(Model.IsHome)
-    {
-        <h4>Hello @Model.user.Username</h4>
-    }
-    else
-    {
-        <h4>Home of @Model.homeUser.Username</h4>
-        foreach(var leagueUser in Model.possibleExhibitions)
+        <h2>Home</h2>
+        @if(Model.IsHome)
         {
-            <form method="post" asp-controller="Sets" asp-action="Exhibition" asp-route-challengerID="@Model.homeUser.ID" asp-route-challengedID="@leagueUser.ID">
-                <button type="submit" class="btn btn-danger">Fight in @leagueUser.League.Name!</button>
-            </form>
+            <h4>Hello @Model.user.Username</h4>
         }
-    }
+        else
+        {
+            <h4>Home of @Model.homeUser.Username</h4>
+            foreach(var leagueUser in Model.possibleExhibitions)
+            {
+                <form method="post" asp-controller="Sets" asp-action="Exhibition" asp-route-challengerID="@Model.homeUser.ID" asp-route-challengedID="@leagueUser.ID">
+                    <button type="submit" class="btn btn-danger">Fight in @leagueUser.League.Name!</button>
+                </form>
+            }
+        }
 
-</div>
-<div class="row">
-    <div class="col-xs-3" align="center">
-        <h3>Leagues</h3>
-        @foreach(var leagueUser in Model.user.LeagueUsers)
-        {
-            <div class="panel panel-default">
-                @Html.Partial("/Views/LeagueUsers/Partials/Info.cshtml", leagueUser)
-            </div>
-        }
     </div>
-    <div class="col-xs-6" align="center">
-        @if(Model.overdueSets.Count > 0)
-        {
-            <h3>OverDue Sets</h3>
-            foreach(var set in Model.overdueSets)
+    <div class="row">
+        <div class="col-xs-3" align="center">
+            <h3>Leagues</h3>
+            @foreach(var leagueUser in Model.user.LeagueUsers)
             {
-                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                <div class="panel panel-default">
+                    @Html.Partial("/Views/LeagueUsers/Partials/Info.cshtml", leagueUser)
+                </div>
             }
-        }
-        
-        @if (Model.overdueSets.Count == 0 && Model.availableSets.Count == 0)
-        {
-            <span>All caught up!</span>
-        }
-        else if(Model.overdueSets.Count > 0)
-        {
-            <hr />
-        }
-        @if(Model.availableSets.Count > 0)
-        {
-            <h3>Available Sets</h3>
-            foreach(var set in Model.availableSets)
+        </div>
+        <div class="col-xs-6" align="center">
+            @if(Model.overdueSets.Count > 0)
             {
-                var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
-                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                <h3>OverDue Sets</h3>
+                foreach(var set in Model.overdueSets)
+                {
+                    var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                }
             }
-        }
-    </div>
-    <div class="col-xs-3" align="center">
-        <h3>Activity</h3>
-        @{
-            var snapshots = Model.GetSortedRankSnapshots();
-            foreach(var snapshot in snapshots)
+
+            @if (Model.overdueSets.Count == 0 && Model.availableSets.Count == 0)
             {
-                @Html.Partial("/Views/RankSnapshots/Info.cshtml", snapshot)
+                <span>All caught up!</span>
             }
-        }
-    </div>
-</div>*@
+            else if(Model.overdueSets.Count > 0)
+            {
+                <hr />
+            }
+            @if(Model.availableSets.Count > 0)
+            {
+                <h3>Available Sets</h3>
+                foreach(var set in Model.availableSets)
+                {
+                    var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                }
+            }
+        </div>
+        <div class="col-xs-3" align="center">
+            <h3>Activity</h3>
+            @{
+                var snapshots = Model.GetSortedRankSnapshots();
+                foreach(var snapshot in snapshots)
+                {
+                    @Html.Partial("/Views/RankSnapshots/Info.cshtml", snapshot)
+                }
+            }
+        </div>
+    </div>*@
