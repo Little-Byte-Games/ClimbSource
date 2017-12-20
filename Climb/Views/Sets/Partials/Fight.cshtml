@@ -59,7 +59,7 @@
                 <span id="player-2-score">0</span>
             </div>
         </div>
-        
+
         @if(!Model.set.IsLocked)
         {
             <div class="add-match">
@@ -67,7 +67,7 @@
             </div>
         }
 
-        <form asp-controller="Sets" asp-action="Submit" method="post">
+        <form id="set-form" asp-controller="Sets" asp-action="Submit" method="post">
             <input type="hidden" name="id" value="@Model.set.ID"/>
             <div class="match-wrapper">
                 <div class="match-container">

@@ -4,14 +4,31 @@
 @model GenericViewModel<Set>
 
 @{
-	ViewBag.Title = "Fight";
-	Layout = "_Layout";
+    ViewBag.Title = "Fight";
+    Layout = "_Layout";
 }
 
 @Html.Partial("/Views/Sets/Partials/Fight.cshtml", SetFightViewModel.Create(Model.data, SetsController.MaxMatchCount))
 
-@section Scripts {
+@section Scripts
+{
     <script type="text/javascript">
-        $(document).ready(scoreUpdated);
+        $(document).ready(() => {
+            scoreUpdated();
+
+            $("#submit-button").click(function () {
+                $.post({
+                    url: "/Sets/Submit",
+                    data: $("#set-form").serialize(),
+                    success: function() {
+                        alert("Set submitted!");
+                    },
+                    error: function(response) {
+                        alert(response.responseText);
+                    }
+                });
+                return false;
+            });
+        });
     </script>
 }
