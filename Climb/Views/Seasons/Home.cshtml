@@ -1,18 +1,22 @@
-﻿@using Climb.ViewModels
+﻿@using Climb.Consts
+@using Climb.ViewModels
 @using Climb.ViewModels.Seasons
 @model HomeViewModel
 
 @{
-	ViewData["Title"] = "Season-Home";
+    ViewData["Title"] = "Season-Home";
 }
 
 <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
 
 <h1>Seasons - Home</h1>
 
-<img src="@Model.BracketUrl" />
+@if(FeatureToggles.Challonge)
+{
+    <img src="@Model.BracketUrl" />
+}
 
-@if (!Model.season.IsComplete)
+@if(!Model.season.IsComplete)
 {
     <button onclick="endSeason(@Model.season.ID)">End Season</button>
 }

@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using Climb.Consts;
+using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels.Seasons;
 using Microsoft.AspNetCore.Identity;
@@ -114,7 +115,11 @@ namespace Climb.Controllers
 
             var season = await seasonService.Create(league);
             await StartPost(season.ID);
-            await seasonService.CreateTournament(season.ID);
+
+            if(FeatureToggles.Challonge)
+            {
+                await seasonService.CreateTournament(season.ID);
+            }
 
             return Created(Url.Action("Home", new {id = season.ID}), JsonConvert.SerializeObject(season));
         }
@@ -168,7 +173,7 @@ namespace Climb.Controllers
 
             return Ok(season);
         }
-        #endregion
+#endregion
 
         public class JoinList
         {
