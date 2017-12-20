@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Consts;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -176,7 +177,10 @@ namespace Climb.Services
                 leagueUserSeason.Standing = placing;
                 leagueUserSeason.Points = participant.Value.GetSeasonPoints();
 
-                await ChallongeController.UpdateBracket(challongeKey, season.ChallongeID, leagueUserSeason.ChallongeID, placing);
+                if (FeatureToggles.Challonge)
+                {
+                    await ChallongeController.UpdateBracket(challongeKey, season.ChallongeID, leagueUserSeason.ChallongeID, placing); 
+                }
 
                 if(lastTieBreaker != participant.Value.tieBreaker)
                 {
