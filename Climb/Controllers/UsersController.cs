@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using UserApp.Controllers;
 
 namespace Climb.Controllers
@@ -15,11 +16,13 @@ namespace Climb.Controllers
     public class UsersController : ModelController
     {
         private readonly ClimbContext context;
+        private readonly ICdnService cdnService;
 
-        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager)
+        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, ICdnService cdnService)
             : base(userService, userManager)
         {
             this.context = context;
+            this.cdnService = cdnService;
         }
 
         #region Pages
@@ -63,6 +66,29 @@ namespace Climb.Controllers
 
             var viewModel = new UserAccountViewModel(user);
             return View(viewModel);
+        }
+        #endregion
+
+        #region API
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
+        {
+            if(file == null)
+            {
+                return BadRequest("Need to submit a picture.");
+            }
+
+            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+            if (user == null)
+            {
+                return NotFound($"No User with ID '{id}' found.");
+            }
+
+            user.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            context.Update(user);
+            await context.SaveChangesAsync();
+
+            return Ok();
         }
         #endregion
 

@@ -22,9 +22,28 @@ namespace Climb.Services
             Directory.CreateDirectory(Path.Combine(localCdnPath, CdnConsts.CharacterIcons));
         }
 
+        public string GetProfilePic(User user)
+        {
+            return string.IsNullOrWhiteSpace(user.ProfilePicKey) ? LeagueUser.MissingPic : "/" + Path.Combine(Cdn, CdnConsts.ProfilePics, user.ProfilePicKey);
+        }
+
         public string GetProfilePic(LeagueUser leagueUser)
         {
-            return string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey) ? LeagueUser.MissingPic : "/" + Path.Combine(Cdn, CdnConsts.ProfilePics, leagueUser.ProfilePicKey);
+            string profilePicKey;
+            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
+            {
+                profilePicKey = leagueUser.ProfilePicKey;
+            }
+            else if(!string.IsNullOrWhiteSpace(leagueUser.User.ProfilePicKey))
+            {
+                profilePicKey = leagueUser.User.ProfilePicKey;
+            }
+            else
+            {
+                return LeagueUser.MissingPic;
+            }
+
+            return $"/{Cdn}/{CdnConsts.ProfilePics}/{profilePicKey}";
         }
 
         public async Task<string> UploadProfilePic(IFormFile file)

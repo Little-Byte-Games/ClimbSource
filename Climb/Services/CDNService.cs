@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Climb.Services
 {
+    // TODO: Rename to S3Cdn
     public class CdnService : ICdnService
     {
         private readonly string accessKey;
@@ -53,9 +54,28 @@ namespace Climb.Services
             characterPics = CdnConsts.CharacterIcons;
         }
 
+        public string GetProfilePic(User user)
+        {
+            return string.IsNullOrWhiteSpace(user.ProfilePicKey) ? LeagueUser.MissingPic : string.Join("/", rootUrl, profilePics, user.ProfilePicKey); 
+        }
+
         public string GetProfilePic(LeagueUser leagueUser)
         {
-            return string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey) ? LeagueUser.MissingPic : string.Join("/", rootUrl, profilePics, leagueUser.ProfilePicKey);
+            string profilePicKey;
+            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
+            {
+                profilePicKey = leagueUser.ProfilePicKey;
+            }
+            else if(!string.IsNullOrWhiteSpace(leagueUser.User.ProfilePicKey))
+            {
+                profilePicKey = leagueUser.User.ProfilePicKey;
+            }
+            else
+            {
+                return LeagueUser.MissingPic;
+            }
+
+            return string.Join("/", rootUrl, profilePics, profilePicKey);
         }
 
         public async Task<string> UploadProfilePic(IFormFile file)

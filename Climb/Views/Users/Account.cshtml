@@ -5,51 +5,72 @@
 @inject ICdnService cdnService
 
 @{
-	ViewBag.Title = "Account";
-	Layout = "_Layout";
+    ViewBag.Title = "Account";
+    Layout = "_Layout";
 }
 
 <div align="center">
-	<h2>Account</h2>
-	<form asp-action="Update" method="post"> 
-		<div asp-validation-summary="ModelOnly" class="text-danger"></div> 
-		<input type="hidden" name="id" value="@Model.user.ID"/>
-		<input type="hidden" asp-for="user.ID" /> 
-		<div class="form-group"> 
-			<label asp-for="user.Username" class="control-label"></label> 
-			<input asp-for="user.Username" class="form-control" /> 
-			<span asp-validation-for="user.Username" class="text-danger"></span> 
-		</div> 
-		<div class="form-group"> 
-			<input type="submit" value="Save" class="btn btn-default" /> 
-		</div> 
-	</form>
-	
-	@foreach(var leagueUser in Model.user.LeagueUsers)
-	{
-		<div>
-			<h3>@leagueUser.League.Name</h3>
+    <h2>Account</h2>
+    <form asp-action="Update" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" name="id" value="@Model.user.ID"/>
+        <input type="hidden" asp-for="user.ID"/>
+        <div class="form-group">
+            <label asp-for="user.Username" class="control-label"></label>
+            <input asp-for="user.Username" class="form-control"/>
+            <span asp-validation-for="user.Username" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-default"/>
+        </div>
+    </form>
+    <div>
+        <img src="@cdnService.GetProfilePic(Model.user)"/>
+        <form id="user-profile-pic-form" asp-controller="Users" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="@Model.user.ID"/>
+            <input type="file" name="file" accept="image/*"/>
+            <input id="user-profile-pic-submit" type="button" value="Update"/>
+        </form>
+        <span>Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
+    </div>
+
+    @foreach(var leagueUser in Model.user.LeagueUsers)
+    {
+        <div>
+            <h3>@leagueUser.League.Name</h3>
             <div>
-                <img src="@cdnService.GetProfilePic(leagueUser)" />
+                <img src="@cdnService.GetProfilePic(leagueUser)"/>
                 <form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="@leagueUser.ID" />
-                    <input type="file" name="file" accept="image/*" />
-                    <input type="submit" value="Update" />
+                    <input type="hidden" name="id" value="@leagueUser.ID"/>
+                    <input type="file" name="file" accept="image/*"/>
+                    <input type="submit" value="Update"/>
                 </form>
                 <span>Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
             </div>
-		    <div>
-		        <h4>Slack Username</h4>
-		        <form asp-controller="LeagueUsers" asp-action="UpdateSlackUsername" method="post">
-		            <input type="hidden" name="id" value="@leagueUser.ID" />
+            <div>
+                <h4>Slack Username</h4>
+                <form asp-controller="LeagueUsers" asp-action="UpdateSlackUsername" method="post">
+                    <input type="hidden" name="id" value="@leagueUser.ID"/>
                     <input type="text" name="slackUsername" value="@leagueUser.SlackUsername"/>
-                    <input type="submit" value="Update" />
-		        </form>
-		    </div>
-		</div>
-	}
+                    <input type="submit" value="Update"/>
+                </form>
+            </div>
+        </div>
+    }
 </div>
 
-@section Scripts { 
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");} 
-} 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial"); 
+        <script type="text/javascript" src="@Url.Content("/js/user/account.js")"></script>
+
+        <script type="text/javascript">
+            $(document).ready(() => {
+                $("#user-profile-pic-submit").click(() => {
+                    onUpdateUserProfilePicClick();
+                    return false;
+                });
+            });
+        </script>
+    }
+}
