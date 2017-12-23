@@ -1,37 +1,48 @@
-﻿@using Microsoft.AspNetCore.Hosting
+﻿@using Climb.Services
+@using Microsoft.AspNetCore.Hosting
 @model Climb.ViewModels.SetCollapsedViewModel
 @inject IHostingEnvironment hostingEnvironment
+@inject ICdnService cdnService
 
-<div class="panel panel-default">
-    <div align="center">
-        @Model.set.ID
-        <div>
+<link href="/css/set/info.css" type="text/css" rel="stylesheet" />
+
+<div class="set-container">
+    @*@Model.set.ID*@
+
+    <div>
+        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player1)" />
+    </div>
+    <div class="set-info">
+        <div class="set-season">
             @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
-            |
+            <span class="set-season-separator">|</span>
             @Model.SeasonName
         </div>
         <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
-        <br/>
+        <br />
 
-        @if(Model.set.IsComplete)
+        @if (Model.set.IsComplete)
         {
             <span>@Model.set.Player1Score - @Model.set.Player2Score</span>
-            if(!Model.set.IsBye)
+            if (!Model.set.IsBye)
             {
-                <br/>
-                <a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-info" role="button">Details</a>
+                <br />
+                <a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" role="button">Details</a>
             }
         }
         else
         {
             <span>@Model.set.DueDate.ToShortDateString()</span>
 
-            if(Model.set.IsPlaying(Model.user))// || hostingEnvironment.IsDevelopment())
+            if (Model.set.IsPlaying(Model.user))// || hostingEnvironment.IsDevelopment())
             {
-                <br/>
-                <a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" class="btn btn-primary" role="button">Fight!</a>
+                <br />
+                <button onclick="location.href='/Sets/Fight/@Model.set.ID'">Fight!</button>
+                //<a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" role="button">Fight!</a>
             }
         }
-
+    </div>
+    <div>
+        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)" />
     </div>
 </div>

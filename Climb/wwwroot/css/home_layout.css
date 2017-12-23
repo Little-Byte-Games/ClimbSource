@@ -1,0 +1,44 @@
+﻿.body-container {
+    width: 1500px;
+    display: flex;
+    flex-direction: column;
+    margin: 40px auto 0 auto;
+}
+
+.body-banner {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+.body-content {
+    width: 100%;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.content-column {
+    width: 30%;
+}
+
+.content-column h3, h4 {
+    text-align: center;
+}
+
+.row-odd {
+    background: #cccccc;
+}
+
+.row-even {
+    background: #eeeeee;
+}
+
+.league-user {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
