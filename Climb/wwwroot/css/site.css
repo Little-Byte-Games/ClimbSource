@@ -346,6 +346,7 @@ h4 {
     display: inline-block;
 }
 
+.league-name,
 .user-username {
     color: black;
     text-decoration: none;
