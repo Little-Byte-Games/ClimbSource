@@ -8,14 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - Climb</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/css/site.css"/>
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
-    </environment>
     <link href="/css/home_layout.css" type="text/css" rel="stylesheet"/>
-    <link href="/css/set/info.css" type="text/css" rel="stylesheet" />
+    <link href="/css/set/info.css" type="text/css" rel="stylesheet"/>
     @RenderSection("Styles", required: false)
 </head>
 
@@ -38,8 +32,6 @@
         </div>
     </div>
 </div>
-
-@RenderBody()
 
 <footer class="content-footer">
     <p>&copy; 2017 - Climb <a href="mailto:steve.yeager@littlebytegames.com?subject=Climb%20Feedback%20(Don't%20Change)" target="_blank">Got Feedback? Bugs? Ideas? Email me!</a></p>

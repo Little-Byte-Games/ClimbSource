@@ -1,12 +1,4 @@
-﻿.body-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 1500px;
-    margin: auto;
-}
-
-.user-header-image {
+﻿.user-header-image {
     width: 100%;
 }
 
