@@ -16,6 +16,7 @@ namespace Climb.Models
         public int ID { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
+        public string BannerPicUrl { get; set; }
 
         public HashSet<Character> Characters { get; set; }
         public HashSet<Stage> Stages { get; set; }

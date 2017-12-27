@@ -9,6 +9,26 @@
     width: 100%;
     height: 300px;
     margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.body-banner-image {
+    width: 100%;
+}
+
+.body-banner-title {
+    z-index: 1;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    text-align: center;
+    color: white;
+    font-size: 80px;
+    line-height: 40px;
+    font-family: "Josefin Sans", sans-serif;
+    -webkit-text-stroke: 3px black;
 }
 
 .body-content {

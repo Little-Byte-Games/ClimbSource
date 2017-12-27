@@ -14,9 +14,8 @@
 }
 
 @section Body_Banner {
-    <div align="center">
-        <h1>@Model.league.Name</h1>
-    </div>
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl"/>
+    <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
 @section User_Content_Left {
