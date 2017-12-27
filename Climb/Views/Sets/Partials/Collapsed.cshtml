@@ -4,45 +4,23 @@
 @inject IHostingEnvironment hostingEnvironment
 @inject ICdnService cdnService
 
-<link href="/css/set/info.css" type="text/css" rel="stylesheet" />
-
 <div class="set-container">
-    @*@Model.set.ID*@
-
-    <div>
-        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player1)" />
-    </div>
-    <div class="set-info">
-        <div class="set-season">
-            @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
-            <span class="set-season-separator">|</span>
-            @Html.Partial("/Views/Seasons/Partials/Name.cshtml", Model.set.Season)
+    <div class="set-main">
+        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player1)"/>
+        <div class="set-info">
+            <div class="set-season">
+                @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
+                <span class="set-season-separator">|</span>
+                @Html.Partial("/Views/Seasons/Partials/Name.cshtml", Model.set.Season)
+                <span class="set-season-separator">|</span>
+                <span>@Model.set.DueDate.ToShortDateString()</span>
+            </div>
+            <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
+            <br/>
+            <span>@(Model.set?.Player1Score??0) - @(Model.set.Player2Score??0)</span>
         </div>
-        <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
-        <br />
-
-        @if (Model.set.IsComplete)
-        {
-            <span>@Model.set.Player1Score - @Model.set.Player2Score</span>
-            if (!Model.set.IsBye)
-            {
-                <br />
-                <a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" role="button">Details</a>
-            }
-        }
-        else
-        {
-            <span>@Model.set.DueDate.ToShortDateString()</span>
-
-            if (Model.set.IsPlaying(Model.user))// || hostingEnvironment.IsDevelopment())
-            {
-                <br />
-                <button onclick="location.href='/Sets/Fight/@Model.set.ID'">Fight!</button>
-                //<a asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" role="button">Fight!</a>
-            }
-        }
+        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
     </div>
-    <div>
-        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)" />
-    </div>
+
+    <button class="set-submit" onclick="location.href = '/Sets/Fight/@Model.set.ID'">@(Model.set.IsComplete ? "Edit" : "Fight!")</button>
 </div>
