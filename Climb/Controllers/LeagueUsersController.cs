@@ -23,12 +23,6 @@ namespace Climb.Controllers
         }
 
         #region API
-        public async Task<string> FavoriteCharacter(int id)
-        {
-            var character = await leagueUserService.GetFavoriteCharacter(id);
-            return character?.Name ?? "None";
-        }
-
         public async Task<IActionResult> GetUserTrend(int id)
         {
             var leagueUser = await context.LeagueUser

@@ -1,6 +1,5 @@
 ﻿using Climb.Models;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace Climb.Services
             this.context = context;
         }
 
-        public async Task<Character> GetFavoriteCharacter(int id)
+        public async Task<IEnumerable<Character>> GetMostUsedCharacters(int id, int count)
         {
             var characterUsage = new Dictionary<Character, int>();
 
@@ -48,7 +47,7 @@ namespace Climb.Services
                 }
             }
 
-            return characterUsage.Count > 0 ? characterUsage.MaxBy(c => c.Value).Key : null;
+            return characterUsage.OrderBy(x => x.Value).Take(count).Select(x => x.Key);
         }
     }
 }

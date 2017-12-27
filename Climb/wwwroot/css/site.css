@@ -345,3 +345,8 @@ h4 {
 .menu div:hover .dropdown-items {
     display: inline-block;
 }
+
+.user-username {
+    color: black;
+    text-decoration: none;
+}

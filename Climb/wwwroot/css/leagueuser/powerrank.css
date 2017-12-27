@@ -1,0 +1,46 @@
+﻿.powerrank-container {
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.powerrank-rank {
+    width: 80px;
+    font-size: 60px;
+    text-align: center;
+}
+
+.powerrank-profilepic {
+    height: 100%;
+}
+
+.powerrank-info {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px;
+    flex-grow: 100;
+}
+
+.powerrank-info a {
+    font-size: 24px;
+}
+
+.powerrank-info-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.powerrank-info-characters {
+    height: 60%;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.powerrank-info-characters img {
+    height: 80%;
+}
