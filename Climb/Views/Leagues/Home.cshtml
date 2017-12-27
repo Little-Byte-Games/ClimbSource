@@ -11,11 +11,11 @@
 
 @section Styles {
     <link href="/css/league_home.css" rel="Stylesheet" type="text/css" />
-    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet"/>
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
 }
 
 @section Body_Banner {
-    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl"/>
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl" />
     <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
@@ -54,8 +54,32 @@
 
 @section User_Content_Right {
     <h4 align="center">Seasons</h4>
+    <div class="season-actions">
+        <button>Create</button>
+        <span>or view</span>
+        <select id="seasons-dropdown">
+            @foreach(var season in Model.league.Seasons)
+            {
+                if(season.ID == Model.selectedSeason.ID)
+                {
+                    <option value="season-@season.ID" selected>@season.DisplayName</option>
+                }
+                else
+                {
+                    <option value="season-@season.ID">@season.DisplayName</option>
+                }
+            }
+        </select>
+    </div>
+    
+    <div class="season-info">
+        <span>Total: <span id="seasonStatus.totalSetCount"></span></span>
+        <span>Completed: <span id="seasonStatus.completedCount"></span></span>
+        <span>Available: <span id="seasonStatus.availableCount"></span></span>
+        <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
+    </div>
 
-    <button onclick="createSeason(@Model.league.ID)">Create Season</button>
+    @*<button onclick="createSeason(@Model.league.ID)">Create Season</button>
 
     <div align="center">
         @foreach (var season in Model.league.Seasons)
@@ -63,27 +87,10 @@
             var active = season.ID == Model.selectedSeason.ID ? "active" : "";
             <button id="season-@season.ID" type="button" class="@active" onclick="goToSeason(@season.ID)">@season.DisplayName</button>
         }
-    </div>
+    </div>*@
     @if (Model.selectedSeason != null)
     {
-        <br />
-        <h4 align="center">@Model.selectedSeason.DisplayName</h4>
-        <div>
-            <table>
-                <tr>
-                    <th>Total</th>
-                    <th>Completed</th>
-                    <th>Available</th>
-                    <th>Overdue</th>
-                </tr>
-                <tr>
-                    <td id="seasonStatus.totalSetCount"></td>
-                    <td id="seasonStatus.completedCount"></td>
-                    <td id="seasonStatus.availableCount"></td>
-                    <td id="seasonStatus.overdueCount"></td>
-                </tr>
-            </table>
-        </div>
+        <h3 class="sets-subtitle">Sets</h3>
         var i = 0;
         foreach (var set in Model.selectedSeason.Sets)
         {
