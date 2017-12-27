@@ -49,5 +49,15 @@ namespace Climb.Models
 
             return new SeasonStatus(Sets.Count, overdueCount, availableCount, completedCount);
         }
+
+        public IEnumerable<Set> GetOverdueSets()
+        {
+            return Sets.Where(s => !s.IsComplete && s.DueDate < DateTime.Now);
+        }
+
+        public IEnumerable<Set> GetAvailableSets()
+        {
+            return Sets.Where(s => !s.IsComplete && s.DueDate >= DateTime.Now);
+        }
     }
 }
