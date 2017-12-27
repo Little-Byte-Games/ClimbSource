@@ -17,7 +17,14 @@
             </div>
             <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
             <br/>
-            <span>@(Model.set?.Player1Score??0) - @(Model.set.Player2Score??0)</span>
+            @if(Model.set.IsComplete)
+            {
+                <span>@(Model.set?.Player1Score??0) - @(Model.set.Player2Score??0)</span>
+            }
+            else
+            {
+                <span>---</span>
+            }
         </div>
         <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
     </div>
