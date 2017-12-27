@@ -1,4 +1,5 @@
-﻿using Climb.Core;
+﻿using Climb.Consts;
+using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
@@ -101,7 +102,10 @@ namespace Climb.Controllers
                 return BadRequest($"Set {id} could not be submitted.");
             }
 
-            await SendSetCompletedMessage(set);
+            if (FeatureToggles.Slack)
+            {
+                await SendSetCompletedMessage(set); 
+            }
 
             return Ok(JsonConvert.SerializeObject(set));
         }

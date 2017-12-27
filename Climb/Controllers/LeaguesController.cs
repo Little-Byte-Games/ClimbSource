@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using Climb.Consts;
+using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -203,7 +204,10 @@ namespace Climb.Controllers
             }
 
             var rankSnapshots = await leagueService.TakeSnapshot(league);
-            await leagueService.SendSnapshotUpdate(rankSnapshots, league);
+            if (FeatureToggles.Slack)
+            {
+                await leagueService.SendSnapshotUpdate(rankSnapshots, league); 
+            }
 
             return RedirectToAction(nameof(Home), new {id});
         }
