@@ -5,15 +5,27 @@
 
 @{
     ViewData["Title"] = "Season-Home";
+    Layout = "_HomeLayout";
 }
 
-<script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+@section Styles
+{
+    <link href="/css/season.css" type="text/css" rel="stylesheet"/>
+}
 
-<h1>Seasons - Home</h1>
+@section Scripts
+{
+    <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+}
+
+@section Body_Banner
+{
+    <h1>Seasons - Home</h1>
+}
 
 @if(FeatureToggles.Challonge)
 {
-    <img src="@Model.BracketUrl" />
+    <img src="@Model.BracketUrl"/>
 }
 
 @if(!Model.season.IsComplete)
@@ -21,23 +33,31 @@
     <button onclick="endSeason(@Model.season.ID)">End Season</button>
 }
 
-<div>
-    <h2>Standings</h2>
+@section User_Content_Left
+{
+    <h3>Standings</h3>
+    @{ var i = 0; }
     @foreach(var participant in Model.standings)
     {
-        <div>
-            <span>@participant.user.Standing</span>
-            <span>@participant.user.LeagueUser.User.Username</span>
-            <span>(@participant.user.Points of @participant.possiblePoints)</span>
+        var row = i % 2 == 0 ? "row-even" : "row-odd";
+        <div class="@row">
+            @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", participant)
         </div>
+        ++i;
     }
-</div>
+}
 
-<div>
-    <h2>Sets</h2>
+@section User_Content_Middle
+{
+    <h3>Activity</h3>
+}
+
+@section User_Content_Right
+{
+    <h3>Sets</h3>
     @foreach(var set in Model.season.Sets)
     {
         var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
         @Html.Partial("~/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
-</div>
+}
