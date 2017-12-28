@@ -67,7 +67,7 @@ namespace Climb.Controllers
             }
 
             var currentSeason = league.CurrentSeason;
-            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete && !s.IsBye);
+            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete);
 
             int? seasonID = null;
             if (currentSeason != null)
