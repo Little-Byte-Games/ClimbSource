@@ -1,4 +1,32 @@
-﻿.standing-container {
+﻿.season-title {
+    z-index: 1;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    text-align: center;
+    color: white;
+    font-size: 80px;
+    line-height: 0px;
+    font-family: "Josefin Sans", sans-serif;
+    -webkit-text-stroke: 3px black;
+}
+
+.season-subtitle {
+    z-index: 1;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    text-align: center;
+    color: white;
+    font-size: 40px;
+    line-height: 100px;
+    font-family: "Josefin Sans", sans-serif;
+    -webkit-text-stroke: 2px black;
+}
+
+.standing-container {
     height: 80px;
     display: flex;
     flex-direction: row;
