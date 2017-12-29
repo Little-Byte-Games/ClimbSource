@@ -23,18 +23,21 @@ namespace Climb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ClimbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                    options.UseInMemoryDatabase("Test"));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<ICdnService, CdnService>();
+            services.AddTransient<ICdnService, FileStorageCdn>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILeagueUserService, LeagueUserService>();
             services.AddTransient<ILeagueService, LeagueService>();
             services.AddTransient<ISeasonService, SeasonService>();
+            services.AddTransient<ISetService, SetService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

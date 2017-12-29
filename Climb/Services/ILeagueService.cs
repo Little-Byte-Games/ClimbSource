@@ -8,5 +8,7 @@ namespace Climb.Services
     {
         Task<LeagueUser> JoinLeague(User user, League league);
         Task<HashSet<RankSnapshot>> TakeSnapshot(League league);
+        Task SendSnapshotUpdate(HashSet<RankSnapshot> snapshots, League league);
+        Task SendSetReminders(League league);
     }
 }

@@ -1,0 +1,37 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/js/admin.js"></script>
+    <link href="/css/admin.css" rel="Stylesheet" type="text/css"/>
+    <title>Index</title>
+</head>
+<body>
+<div id="modal">
+    <div class="modal-content">
+        <span id="closeModal">CLOSE</span>
+        <h3 id="modalAction"></h3>
+        <span id="modal-time"></span>
+        <p id="modalResult"></p>
+    </div>
+</div>
+
+<a asp-controller="Users" asp-action="Home">Home</a>
+<h1>Admin</h1>
+<div>
+    <h2>DB</h2>
+    <button onclick="resetDB()">Reset</button>
+</div>
+<div>
+    <h2>League</h2>
+    <button onclick="takeSnapshots()">Take Snapshots</button>
+    <button onclick="sendSetReminders()">Send Set Reminders</button>
+</div>
+</body>
+</html>

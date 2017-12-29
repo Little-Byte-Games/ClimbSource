@@ -1,13 +1,14 @@
 ﻿using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
+using Climb.ViewModels.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.ViewModels.Users;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using UserApp.Controllers;
 
 namespace Climb.Controllers
@@ -15,44 +16,42 @@ namespace Climb.Controllers
     public class UsersController : ModelController
     {
         private readonly ClimbContext context;
+        private readonly ICdnService cdnService;
 
-        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager)
+        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, ICdnService cdnService)
             : base(userService, userManager)
         {
             this.context = context;
+            this.cdnService = cdnService;
         }
 
         #region Pages
         [Authorize]
         public async Task<IActionResult> Home(int? id)
         {
-            var appUser = await userManager.GetUserAsync(User);
-            if(appUser == null)
+            var user = await GetViewUserAsync();
+            if(user == null)
             {
                 return RedirectToAction(nameof(AccountController.Login), "Account");
             }
 
-            if (id == null)
+            if(id == null)
             {
-                id = appUser.UserID;
+                id = user.ID;
             }
 
-            var user = context.User
+            var homeUser = context.User
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
                 .SingleOrDefault(u => u.ID == id);
-            if (user == null)
+            if(homeUser == null)
             {
-                return NotFound();
+                return NotFound($"Could not find User with ID '{id}'.");
             }
 
-            var viewingUser = await context.User
-                .Include(u => u.LeagueUsers)
-                .SingleOrDefaultAsync(u => u.ID == appUser.UserID);
-
-            var viewModel = CompeteHomeViewModel.Create(user, viewingUser);
+            var viewModel = CompeteHomeViewModel.Create(user, homeUser);
             return View(viewModel);
         }
 
@@ -71,23 +70,27 @@ namespace Climb.Controllers
         #endregion
 
         #region API
-        public async Task<IActionResult> AvailableSets(int id)
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {
-            var user = await GetViewUserAsync();
-            if (user == null)
+            if(file == null)
             {
-                return NotFound();
+                return BadRequest("Need to submit a picture.");
             }
 
-            var sets = await context.Set
-                .Include(s => s.Season).ThenInclude(s => s.League)
-                .Include(s => s.Player1).ThenInclude(u => u.User)
-                .Include(s => s.Player2).ThenInclude(u => u.User)
-                .Where(s => user.LeagueUsers.Any(u => u.ID == s.Player1ID || u.ID == s.Player2ID)).ToListAsync();
+            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+            if (user == null)
+            {
+                return NotFound($"No User with ID '{id}' found.");
+            }
 
-            var viewData = new AvailableSetsViewModel(user, sets);
-            return View(viewData);
+            user.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            context.Update(user);
+            await context.SaveChangesAsync();
+
+            return Ok();
         }
+        #endregion
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -122,6 +125,5 @@ namespace Climb.Controllers
             var viewModel = new UserAccountViewModel(viewUser);
             return View(nameof(Account), viewModel);
         }
-        #endregion
     }
 }

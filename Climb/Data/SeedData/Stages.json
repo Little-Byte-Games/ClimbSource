@@ -1,0 +1,40 @@
+[
+    // SB4
+    {
+        "Name": "Final Destination",
+        "GameID": 1
+    },
+    {
+        "Name": "Smashville",
+        "GameID": 1
+    },
+    {
+        "Name": "Town & City",
+        "GameID": 1
+    },
+    {
+        "Name": "Lylat Cruise",
+        "GameID": 1
+    },
+    {
+        "Name": "Dreamland",
+        "GameID": 1
+    },
+    {
+        "Name": "Battlefield",
+        "GameID": 1
+    },
+    //SFV
+    {
+        "Name": "Suzaku Castle",
+        "GameID": 2
+    },
+    {
+        "Name": "English Manor",
+        "GameID": 2
+    },
+    {
+        "Name": "Forgotten Waterfall",
+        "GameID": 2
+    }
+]

@@ -1,9 +1,14 @@
-﻿using Climb.Models;
+﻿using Climb.Core;
+using Climb.Core.Challonge;
+using Climb.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Core;
+using Climb.Consts;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -11,10 +16,13 @@ namespace Climb.Services
     public class SeasonService : ISeasonService
     {
         private readonly ClimbContext context;
+        private readonly string challongeKey;
 
-        public SeasonService(ClimbContext context)
+        public SeasonService(ClimbContext context, IConfiguration configuration)
         {
             this.context = context;
+
+            challongeKey = configuration.GetSection("Challonge")["Key"];
         }
 
         public async Task<Season> Create(League league, DateTime? startDate = null)
@@ -22,7 +30,6 @@ namespace Climb.Services
             var season = new Season {
                 Index = league.Seasons.Count,
                 LeagueID = league.ID,
-                //Participants = new HashSet<LeagueUserSeason>(),
                 StartDate = startDate ?? DateTime.UtcNow.AddDays(7)
             };
             await context.AddAsync(season);
@@ -40,6 +47,17 @@ namespace Climb.Services
             await context.SaveChangesAsync();
         }
 
+        public async Task JoinAll(Season season)
+        {
+            season.Participants = new HashSet<LeagueUserSeason>(season.League.Members.Select(m => new LeagueUserSeason
+            {
+                SeasonID = season.ID,
+                LeagueUserID = m.ID
+            }));
+            context.Update(season);
+            await context.SaveChangesAsync();
+        }
+
         public async Task Start(Season season)
         {
             if (season.Sets != null)
@@ -49,7 +67,7 @@ namespace Climb.Services
             season.Sets = new HashSet<Set>();
 
             var participants = season.Participants.Select(lus => lus.LeagueUser.ID).ToList();
-            var rounds = ScheduleGenerator.Generate(10, participants, season.StartDate);
+            var rounds = ScheduleGenerator.Generate(participants.Count - 1, participants, season.StartDate, true);
             foreach (var round in rounds)
             {
                 foreach (var setData in round.sets)
@@ -93,6 +111,123 @@ namespace Climb.Services
             }
 
             context.UpdateRange(season.Sets);
+            context.Update(season);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateStandings(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            var points = new Dictionary<int, SeasonStanding>();
+            foreach (var participant in season.Participants)
+            {
+                var leagueUserID = participant.LeagueUserID;
+                points.Add(leagueUserID, new SeasonStanding(leagueUserID, participant.LeagueUser.Elo));
+            }
+
+            foreach(var set in season.Sets)
+            {
+                if(set.IsComplete)
+                {
+                    Debug.Assert(set.WinnerID != null, "set.WinnerID != null");
+                    points[set.WinnerID.Value].wins++;
+
+                    if(!set.IsBye)
+                    {
+                        Debug.Assert(set.LoserID != null, "set.LoserID != null");
+                        points[set.LoserID.Value].losses++;
+                        points[set.WinnerID.Value].BeatOpponent(set.LoserID.Value);
+                    }
+                }
+            }
+
+            var tieBreaker = TieBreakerFactory.Create();
+
+            var standingData = points.Values.ToList();
+            while(standingData.Count > 0)
+            {
+                var ties = new List<SeasonStanding>();
+                var currentPoints = standingData[0].GetSeasonPoints();
+                for (int i = standingData.Count - 1; i >= 0; --i)
+                {
+                    if(standingData[i].GetSeasonPoints() == currentPoints)
+                    {
+                        ties.Add(standingData[i]);
+                        standingData.RemoveAt(i);
+                    }
+                }
+
+                if (ties.Count > 0)
+                {
+                    tieBreaker.Break(ties);
+                }
+            }
+
+            var sortedPoints = points.OrderByDescending(p => p.Value);
+
+            var placing = 1;
+            var lastTieBreaker = -1m;
+            foreach(var participant in sortedPoints)
+            {
+                var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
+                leagueUserSeason.Standing = placing;
+                leagueUserSeason.Points = participant.Value.GetSeasonPoints();
+
+                if (FeatureToggles.Challonge)
+                {
+                    await ChallongeController.UpdateBracket(challongeKey, season.ChallongeID, leagueUserSeason.ChallongeID, placing); 
+                }
+
+                if(lastTieBreaker != participant.Value.tieBreaker)
+                {
+                    ++placing;
+                    lastTieBreaker = participant.Key;
+                }
+            }
+
+            context.UpdateRange(season.Participants);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task End(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            foreach(var set in season.Sets)
+            {
+                if(!set.IsComplete)
+                {
+                    context.Remove(set);
+                }
+            }
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task CreateTournament(int seasonID)
+        {
+            var season = await context.Season
+                .Include(s => s.League)
+                .Include(l => l.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(s => s.ID == seasonID);
+
+            var tournament = await ChallongeController.CreateTournament(challongeKey, $"{season.League.Name}: {season.DisplayName}", season.Participants.Select(lus => (lus.LeagueUserID, lus.LeagueUser.ChallongeUsername, lus.LeagueUser.User.Username)));
+            season.ChallongeID = tournament.tournamentID;
+            season.ChallongeUrl = tournament.tournamentUrl;
+
+            context.UpdateRange(season.Participants);
+            foreach(var participant in season.Participants)
+            {
+                var id = tournament.participantIDs[participant.LeagueUserID];
+                participant.ChallongeID = id;
+            }
+
             context.Update(season);
             await context.SaveChangesAsync();
         }

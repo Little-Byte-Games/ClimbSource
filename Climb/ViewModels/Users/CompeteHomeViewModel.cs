@@ -20,27 +20,27 @@ namespace Climb.ViewModels
             }
         }
 
-        public readonly User viewingUser;
+        public readonly User homeUser;
         public readonly HashSet<LeagueUser> possibleExhibitions;
         public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
         public readonly ReadOnlyCollection<LeagueUserSet> availableSets;
 
-        public bool IsHome => user == viewingUser;
+        public bool IsHome => user == homeUser;
 
-        public CompeteHomeViewModel(User user, User viewingUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets) : base(user)
+        public CompeteHomeViewModel(User user, User homeUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets) : base(user)
         {
-            this.viewingUser = viewingUser;
+            this.homeUser = homeUser;
             this.possibleExhibitions = possibleExhibitions;
             this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);
             this.availableSets = new ReadOnlyCollection<LeagueUserSet>(availableSets);
         }
 
-        public static CompeteHomeViewModel Create(User user, User viewingUser)
+        public static CompeteHomeViewModel Create(User user, User homeUser)
         {
             DateTime now = DateTime.Now;
             List<LeagueUserSet> overdueSets = new List<LeagueUserSet>();
             List<LeagueUserSet> availableSets = new List<LeagueUserSet>();
-            foreach (var leagueUser in user.LeagueUsers.Where(lu => !lu.HasLeft))
+            foreach (var leagueUser in homeUser.LeagueUsers.Where(lu => !lu.HasLeft))
             {
                 var season = leagueUser.League.Seasons.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
                 if(season == null)
@@ -63,14 +63,14 @@ namespace Climb.ViewModels
                 }
             }
 
-            var isHome = user == viewingUser;
+            var isHome = user == homeUser;
             HashSet<LeagueUser> possibleExhibitions = null;
             if(!isHome)
             {
-                possibleExhibitions = new HashSet<LeagueUser>(user.LeagueUsers.Where(lu => viewingUser.LeagueUsers.Any(vlu => vlu.LeagueID == lu.LeagueID)));
+                possibleExhibitions = new HashSet<LeagueUser>(user.LeagueUsers.Where(lu => homeUser.LeagueUsers.Any(vlu => vlu.LeagueID == lu.LeagueID)));
             }
 
-            return new CompeteHomeViewModel(user, viewingUser, possibleExhibitions, overdueSets, availableSets);
+            return new CompeteHomeViewModel(user, homeUser, possibleExhibitions, overdueSets, availableSets);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()

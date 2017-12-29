@@ -5,99 +5,134 @@
 @inject ICdnService CDNService
 
 @{
-	ViewData["Title"] = "Home";
-	Layout = "_Layout";
+    ViewData["Title"] = Model.league.Name;
+    Layout = "_HomeLayout";
 }
 
-<link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
-<script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+@section Styles {
+    <link href="/css/league_home.css" rel="Stylesheet" type="text/css" />
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
+}
 
-<div align="center">
-	<h1>@Model.league.Name</h1>
-</div>
+@section Body_Banner {
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl" />
+    <h1 class="body-banner-title">@Model.league.Name</h1>
+}
 
-<div class="container">
-	<div class="row">
-		<div class="col-xs-4">
-			<h4 align="center">Power Rankings</h4>
-			@{
-				var users = Model.league.Members.ToList();
-				users.Sort();
-				foreach(var leagueUser in users)
-				{
-					@await Html.PartialAsync("Partials/PowerRank", leagueUser)
-				}
-			}
-		</div>
-		<div class="col-xs-4">
-			<h4 align="center">Recent Activity</h4>
-			@if(Model.recentSets != null)
-			{
-				foreach(var set in Model.recentSets)
-				{
-					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-				}
-			}
-			else
-			{
-				<div align="center">
-					<span>No recent activity</span>
-				</div>
-			}
-		</div>
-		<div class="col-xs-4">
-			<h4 align="center">Seasons</h4>
-			<a class="btn btn-default" asp-controller="Seasons" asp-action="Create" asp-route-leagueID="@Model.league.ID">Create Season</a>
-			<div class="btn-group" align="center">
-				@foreach(var season in Model.league.Seasons)
-				{
-					var active = season.ID == Model.selectedSeason.ID ? "active" : "";
-					<button id="season-@season.ID" type="button" class="btn btn-default @active" onclick="getSeasonStatus(@season.ID)">@season.DisplayName</button>
-				}
-			</div>
-			@if(Model.selectedSeason != null)
-			{
-				<br/>
-				<h4 align="center">@Model.selectedSeason.DisplayName</h4>
-				<div>
-					<table>
-						<tr>
-							<th>Total</th>
-							<th>Completed</th>
-							<th>Available</th>
-							<th>Overdue</th>
-						</tr>
-						<tr>
-							<td id="seasonStatus.totalSetCount"></td>
-							<td id="seasonStatus.completedCount"></td>
-							<td id="seasonStatus.availableCount"></td>
-							<td id="seasonStatus.overdueCount"></td>
-						</tr>
-					</table>
-				</div>
+@section User_Content_Left {
+    <h4 align="center">Power Rankings</h4>
+    @{
+        var users = Model.league.Members.ToList();
+        users.Sort();
+        for (var i = 0; i < users.Count; i++)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @await Html.PartialAsync("Partials/PowerRank", users[i])
+            </div>
+        }
+    }
+}
 
-				foreach(var set in Model.selectedSeason.Sets)
-				{
-					var viewModel = new SetCollapsedViewModel(set, null);
-					@Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-				}
-			}
-			else
-			{
-				<span>No seasons</span>
-			}
-		</div>
-	</div>
-</div>
+@section User_Content_Middle {
+    <h4 align="center">Recent Activity</h4>
+    @if (Model.recentSets != null)
+    {
+        var i = 0;
+        foreach (var set in Model.recentSets)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+            </div>
+            ++i;
+        }
+    }
+    else
+    {
+        <div align="center">
+            <span>No recent activity</span>
+        </div>
+    }
+}
+
+@section User_Content_Right {
+    <h4 align="center">Seasons</h4>
+    <div class="season-actions">
+        <button onclick="createSeason(@Model.league.ID)">Create Season</button>
+        <span>or view</span>
+        <select id="seasons-dropdown">
+            @foreach (var season in Model.league.Seasons)
+            {
+                if (season.ID == Model.selectedSeason.ID)
+                {
+                    <option value="season-@season.ID" selected>@season.DisplayName</option>
+                }
+                else
+                {
+                    <option value="season-@season.ID">@season.DisplayName</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="season-info">
+        <span>Total: <span id="seasonStatus.totalSetCount"></span></span>
+        <span>Completed: <span id="seasonStatus.completedCount"></span></span>
+        <span>Available: <span id="seasonStatus.availableCount"></span></span>
+        <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
+    </div>
+
+    @if (Model.selectedSeason != null)
+    {
+        var overdueSets = Model.selectedSeason.GetOverdueSets();
+        if(overdueSets.Any())
+        {
+            <h3 class="sets-subtitle">Overdue</h3>
+            var i = 0;
+            foreach (var set in overdueSets)
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
+
+        var availableSets = Model.selectedSeason.GetAvailableSets();
+        if(availableSets.Any())
+        {
+            <h3 class="sets-subtitle">Available</h3>
+            var i = 0;
+            foreach (var set in Model.selectedSeason.GetAvailableSets())
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
+    }
+    else
+    {
+        <span>No seasons</span>
+    }
+}
 
 @section Scripts {
-	<script type="text/javascript">
-		$(document).ready(function() {
-			@{ var seasonID = Model.selectedSeason == null ? -1 : Model.selectedSeason.ID; }
-			if (@seasonID >= 0) {
-				getSeasonStatus(@seasonID);
-			}
-		});
-	</script>
+    <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+    <script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            @{ var seasonID = Model.selectedSeason == null ? -1 : Model.selectedSeason.ID; }
+            if (@seasonID >= 0) {
+                getSeasonStatus(@seasonID);
+            }
+        });
+    </script>
 }

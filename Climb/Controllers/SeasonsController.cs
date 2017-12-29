@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using Climb.Consts;
+using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels.Seasons;
 using Microsoft.AspNetCore.Identity;
@@ -30,42 +31,32 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return NotFound();
+                return UserNotFound();
             }
 
             var viewModel = new CreateViewModel(user);
             return View(viewModel);
         }
-        #endregion
 
-
-        [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> CreateForLeague(int leagueID, DateTime? startDate)
+        public async Task<IActionResult> Home(int id)
         {
-            var league = await context.League
-                .Include(l => l.Seasons)
-                .SingleOrDefaultAsync(l => l.ID == leagueID);
-            if(league == null)
+            var user = await GetViewUserAsync();
+            if(user == null)
             {
-                return NotFound();
+                return UserNotFound();
             }
 
-            await seasonService.Create(league, startDate);
-
-            return RedirectToAction(nameof(LeaguesController.Home), "Leagues");
-        }
-
-        public class JoinList
-        {
-            public readonly Season season;
-            public readonly IEnumerable<LeagueUser> nonparticipants;
-
-            public JoinList(Season season, IEnumerable<LeagueUser> nonparticipants)
+            var season = await context.Season
+                .Include(s => s.Sets).ThenInclude(s => s.League)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(season == null)
             {
-                this.season = season;
-                this.nonparticipants = nonparticipants;
+                return NotFound($"No season with ID '{id}' found.");
             }
+
+            var viewModel = HomeViewModel.Create(user, season);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Join(int id)
@@ -84,6 +75,116 @@ namespace Climb.Controllers
                 .ToListAsync();
 
             return View(new JoinList(season, nonparticipants));
+        }
+
+        public async Task<IActionResult> Start(int id)
+        {
+            var season = await context.Season.Include(s => s.Sets)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            var viewData = new SeasonStartViewModel(season);
+            return View(viewData);
+        }
+        #endregion
+
+        #region API
+        [HttpPost]
+        public async Task<IActionResult> EndSeason(int id)
+        {
+            await seasonService.End(id);
+
+            return Ok($"Season {id} has been ended.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAndStart(int leagueID)
+        {
+            var league = await context.League
+                .Include(l => l.Seasons)
+                .SingleOrDefaultAsync(l => l.ID == leagueID);
+            if (league == null)
+            {
+                return NotFound();
+            }
+
+            var season = await seasonService.Create(league);
+            await StartPost(season.ID);
+
+            if(FeatureToggles.Challonge)
+            {
+                await seasonService.CreateTournament(season.ID);
+            }
+
+            return Created(Url.Action("Home", new {id = season.ID}), JsonConvert.SerializeObject(season));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateForLeague(int leagueID, DateTime? startDate)
+        {
+            var league = await context.League
+                .Include(l => l.Seasons)
+                .SingleOrDefaultAsync(l => l.ID == leagueID);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            var season = await seasonService.Create(league, startDate);
+
+            return CreatedAtAction(nameof(CreateForLeague), season);
+        }
+
+        public async Task<IActionResult> GetStatus(int id)
+        {
+            var season = await context.Season
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            var status = season.GetStatus();
+            return Ok(JsonConvert.SerializeObject(status));
+        }
+
+        [HttpPost]
+        [ActionName("Start")]
+        public async Task<IActionResult> StartPost(int id)
+        {
+            var season = await context.Season
+                .Include(s => s.League).ThenInclude(l => l.Members)
+                .Include(s => s.Sets).ThenInclude(s => s.League)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if (season == null)
+            {
+                return NotFound();
+            }
+
+            await seasonService.JoinAll(season);
+            await seasonService.Start(season);
+
+            return Ok(season);
+        }
+#endregion
+
+        public class JoinList
+        {
+            public readonly Season season;
+            public readonly IEnumerable<LeagueUser> nonparticipants;
+
+            public JoinList(Season season, IEnumerable<LeagueUser> nonparticipants)
+            {
+                this.season = season;
+                this.nonparticipants = nonparticipants;
+            }
         }
 
         [HttpPost]
@@ -125,53 +226,6 @@ namespace Climb.Controllers
             context.Update(season);
             await context.SaveChangesAsync();
             return RedirectToAction(nameof(Join), new { id = seasonID });
-        }
-
-        public async Task<IActionResult> Start(int id)
-        {
-            var season = await context.Season.Include(s => s.Sets)
-                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            var viewData = new SeasonStartViewModel(season);
-            return View(viewData);
-        }
-
-        [HttpPost]
-        [ActionName("Start")]
-        public async Task<IActionResult> StartPost(int id)
-        {
-            var season = await context.Season
-                .Include(s => s.Sets)
-                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if (season == null)
-            {
-                return NotFound();
-            }
-
-            await seasonService.Start(season);
-            
-            return RedirectToAction(nameof(Start), new {id});
-        }
-
-        public async Task<IActionResult> GetStatus(int id)
-        {
-            var season = await context.Season
-                .Include(s => s.Sets)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if(season == null)
-            {
-                return NotFound();
-            }
-
-            var status = season.GetStatus();
-            return Ok(JsonConvert.SerializeObject(status));
         }
     }
 }

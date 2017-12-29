@@ -31,22 +31,23 @@ namespace Climb.Core
     {
         public const int Bye = -1;
 
-        public static List<Round> Generate(int roundCount, ICollection<int> users, DateTime startDate)
+        public static List<Round> Generate(int roundCount, ICollection<int> users, DateTime startDate, bool removeByes)
         {
             var participants = GetParticipants(users);
 
-            int fullSeasonSegments = roundCount / (participants.Count - 1);
-            int partialRounds = roundCount % (participants.Count - 1);
+            var unplayableParticipants = removeByes && users.Count % 2 != 0 ? 2 : 1;
+            int fullSeasonSegments = roundCount / (participants.Count - unplayableParticipants);
+            int partialRounds = roundCount % (participants.Count - unplayableParticipants);
 
             var rounds = new List<Round>();
             IEnumerable<Round> createdRounds;
             for (int i = 0; i < fullSeasonSegments; i++)
             {
-                createdRounds = GenerateRounds(participants.Count - 1, participants, ref startDate);
+                createdRounds = GenerateRounds(participants.Count - 1, participants, ref startDate, removeByes);
                 rounds.AddRange(createdRounds);
             }
 
-            createdRounds = GenerateRounds(partialRounds, participants, ref startDate);
+            createdRounds = GenerateRounds(partialRounds, participants, ref startDate, removeByes);
             rounds.AddRange(createdRounds);
 
             return rounds;
@@ -63,7 +64,7 @@ namespace Climb.Core
             return participants;
         }
 
-        private static IEnumerable<Round> GenerateRounds(int roundCount, List<int> participants, ref DateTime startDate)
+        private static IEnumerable<Round> GenerateRounds(int roundCount, List<int> participants, ref DateTime startDate, bool removeByes)
         {
             var rounds = new List<Round>();
 
@@ -82,6 +83,11 @@ namespace Climb.Core
                 {
                     var player1 = firstHalf[j];
                     var player2 = secondHalf[j];
+                    if(removeByes && (player1 == Bye || player2 == Bye))
+                    {
+                        continue;
+                    }
+
                     var set = new Set(player1, player2);
                     round.sets.Add(set);
                 }
