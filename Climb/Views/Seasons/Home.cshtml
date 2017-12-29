@@ -52,19 +52,52 @@
 @section User_Content_Middle
     {
     <h3>Activity</h3>
+    @{ var i = 0; }
+    @foreach (var set in Model.recentSets)
+    {
+        var row = i % 2 == 0 ? "row-even" : "row-odd";
+        <div class="@row">
+            @{ var viewModel = new SetCollapsedViewModel(set, null); }
+            @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+        </div>
+        ++i;
+    }
 }
 
 @section User_Content_Right
     {
     <h3>Sets</h3>
-    @{ var i = 0; }
-    @foreach (var set in Model.season.Sets)
-    {
-        var row = i % 2 == 0 ? "row-even" : "row-odd";
-        var viewModel = new SetCollapsedViewModel(set, Model.leagueUser);
-        <div class="@row">
-            @Html.Partial("~/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-        </div>
-        ++i;
+    @{
+        var overdueSets = Model.season.GetOverdueSets();
+        if (overdueSets.Any())
+        {
+            <h4 class="sets-subtitle">Overdue</h4>
+            var i = 0;
+            foreach (var set in overdueSets)
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
+
+        var availableSets = Model.season.GetAvailableSets();
+        if (availableSets.Any())
+        {
+            <h4 class="sets-subtitle">Available</h4>
+            var i = 0;
+            foreach (var set in Model.season.GetAvailableSets())
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
     }
 }
