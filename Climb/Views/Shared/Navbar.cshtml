@@ -48,7 +48,9 @@
                     <a asp-controller="Users" asp-action="Account">Account</a>
                 </li>
                 <li>
-                    <a asp-controller="Account" asp-action="Logout">Logout</a>
+                    <form id="logout-form" asp-controller="Account" asp-action="Logout" method="post">
+                        <a href="javascript:{}" onclick="document.getElementById('logout-form').submit();">Logout</a>
+                    </form>
                 </li>
             </ul>
         </div>
