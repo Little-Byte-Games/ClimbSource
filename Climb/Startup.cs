@@ -29,12 +29,14 @@ namespace Climb
             {
                 services.AddDbContext<ClimbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                services.AddTransient<ICdnService, CdnService>();
             }
             else
             {
                 services.AddDbContext<ClimbContext>(options =>
                     //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
                         options.UseInMemoryDatabase("Test"));
+                services.AddTransient<ICdnService, FileStorageCdn>();
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -42,7 +44,6 @@ namespace Climb
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<ICdnService, FileStorageCdn>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILeagueUserService, LeagueUserService>();
             services.AddTransient<ILeagueService, LeagueService>();
