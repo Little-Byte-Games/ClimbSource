@@ -39,7 +39,7 @@
     {
     <h3>Standings</h3>
     @{ var i = 0; }
-    @foreach (var participant in Model.season.Participants)
+    @foreach (var participant in Model.season.Participants.OrderBy(lus => lus.Standing))
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
         <div class="@row">
