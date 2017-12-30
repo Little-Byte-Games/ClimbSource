@@ -15,3 +15,17 @@
 
     document.getElementById("membershipButtons." + membership).classList.add("active");
 }
+
+function createSeason(leagueID) {
+    $.post({
+        url: "/Seasons/CreateAndStart",
+        data: { leagueID: leagueID },
+        success: function (response) {
+            var season = JSON.parse(response);
+            location.href = "/Seasons/Home/" + season.ID;
+        },
+        error: function(response) {
+            alert(JSON.stringify(response));
+        }
+    });
+}

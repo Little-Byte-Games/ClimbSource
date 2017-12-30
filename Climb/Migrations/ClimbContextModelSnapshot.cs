@@ -17,7 +17,7 @@ namespace Climb.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Climb.Models.ApplicationUser", b =>
@@ -99,7 +99,11 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("BannerPicUrl");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("Url");
 
                     b.HasKey("ID");
 
@@ -131,6 +135,8 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ChallongeUsername");
+
                     b.Property<int>("Elo");
 
                     b.Property<bool>("HasLeft");
@@ -140,6 +146,8 @@ namespace Climb.Migrations
                     b.Property<string>("ProfilePicKey");
 
                     b.Property<int>("Rank");
+
+                    b.Property<string>("SlackUsername");
 
                     b.Property<int>("UserID");
 
@@ -157,6 +165,14 @@ namespace Climb.Migrations
                     b.Property<int>("LeagueUserID");
 
                     b.Property<int>("SeasonID");
+
+                    b.Property<int>("ChallongeID");
+
+                    b.Property<int>("Points");
+
+                    b.Property<int>("PotentialMaxPoints");
+
+                    b.Property<int>("Standing");
 
                     b.HasKey("LeagueUserID", "SeasonID");
 
@@ -226,6 +242,10 @@ namespace Climb.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("ChallongeID");
+
+                    b.Property<string>("ChallongeUrl");
+
                     b.Property<int>("Index");
 
                     b.Property<int>("LeagueID");
@@ -245,6 +265,8 @@ namespace Climb.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DueDate");
+
+                    b.Property<bool>("IsLocked");
 
                     b.Property<int>("LeagueID");
 
@@ -293,6 +315,8 @@ namespace Climb.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ProfilePicKey");
 
                     b.Property<string>("Username");
 
@@ -506,7 +530,7 @@ namespace Climb.Migrations
             modelBuilder.Entity("Climb.Models.Set", b =>
                 {
                     b.HasOne("Climb.Models.League", "League")
-                        .WithMany()
+                        .WithMany("Sets")
                         .HasForeignKey("LeagueID")
                         .OnDelete(DeleteBehavior.Restrict);
 

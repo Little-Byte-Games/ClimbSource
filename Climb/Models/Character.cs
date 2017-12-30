@@ -1,4 +1,6 @@
-﻿namespace Climb.Models
+﻿using Newtonsoft.Json;
+
+namespace Climb.Models
 {
     public class Character
     {
@@ -7,6 +9,7 @@
         public int GameID { get; set; }
         public string PicKey { get; set; }
 
+        [JsonIgnore]
         public Game Game { get; set; }
 
         public override string ToString()

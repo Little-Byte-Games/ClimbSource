@@ -13,28 +13,43 @@ namespace Climb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment environment;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ClimbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+            if(environment.IsProduction())
+            {
+                services.AddDbContext<ClimbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                services.AddTransient<ICdnService, CdnService>();
+            }
+            else
+            {
+                services.AddDbContext<ClimbContext>(options =>
+                    //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                        options.UseInMemoryDatabase("Test"));
+                services.AddTransient<ICdnService, FileStorageCdn>();
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<ICdnService, CdnService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILeagueUserService, LeagueUserService>();
             services.AddTransient<ILeagueService, LeagueService>();
             services.AddTransient<ISeasonService, SeasonService>();
+            services.AddTransient<ISetService, SetService>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

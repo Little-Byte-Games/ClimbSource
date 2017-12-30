@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
-using Climb.Models;
+﻿using Climb.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Climb.Services
 {
     public interface ILeagueUserService
     {
-        Task<Character> GetFavoriteCharacter(int id);
+        Task<IEnumerable<Character>> GetMostUsedCharacters(int id, int count);
     }
 }

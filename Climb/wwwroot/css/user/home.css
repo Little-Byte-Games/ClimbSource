@@ -1,0 +1,96 @@
+﻿.user-header-image {
+    width: 100%;
+}
+
+.profile-image {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: 50%;
+    margin-left: -100px;
+    top: 50px;
+    z-index: 1;
+    border: 10px solid transparent;
+    -moz-border-image: -moz-linear-gradient(top left, silver 0, gray 100%);
+    -webkit-border-image: -webkit-linear-gradient(top left, silver 0, gray 100%);
+    border-image: linear-gradient(to bottom right, silver 0, gray 100%);
+    border-image-slice: 1;
+    box-shadow: 0 10px 15px black;
+}
+
+.user-content {
+    width: 100%;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.user-column {
+    width: 30%;
+}
+
+.user-column h3, h4 {
+    text-align: center;
+}
+
+.row-odd {
+    background: #cccccc;
+}
+
+.row-even {
+    background: #eeeeee;
+}
+
+.league-user {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.league-user-info {
+    display: flex;
+    flex-direction: row;
+}
+
+.league-user-profile-image {
+    width: 60px;
+    height: 60px;
+    margin: 10px;
+    border: 5px solid transparent;
+    -moz-border-image: -moz-linear-gradient(top left, silver 0, gray 100%);
+    -webkit-border-image: -webkit-linear-gradient(top left, silver 0, gray 100%);
+    border-image: linear-gradient(to bottom right, silver 0, gray 100%);
+    border-image-slice: 1;
+}
+
+.league-user-username {
+    height: 100%;
+    font-size: 20px;
+    line-height: 80px;
+}
+
+.league-user-league-name {
+    font-size: 20px;
+    line-height: 80px;
+}
+
+.league-user-rank {
+    float: right;
+    margin-right: 20px;
+}
+
+.league-user-rank-number {
+    font-size: 24px;
+    line-height: 80px;
+    font-weight: bold;
+}
+
+.league-user-rank-trend {
+    font-size: 40px;
+    line-height: 70px;
+    font-weight: bold;
+    padding-left: 10px;
+}

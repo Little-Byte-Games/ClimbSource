@@ -27,6 +27,7 @@ namespace UserApp.Controllers
         private readonly IHostingEnvironment environment;
         private readonly ILeagueService leagueService;
         private readonly ISeasonService seasonService;
+        private readonly IAccountService accountService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -34,7 +35,7 @@ namespace UserApp.Controllers
             IEmailSender emailSender,
             ILogger<AccountController> logger,
             ClimbContext context,
-            IHostingEnvironment environment, ILeagueService leagueService, ISeasonService seasonService)
+            IHostingEnvironment environment, ILeagueService leagueService, ISeasonService seasonService, IAccountService accountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +45,7 @@ namespace UserApp.Controllers
             this.environment = environment;
             this.leagueService = leagueService;
             this.seasonService = seasonService;
+            this.accountService = accountService;
         }
 
         [TempData]
@@ -229,22 +231,9 @@ namespace UserApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new User { Username = model.Email };
-                await context.User.AddAsync(user);
-                await context.SaveChangesAsync();
-
-                var applicationUser = new ApplicationUser { UserName = model.Email, Email = model.Email, User = user };
-                var result = await _userManager.CreateAsync(applicationUser, model.Password);
-                if (result.Succeeded)
+                var result = await accountService.CreateUser(model.Email, model.Password);
+                if(result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-                    var callbackUrl = Url.EmailConfirmationLink(applicationUser.Id, code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-                    await _signInManager.SignInAsync(applicationUser, isPersistent: false);
-                    _logger.LogInformation("User created a new account with password.");
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);

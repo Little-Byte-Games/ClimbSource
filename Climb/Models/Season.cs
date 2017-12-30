@@ -1,34 +1,24 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Climb.Models
 {
-    public class SeasonStatus
-    {
-        public readonly int totalSetCount;
-        public readonly int overdueCount;
-        public readonly int availableCount;
-        public readonly int completedCount;
-
-        public SeasonStatus(int totalSetCount, int overdueCount, int availableCount, int completedCount)
-        {
-            this.totalSetCount = totalSetCount;
-            this.overdueCount = overdueCount;
-            this.availableCount = availableCount;
-            this.completedCount = completedCount;
-        }
-    }
-
     public class Season
     {
         public int ID { get; set; }
         public int LeagueID { get; set; }
         public int Index { get; set; }
         public DateTime StartDate { get; set; }
+        public int ChallongeID { get; set; }
+        public string ChallongeUrl { get; set; }
 
+        [JsonIgnore]
         public League League { get; set; }
+        [JsonIgnore]
         public HashSet<LeagueUserSeason> Participants { get; set; }
+        [JsonIgnore]
         public HashSet<Set> Sets { get; set; }
 
         public string DisplayName => $"Season {Index + 1}";
@@ -58,6 +48,16 @@ namespace Climb.Models
             }
 
             return new SeasonStatus(Sets.Count, overdueCount, availableCount, completedCount);
+        }
+
+        public IEnumerable<Set> GetOverdueSets()
+        {
+            return Sets.Where(s => !s.IsComplete && s.DueDate < DateTime.Now);
+        }
+
+        public IEnumerable<Set> GetAvailableSets()
+        {
+            return Sets.Where(s => !s.IsComplete && s.DueDate >= DateTime.Now);
         }
     }
 }

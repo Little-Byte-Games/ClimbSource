@@ -1,0 +1,103 @@
+﻿@using Climb.Consts
+@using Climb.ViewModels
+@using Climb.ViewModels.Seasons
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Season-Home";
+    Layout = "_HomeLayout";
+}
+
+@section Styles
+    {
+    <link href="/css/season.css" type="text/css" rel="stylesheet" />
+}
+
+@section Scripts
+    {
+    <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+}
+
+@section Body_Banner
+    {
+    <img class="body-banner-image" src="@Model.season.League.Game.BannerPicUrl" />
+    <h1 class="season-title">@Model.season.DisplayName</h1>
+    <h2 class="season-subtitle">@Model.season.League.Name</h2>
+}
+
+@if (FeatureToggles.Challonge)
+{
+    <img src="@Model.BracketUrl" />
+}
+
+@if (!Model.season.IsComplete)
+{
+    <button onclick="endSeason(@Model.season.ID)">End Season</button>
+}
+
+@section User_Content_Left
+    {
+    <h3>Standings</h3>
+    @{ var i = 0; }
+    @foreach (var participant in Model.season.Participants.OrderBy(lus => lus.Standing))
+    {
+        var row = i % 2 == 0 ? "row-even" : "row-odd";
+        <div class="@row">
+            @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", participant)
+        </div>
+        ++i;
+    }
+}
+
+@section User_Content_Middle
+    {
+    <h3>Activity</h3>
+    @{ var i = 0; }
+    @foreach (var set in Model.recentSets)
+    {
+        var row = i % 2 == 0 ? "row-even" : "row-odd";
+        <div class="@row">
+            @{ var viewModel = new SetCollapsedViewModel(set, null); }
+            @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+        </div>
+        ++i;
+    }
+}
+
+@section User_Content_Right
+    {
+    <h3>Sets</h3>
+    @{
+        var overdueSets = Model.season.GetOverdueSets();
+        if (overdueSets.Any())
+        {
+            <h4 class="sets-subtitle">Overdue</h4>
+            var i = 0;
+            foreach (var set in overdueSets)
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
+
+        var availableSets = Model.season.GetAvailableSets();
+        if (availableSets.Any())
+        {
+            <h4 class="sets-subtitle">Available</h4>
+            var i = 0;
+            foreach (var set in Model.season.GetAvailableSets())
+            {
+                var row = i % 2 == 0 ? "row-even" : "row-odd";
+                <div class="@row">
+                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+                </div>
+                ++i;
+            }
+        }
+    }
+}

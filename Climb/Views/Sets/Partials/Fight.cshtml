@@ -1,90 +1,106 @@
-﻿@using Climb.Services
-@model Set
-@inject ICdnService CDNService
+﻿@using Climb.Controllers
+@using Climb.Services
+@using Climb.ViewModels.Matches
+@using Climb.ViewModels.Sets
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model SetFightViewModel
+@inject ICdnService cdnService
+@inject IHostingEnvironment environment
 
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 
 <div class="form-container">
-	<div class="form">
-		<div class="player-container">
-			<div class="player">
-				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player1)"/>
-				</div>
-				<div class="player-info">
-					<div class="player-info-name">
-						<span>@Model.Player1Name</span>
-					</div>
-					<div class="player-info-rank">
-						<span>#@Model.Player1.Rank</span>
-						<span>↓</span>
-					</div>
-				</div>
-			</div>
-			<span class="versus">V</span>
-			<div class="player">
-				<div class="player-info">
-					<div class="player-info-name text-right">
-						<span>@Model.Player2Name</span>
-					</div>
-					<div class="player-info-rank">
-						<span>↑</span>
-						<span>#@Model.Player2.Rank</span>
-					</div>
-				</div>
-				<div class="player-picture">
-					<img class="profile-picture" src="@CDNService.GetProfilePic(Model.Player2)"/>
-				</div>
-			</div>
-		</div>
-		<div class="header">
-			<span>@Model.League.Name</span>
-			<span>&nbsp;|&nbsp;</span>
-			<span>@(Model.Season?.DisplayName ?? "Exhibition")</span>
-			<span>&nbsp;|&nbsp;</span>
-			<span>@Model.DueDate.ToShortDateString()</span>
-		</div>
-		<div class="set-count-container">
-			<div class="set-count">
-				<span>1</span>
-			</div>
-			<span class="set-count-separator">-</span>
-			<div class="set-count">
-				<span>2</span>
-			</div>
-		</div>
-		<div class="add-match">
-			<form asp-controller="Sets" asp-action="AddMatch" method="post">
-				<input type="hidden" name="setID" value="@Model.ID"/>
-				<div class="form-group">
-					<input type="submit" value="Add Match" class="btn btn-primary"/>
-				</div>
-			</form>
-		</div>
+    <div class="form">
+        <div class="player-container">
+            <div class="player">
+                <div class="player-picture">
+                    <img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player1)"/>
+                </div>
+                <div class="player-info">
+                    <div class="player-info-name">
+                        <span>@Model.set.Player1Name</span>
+                    </div>
+                    <div class="player-info-rank">
+                        <span>#@Model.set.Player1.Rank</span>
+                        <span>↓</span>
+                    </div>
+                </div>
+            </div>
+            <span class="versus">V</span>
+            <div class="player">
+                <div class="player-info">
+                    <div class="player-info-name text-right">
+                        <span>@Model.set.Player2Name</span>
+                    </div>
+                    <div class="player-info-rank">
+                        <span>↑</span>
+                        <span>#@Model.set.Player2.Rank</span>
+                    </div>
+                </div>
+                <div class="player-picture">
+                    <img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
+                </div>
+            </div>
+        </div>
+        <div class="header">
+            <span>@Model.set.League.Name</span>
+            <span>&nbsp;|&nbsp;</span>
+            <span>@(Model.set.Season?.DisplayName ?? "Exhibition")</span>
+            <span>&nbsp;|&nbsp;</span>
+            <span>@Model.set.DueDate.ToShortDateString()</span>
+        </div>
+        <div class="set-count-container">
+            <div class="set-count">
+                <span id="player-1-score">0</span>
+            </div>
+            <span class="set-count-separator">-</span>
+            <div class="set-count">
+                <span id="player-2-score">0</span>
+            </div>
+        </div>
 
-		<form asp-controller="Sets" asp-action="Submit" method="post">
-			<input type="hidden" name="setID" value="@Model.ID"/>
-			<div class="match-wrapper">
-				<div class="match-container">
-					<div class="match-header">
-						<div class="match-form-score">P1 Score</div>
-						<div class="match-form-score">P2 Score</div>
-						<div class="match-form-character">P1 Character</div>
-						<div class="match-form-character">P2 Character</div>
-						<div class="match-form-stage">Stage</div>
-					</div>
+        @if(!Model.set.IsLocked)
+        {
+            <div class="add-match">
+                <button class="btn btn-primary" onclick="addMatch()">Add Match</button>
+            </div>
+        }
 
-					<div class="matches">
-						@foreach(var match in Model.Matches)
-						{
-							@Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", match)
-						}
-					</div>
-				</div>
-			</div>
-			<div class="submit form-group">
-				<input type="submit" value="Submit" class="btn btn-danger"/>
-			</div>
-		</form>
-	</div>
+        <form id="set-form" asp-controller="Sets" asp-action="Submit" method="post">
+            <input type="hidden" name="id" value="@Model.set.ID"/>
+            <div class="match-wrapper">
+                <div class="match-container">
+                    <div class="match-header">
+                        <div class="match-form-score">P1 Score</div>
+                        <div class="match-form-score">P2 Score</div>
+                        <div class="match-form-character">P1 Character</div>
+                        <div class="match-form-character">P2 Character</div>
+                        <div class="match-form-stage">Stage</div>
+                    </div>
+
+                    <div id="matches" class="matches">
+                        @for(int i = 0; i < SetsController.MaxMatchCount; i++)
+                        {
+                            var matchFound = Model.matches[i] != null;
+                            if(environment.IsDevelopment() && i == 0 && !matchFound)
+                            {
+                                matchFound = true;
+                            }
+
+                            <div class="match" @(matchFound ? null : Html.Raw("style=\"display: none\""))>
+                                @Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", new MatchFormViewModel(i, Model.set, Model.matches[i]))
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if(!Model.set.IsLocked)
+            {
+                <div class="submit form-group">
+                    <input id="submit-button" type="submit" value="Submit" class="btn btn-danger"/>
+                </div>
+            }
+        </form>
+    </div>
 </div>

@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb", "Climb\Climb.csproj", "{49358E23-A4EF-49D5-902E-9A50B5C2F477}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb.Core", "Climb.Core\Climb.Core.csproj", "{0A2E1738-C24C-49F0-B2A5-FE47E67348E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Climb.Azure", "Climb.Azure\Climb.Azure.csproj", "{8386B901-3C52-44D7-AB45-A0D9CE857639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Climb.Core.Tests", "Climb.Core.Tests\Climb.Core.Tests.csproj", "{FC1D3659-FCF6-4E85-99E3-662E0135338D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8386B901-3C52-44D7-AB45-A0D9CE857639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC1D3659-FCF6-4E85-99E3-662E0135338D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC1D3659-FCF6-4E85-99E3-662E0135338D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC1D3659-FCF6-4E85-99E3-662E0135338D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC1D3659-FCF6-4E85-99E3-662E0135338D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

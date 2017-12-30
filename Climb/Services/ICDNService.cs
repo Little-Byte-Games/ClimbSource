@@ -6,6 +6,9 @@ namespace Climb.Services
 {
     public interface ICdnService
     {
+        int MaxFileSize { get; }
+
+        string GetProfilePic(User user);
         string GetProfilePic(LeagueUser leagueUser);
         Task<string> UploadProfilePic(IFormFile file);
 

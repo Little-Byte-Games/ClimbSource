@@ -1,0 +1,10 @@
+﻿@model Season
+
+@if(Model != null)
+{
+    <a class="season-name" asp-controller="Seasons" asp-action="Home" asp-route-id="@Model.ID">@Model.DisplayName</a>
+}
+else
+{
+    <span>Exhibition</span>
+}

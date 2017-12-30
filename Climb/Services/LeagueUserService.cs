@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Climb.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Models;
-using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 
 namespace Climb.Services
 {
@@ -17,7 +16,7 @@ namespace Climb.Services
             this.context = context;
         }
 
-        public async Task<Character> GetFavoriteCharacter(int id)
+        public async Task<IEnumerable<Character>> GetMostUsedCharacters(int id, int count)
         {
             var characterUsage = new Dictionary<Character, int>();
 
@@ -33,7 +32,12 @@ namespace Climb.Services
             {
                 var character = match.Set.Player1ID == id ? match.Player1Character : match.Player2Character;
 
-                if(characterUsage.ContainsKey(character))
+                if(character == null)
+                {
+                    continue;
+                }
+
+                if (characterUsage.ContainsKey(character))
                 {
                     ++characterUsage[character];
                 }
@@ -43,7 +47,7 @@ namespace Climb.Services
                 }
             }
 
-            return characterUsage.Count > 0 ? characterUsage.MaxBy(c => c.Value).Key : null;
+            return characterUsage.OrderBy(x => x.Value).Take(count).Select(x => x.Key);
         }
     }
 }

@@ -1,0 +1,409 @@
+[
+    // SB4
+    {
+        "Name": "Bayonetta",
+        "GameID": 1,
+        "PicKey": "sb4_bayonetta.png"
+    },
+    {
+        "Name": "Cloud",
+        "GameID": 1,
+        "PicKey": "sb4_cloud.png"
+    },
+    {
+        "Name": "Diddy Kong",
+        "GameID": 1,
+        "PicKey": "sb4_diddykong.png"
+    },
+    {
+        "Name": "Donkey Kong",
+        "GameID": 1,
+        "PicKey": "sb4_donkeykong.png"
+    },
+    {
+        "Name": "Link",
+        "GameID": 1,
+        "PicKey": "sb4_link.png"
+    },
+    {
+        "Name": "Mario",
+        "GameID": 1,
+        "PicKey": "sb4_mario.png"
+    },
+    {
+        "Name": "Luigi",
+        "GameID": 1,
+        "PicKey": "sb4_luigi.png"
+    },
+    {
+        "Name": "Peach",
+        "GameID": 1,
+        "PicKey": "sb4_peach.png"
+    },
+    {
+        "Name": "Bowser",
+        "GameID": 1,
+        "PicKey": "sb4_bowser.png"
+    },
+    {
+        "Name": "Dr. Mario",
+        "GameID": 1,
+        "PicKey": "sb4_drmario.png"
+    },
+    {
+        "Name": "Yoshi",
+        "GameID": 1,
+        "PicKey": "sb4_yoshi.png"
+    },
+    {
+        "Name": "Sheik",
+        "GameID": 1,
+        "PicKey": "sb4_sheik.png"
+    },
+    {
+        "Name": "Ganondorf",
+        "GameID": 1,
+        "PicKey": "sb4_ganondorf.png"
+    },
+    {
+        "Name": "Toon Link",
+        "GameID": 1,
+        "PicKey": "sb4_toonlink.png"
+    },
+    {
+        "Name": "Meta Knight",
+        "GameID": 1,
+        "PicKey": "sb4_metaknight.png"
+    },
+    {
+        "Name": "King Dedede",
+        "GameID": 1,
+        "PicKey": "sb4_kingdedede.png"
+    },
+    {
+        "Name": "Fox",
+        "GameID": 1,
+        "PicKey": "sb4_fox.png"
+    },
+    {
+        "Name": "Falco",
+        "GameID": 1,
+        "PicKey": "sb4_falco.png"
+    },
+    {
+        "Name": "Pikachu",
+        "GameID": 1,
+        "PicKey": "sb4_pikachu.png"
+    },
+    {
+        "Name": "Lucario",
+        "GameID": 1,
+        "PicKey": "sb4_lucario.png"
+    },
+    {
+        "Name": "Captain Falcon",
+        "GameID": 1,
+        "PicKey": "sb4_captainfalcon.png"
+    },
+    {
+        "Name": "Ness",
+        "GameID": 1,
+        "PicKey": "sb4_ness.png"
+    },
+    {
+        "Name": "Lucas",
+        "GameID": 1,
+        "PicKey": "sb4_lucas.png"
+    },
+    {
+        "Name": "Marth",
+        "GameID": 1,
+        "PicKey": "sb4_marth.png"
+    },
+    {
+        "Name": "Samus",
+        "GameID": 1,
+        "PicKey": "sb4_samus.png"
+    },
+    {
+        "Name": "Zero Suit Samus",
+        "GameID": 1,
+        "PicKey": "sb4_zerosuitsamus.png"
+    },
+    {
+        "Name": "Kirby",
+        "GameID": 1,
+        "PicKey": "sb4_kirby.png"
+    },
+    {
+        "Name": "Jigglypuff",
+        "GameID": 1,
+        "PicKey": "sb4_jigglypuff.png"
+    },
+    {
+        "Name": "Mewtwo",
+        "GameID": 1,
+        "PicKey": "sb4_mewtwo.png"
+    },
+    {
+        "Name": "Charizard",
+        "GameID": 1,
+        "PicKey": "sb4_charizard.png"
+    },
+    {
+        "Name": "Roy",
+        "GameID": 1,
+        "PicKey": "sb4_roy.png"
+    },
+    {
+        "Name": "Ike",
+        "GameID": 1,
+        "PicKey": "sb4_ike.png"
+    },
+    {
+        "Name": "Mr. Game & Watch",
+        "GameID": 1,
+        "PicKey": "sb4_mrgamewatch.png"
+    },
+    {
+        "Name": "Pit",
+        "GameID": 1,
+        "PicKey": "sb4_pit.png"
+    },
+    {
+        "Name": "Wario",
+        "GameID": 1,
+        "PicKey": "sb4_wario.png"
+    },
+    {
+        "Name": "Olimar",
+        "GameID": 1,
+        "PicKey": "sb4_olimar.png"
+    },
+    {
+        "Name": "R.O.B.",
+        "GameID": 1,
+        "PicKey": "sb4_rob.png"
+    },
+    {
+        "Name": "Sonic",
+        "GameID": 1,
+        "PicKey": "sb4_sonic.png"
+    },
+    {
+        "Name": "Rosalina & Luma",
+        "GameID": 1,
+        "PicKey": "sb4_rosalinaluma.png"
+    },
+    {
+        "Name": "Bowser Jr.",
+        "GameID": 1,
+        "PicKey": "sb4_bowserjr.png"
+    },
+    {
+        "Name": "Greninja",
+        "GameID": 1,
+        "PicKey": "sb4_greninja.png"
+    },
+    {
+        "Name": "Robin",
+        "GameID": 1,
+        "PicKey": "sb4_robin.png"
+    },
+    {
+        "Name": "Lucina",
+        "GameID": 1,
+        "PicKey": "sb4_lucina.png"
+    },
+    {
+        "Name": "Corrin",
+        "GameID": 1,
+        "PicKey": "sb4_corrin.png"
+    },
+    {
+        "Name": "Palutena",
+        "GameID": 1,
+        "PicKey": "sb4_palutena.png"
+    },
+    {
+        "Name": "Dark Pit",
+        "GameID": 1,
+        "PicKey": "sb4_darkpit.png"
+    },
+    {
+        "Name": "Villager",
+        "GameID": 1,
+        "PicKey": "sb4_villager.png"
+    },
+    {
+        "Name": "Little Mac",
+        "GameID": 1,
+        "PicKey": "sb4_littlemac.png"
+    },
+    {
+        "Name": "Wii Fit Trainer",
+        "GameID": 1,
+        "PicKey": "sb4_wiifittrainer.png"
+    },
+    {
+        "Name": "Shulk",
+        "GameID": 1,
+        "PicKey": "sb4_shulk.png"
+    },
+    {
+        "Name": "Duck Hunt",
+        "GameID": 1,
+        "PicKey": "sb4_duckhunt.png"
+    },
+    {
+        "Name": "Mega Man",
+        "GameID": 1,
+        "PicKey": "sb4_megaman.png"
+    },
+    {
+        "Name": "Pac-Man",
+        "GameID": 1,
+        "PicKey": "sb4_pac-man.png"
+    },
+    {
+        "Name": "Ryu",
+        "GameID": 1,
+        "PicKey": "sb4_ryu.png"
+    },
+    //SFV
+    {
+        "Name": "Ryu",
+        "GameID": 2,
+        "PicKey": "sfv_ryu.png"
+    },
+    {
+        "Name": "Chun-Li",
+        "GameID": 2,
+        "PicKey": "sfv_chun-li.png"
+    },
+    {
+        "Name": "Nash",
+        "GameID": 2,
+        "PicKey": "sfv_nash.png"
+    },
+    {
+        "Name": "M. Bison",
+        "GameID": 2,
+        "PicKey": "sfv_mbison.png"
+    },
+    {
+        "Name": "Cammy",
+        "GameID": 2,
+        "PicKey": "sfv_cammy.png"
+    },
+    {
+        "Name": "Birdie",
+        "GameID": 2,
+        "PicKey": "sfv_birdie.png"
+    },
+    {
+        "Name": "Ken",
+        "GameID": 2,
+        "PicKey": "sfv_ken.png"
+    },
+    {
+        "Name": "Necalli",
+        "GameID": 2,
+        "PicKey": "sfv_necalli.png"
+    },
+    {
+        "Name": "Vega",
+        "GameID": 2,
+        "PicKey": "sfv_vega.png"
+    },
+    {
+        "Name": "R. Mika",
+        "GameID": 2,
+        "PicKey": "sfv_rmika.png"
+    },
+    {
+        "Name": "Rashid",
+        "GameID": 2,
+        "PicKey": "sfv_rashid.png"
+    },
+    {
+        "Name": "Abigail",
+        "GameID": 2,
+        "PicKey": "sfv_abigail.png"
+    },
+    {
+        "Name": "Akuma",
+        "GameID": 2,
+        "PicKey": "sfv_akuma.png"
+    },
+    {
+        "Name": "Alex",
+        "GameID": 2,
+        "PicKey": "sfv_alex.png"
+    },
+    {
+        "Name": "Balrog",
+        "GameID": 2,
+        "PicKey": "sfv_balrog.png"
+    },
+    {
+        "Name": "Dhalsim",
+        "GameID": 2,
+        "PicKey": "sfv_dhalsim.png"
+    },
+    {
+        "Name": "Ed",
+        "GameID": 2,
+        "PicKey": "sfv_ed.png"
+    },
+    {
+        "Name": "F.A.N.G.",
+        "GameID": 2,
+        "PicKey": "sfv_fang.png"
+    },
+    {
+        "Name": "Guile",
+        "GameID": 2,
+        "PicKey": "sfv_guile.png"
+    },
+    {
+        "Name": "Ibuki",
+        "GameID": 2,
+        "PicKey": "sfv_ibuki.png"
+    },
+    {
+        "Name": "Juri",
+        "GameID": 2,
+        "PicKey": "sfv_juri.png"
+    },
+    {
+        "Name": "Karin",
+        "GameID": 2,
+        "PicKey": "sfv_karin.png"
+    },
+    {
+        "Name": "Kolin",
+        "GameID": 2,
+        "PicKey": "sfv_kolin.png"
+    },
+    {
+        "Name": "Laura",
+        "GameID": 2,
+        "PicKey": "sfv_laura.png"
+    },
+    {
+        "Name": "Urien",
+        "GameID": 2,
+        "PicKey": "sfv_urien.png"
+    },
+    {
+        "Name": "Zangief",
+        "GameID": 2,
+        "PicKey": "sfv_zangief.png"
+    },
+    {
+        "Name": "Zeku",
+        "GameID": 2,
+        "PicKey": "sfv_zeku.png"
+    }
+]

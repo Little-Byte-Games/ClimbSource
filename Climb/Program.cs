@@ -20,7 +20,8 @@ namespace Climb
                 try
                 {
                     var context = services.GetRequiredService<ClimbContext>();
-                    DbInitializer.Initialize(context);
+                    var hostingEnvironment = services.GetRequiredService<IHostingEnvironment>();
+                    DbInitializer.Initialize(context, hostingEnvironment, false);
                 }
                 catch (Exception ex)
                 {

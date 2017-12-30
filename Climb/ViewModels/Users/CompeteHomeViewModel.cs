@@ -20,34 +20,39 @@ namespace Climb.ViewModels
             }
         }
 
-        public readonly User viewingUser;
+        public readonly User homeUser;
         public readonly HashSet<LeagueUser> possibleExhibitions;
         public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
         public readonly ReadOnlyCollection<LeagueUserSet> availableSets;
+        public readonly ReadOnlyCollection<LeagueUserSeason> seasons;
 
-        public bool IsHome => user == viewingUser;
+        public bool IsHome => user == homeUser;
 
-        public CompeteHomeViewModel(User user, User viewingUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets) : base(user)
+        private CompeteHomeViewModel(User user, User homeUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets, IList<LeagueUserSeason> seasons) : base(user)
         {
-            this.viewingUser = viewingUser;
+            this.homeUser = homeUser;
             this.possibleExhibitions = possibleExhibitions;
+            this.seasons = new ReadOnlyCollection<LeagueUserSeason>(seasons);
             this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);
             this.availableSets = new ReadOnlyCollection<LeagueUserSet>(availableSets);
         }
 
-        public static CompeteHomeViewModel Create(User user, User viewingUser)
+        public static CompeteHomeViewModel Create(User user, User homeUser)
         {
-            DateTime now = DateTime.Now;
-            List<LeagueUserSet> overdueSets = new List<LeagueUserSet>();
-            List<LeagueUserSet> availableSets = new List<LeagueUserSet>();
-            foreach (var leagueUser in user.LeagueUsers.Where(lu => !lu.HasLeft))
+            var now = DateTime.Now;
+            var overdueSets = new List<LeagueUserSet>();
+            var availableSets = new List<LeagueUserSet>();
+            var seasonUsers = new List<LeagueUserSeason>();
+            foreach (var leagueUser in homeUser.LeagueUsers.Where(lu => !lu.HasLeft))
             {
-                var season = leagueUser.League.Seasons.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
-                if(season == null)
+                var seasonUser = leagueUser.Seasons.FirstOrDefault(s => !s.Season.IsComplete && s.Season.Sets.Count > 0);
+                if(seasonUser == null)
                 {
                     continue;
                 }
-                var sets = season.Sets.Where(s => !s.IsComplete && s.IsPlaying(leagueUser));
+                seasonUsers.Add(seasonUser);
+
+                var sets = seasonUser.Season.Sets.Where(s => !s.IsComplete && s.IsPlaying(leagueUser));
                 foreach(var set in sets)
                 {
                     if(set.DueDate < now)
@@ -63,14 +68,14 @@ namespace Climb.ViewModels
                 }
             }
 
-            var isHome = user == viewingUser;
+            var isHome = user == homeUser;
             HashSet<LeagueUser> possibleExhibitions = null;
             if(!isHome)
             {
-                possibleExhibitions = new HashSet<LeagueUser>(user.LeagueUsers.Where(lu => viewingUser.LeagueUsers.Any(vlu => vlu.LeagueID == lu.LeagueID)));
+                possibleExhibitions = new HashSet<LeagueUser>(user.LeagueUsers.Where(lu => homeUser.LeagueUsers.Any(vlu => vlu.LeagueID == lu.LeagueID)));
             }
 
-            return new CompeteHomeViewModel(user, viewingUser, possibleExhibitions, overdueSets, availableSets);
+            return new CompeteHomeViewModel(user, homeUser, possibleExhibitions, overdueSets, availableSets, seasonUsers);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()
