@@ -1,16 +1,16 @@
 ﻿@using Climb.Services
-@model ValueTuple<LeagueUserSeason, int>
+@model LeagueUserSeason
 @inject ICdnService cdnService
 @inject ILeagueUserService leagueUserService
 
 <div class="standing-container">
-    <span class="standing-rank">@Model.Item1.Standing</span>
-    <img class="standing-profilepic" src="@cdnService.GetProfilePic(Model.Item1.LeagueUser)"/>
+    <span class="standing-rank">@Model.Standing</span>
+    <img class="standing-profilepic" src="@cdnService.GetProfilePic(Model.LeagueUser)"/>
 
     <div class="standing-info">
-        @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.Item1.LeagueUser.User)
+        @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.LeagueUser.User)
         <div>
-            <span>(@Model.Item1.Points of @Model.Item2)</span>
+            <span>(@Model.Points of @Model.PotentialMaxPoints)</span>
         </div>
     </div>
 </div>

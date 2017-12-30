@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20171230193824_LeagueUserSeason.PotentialMaxPoints")]
+    partial class LeagueUserSeasonPotentialMaxPoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

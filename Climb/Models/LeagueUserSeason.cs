@@ -8,6 +8,7 @@ namespace Climb.Models
         public int SeasonID { get; set; }
         public int Standing { get; set; }
         public int Points { get; set; }
+        public int PotentialMaxPoints { get; set; }
         public int ChallongeID { get; set; }
 
         [JsonIgnore]

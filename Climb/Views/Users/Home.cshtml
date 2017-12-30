@@ -9,26 +9,28 @@
 }
 
 @section Styles {
-    <link href="/css/user/home.css" type="text/css" rel="stylesheet"/>
+    <link href="/css/user/home.css" type="text/css" rel="stylesheet" />
+    <link href="/css/season.css" type="text/css" rel="stylesheet" />
 }
 
 @section Body_Banner {
     <div>
-        <img class="user-header-image" src="https://goo.gl/YXRMeV"/>
-        <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)"/>
+        <img class="user-header-image" src="https://goo.gl/YXRMeV" />
+        <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)" />
     </div>
 }
 
 @section User_Content_Left {
-    <h3>Leagues</h3>
+    <h3>Status</h3>
+    <h4>Leagues</h4>
     <div>
         @{ var i = 0; }
-        @foreach(var leagueUser in Model.homeUser.LeagueUsers)
+        @foreach (var leagueUser in Model.homeUser.LeagueUsers)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="league-user @row">
                 <div class="league-user-info">
-                    <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)"/>
+                    <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)" />
                     <span class="league-user-username">@Model.homeUser.Username</span>
                     <span class="league-user-league-name">(@leagueUser.League.Name)</span>
                 </div>
@@ -36,6 +38,18 @@
                     <span class="league-user-rank-number">@leagueUser.Rank</span>
                     <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", leagueUser.GetRankTrend())</span>
                 </div>
+            </div>
+            ++i;
+        }
+    </div>
+    <h4>Seasons</h4>
+    <div>
+        @{ i = 0; }
+        @foreach (var seasonUser in Model.seasons)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", seasonUser)
             </div>
             ++i;
         }
@@ -49,14 +63,14 @@
 @section User_Content_Right {
     <h3>Sets</h3>
     <h4>Overdue</h4>
-    @foreach(var set in Model.overdueSets)
+    @foreach (var set in Model.overdueSets)
     {
         var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
         @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
     <h4>Available</h4>
     @{ var i = 0; }
-    @foreach(var set in Model.availableSets)
+    @foreach (var set in Model.availableSets)
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
         var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);

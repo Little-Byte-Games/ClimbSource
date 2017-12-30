@@ -112,6 +112,12 @@ namespace Climb.Services
 
             context.UpdateRange(season.Sets);
             context.Update(season);
+
+            foreach(var participant in season.Participants)
+            {
+                UpdatePotentialMaxPoints(participant);
+            }
+
             await context.SaveChangesAsync();
         }
 
@@ -176,6 +182,7 @@ namespace Climb.Services
                 var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
                 leagueUserSeason.Standing = placing;
                 leagueUserSeason.Points = participant.Value.GetSeasonPoints();
+                UpdatePotentialMaxPoints(leagueUserSeason);
 
                 if (FeatureToggles.Challonge)
                 {
@@ -191,6 +198,12 @@ namespace Climb.Services
 
             context.UpdateRange(season.Participants);
             await context.SaveChangesAsync();
+        }
+
+        private void UpdatePotentialMaxPoints(LeagueUserSeason participant)
+        {
+            var remainingSets = participant.Season.Sets.Count(s => !s.IsComplete && s.IsPlaying(participant.LeagueUserID));
+            participant.PotentialMaxPoints = remainingSets * SeasonStanding.WinningPoints + participant.Points;
         }
 
         public async Task End(int seasonID)
