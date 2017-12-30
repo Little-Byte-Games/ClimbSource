@@ -13,18 +13,29 @@ namespace Climb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IHostingEnvironment environment;
+
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
+            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ClimbContext>(options =>
-                //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
-                    options.UseInMemoryDatabase("Test"));
+            if(environment.IsProduction())
+            {
+                services.AddDbContext<ClimbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+            }
+            else
+            {
+                services.AddDbContext<ClimbContext>(options =>
+                    //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+                        options.UseInMemoryDatabase("Test"));
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
