@@ -43,7 +43,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Fight", new { id }) });
             }
 
             var set = await context.Set

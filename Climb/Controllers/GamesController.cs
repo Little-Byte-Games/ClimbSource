@@ -29,7 +29,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Index")});
             }
 
             var games = await context.Game.ToArrayAsync();
@@ -55,7 +55,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if (user == null)
             {
-                return NotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Home", new {url})});
             }
 
             var game = await context.Game

@@ -31,7 +31,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Create", new {leagueID})});
             }
 
             var viewModel = new CreateViewModel(user);
@@ -43,7 +43,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Home", new { id })});
             }
 
             var season = await context.Season
