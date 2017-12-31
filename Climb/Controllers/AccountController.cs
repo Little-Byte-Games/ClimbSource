@@ -89,7 +89,7 @@ namespace UserApp.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ViewData["Error"] = "Invalid login attempt.";
                     return View(model);
                 }
             }

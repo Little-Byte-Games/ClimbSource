@@ -16,6 +16,9 @@
         <section>
             <h4 class="sub-title">CLIMB</h4>
             <div class="panel-form">
+                <div align="center">
+                    <span class="input-error">@ViewData["Error"]</span>
+                </div>
                 <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
                     <div class="panel-form-input">
                         <label asp-for="Email"></label>
@@ -52,18 +55,18 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-    <script> 
-        function createAdminAccount() { 
-            $.post({ 
-                url: '/Admin/CreateAdminAccount', 
-                success() { 
-                    window.location.href = "/Users/Home"; 
-                }, 
-                error(response) { 
-                    alert(response); 
-                    alert(JSON.stringify(response)); 
-                } 
-            }); 
-        } 
-    </script> 
+    <script>
+        function createAdminAccount() {
+            $.post({
+                url: '/Admin/CreateAdminAccount',
+                success() {
+                    window.location.href = "/Users/Home";
+                },
+                error(response) {
+                    alert(response);
+                    alert(JSON.stringify(response));
+                }
+            });
+        }
+    </script>
 }
