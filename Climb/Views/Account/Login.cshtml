@@ -60,7 +60,8 @@
 
 @Html.Partial("~/Views/Shared/Footer.cshtml")
 
-@await Html.PartialAsync("_ValidationScriptsPartial")
+@await Html.PartialAsync("~/Views/Shared/Common.cshtml")
+
 <script>
     function createAdminAccount() {
         $.post({
