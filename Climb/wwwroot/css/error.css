@@ -1,0 +1,22 @@
+﻿.error {
+    width: 600px;
+    height: 200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background: whitesmoke;
+    box-shadow: 0 10px 15px black;
+    border: 4px orangered solid;
+}
+
+.status-code {
+    font-size: 60px;
+    color: orangered;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.status-message {
+    font-family: 'Montserrat', sans-serif;
+}

@@ -1,12 +1,4 @@
-﻿.body-container {
-    width: 1500px;
-    flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-    margin: 40px auto 0 auto;
-}
-
-.body-banner {
+﻿.body-banner {
     width: 100%;
     height: 300px;
     margin-bottom: 20px;

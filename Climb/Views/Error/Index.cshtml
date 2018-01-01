@@ -1,0 +1,13 @@
+﻿@using Climb.ViewModels._General
+@model ErrorPageViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<link href="/css/error.css" type="text/css" rel="stylesheet" />
+
+<div class="error">
+    <span class="status-code">Error @Model.statusCode</span>
+    <span class="status-message">@Model.statusMessage</span>
+</div>

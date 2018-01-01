@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Climb.Extensions;
 
 namespace Climb.Controllers
 {
@@ -46,7 +47,8 @@ namespace Climb.Controllers
                 return RedirectToActionPermanent("Home", new {url = game.Url});
             }
 
-            return NotFound($"Could not find Game with ID '{id}'.");
+            var user = await GetViewUserAsync();
+            return this.NotFoundPage(user, $"Could not find Game with ID '{id}'.");
         }
 
         [HttpGet("[controller]/Home/{url}")]
@@ -64,7 +66,7 @@ namespace Climb.Controllers
                 .SingleOrDefaultAsync(m => m.Url == url);
             if (game == null)
             {
-                return NotFound($"Could not find Game with URL '{url}'.");
+                return this.NotFoundPage(user, $"Could not find Game with URL '{url}'.");
             }
 
             var viewModel = new HomeViewModel(user, game);
