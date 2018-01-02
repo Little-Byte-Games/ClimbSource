@@ -58,9 +58,21 @@ namespace Climb.Services
             UpdateRanks(league.Members.ToList());
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
+            UpdateKing(league);
+
             await context.SaveChangesAsync();
 
             return rankSnapshots;
+        }
+
+        private static void UpdateKing(League league)
+        {
+            var currentKing = league.Members.First(lu => lu.Rank == 1);
+            if(currentKing.ID != league.KingID)
+            {
+                league.KingID = currentKing.ID;
+                league.KingReignStart = DateTime.Now;
+            }
         }
 
         public async Task SendSnapshotUpdate(HashSet<RankSnapshot> rankSnapshots, League league)
