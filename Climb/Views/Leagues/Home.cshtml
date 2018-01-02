@@ -10,12 +10,12 @@
 }
 
 @section Styles {
-    <link href="/css/league_home.css" rel="Stylesheet" type="text/css" />
-    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
+    <link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet"/>
 }
 
 @section Body_Banner {
-    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl" />
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl"/>
     <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
@@ -24,8 +24,20 @@
     @{
         var users = Model.league.Members.ToList();
         users.Sort();
-        for (var i = 0; i < users.Count; i++)
+        for(var i = 0; i < users.Count; i++)
         {
+            if(users[i].ID == Model.league.KingID)
+            {
+                var weeks = Model.league.GetKingReignWeeks();
+                if(weeks > 0)
+                {
+                    <span class="reign">Reign of <b>@weeks</b> week@(weeks > 1 ? "s" : "")! Started on <b>@Model.league.KingReignStart.ToShortDateString()</b>!</span>
+                }
+                else
+                {
+                    <span class="reign">New reign started on <b>@Model.league.KingReignStart.ToShortDateString()</b>!</span>
+                }
+            }
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
                 @await Html.PartialAsync("Partials/PowerRank", users[i])
@@ -36,10 +48,10 @@
 
 @section User_Content_Middle {
     <h4 align="center">Recent Activity</h4>
-    @if (Model.recentSets != null)
+    @if(Model.recentSets != null)
     {
         var i = 0;
-        foreach (var set in Model.recentSets)
+        foreach(var set in Model.recentSets)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
@@ -63,9 +75,9 @@
         <button onclick="createSeason(@Model.league.ID)">Create Season</button>
         <span>or view</span>
         <select id="seasons-dropdown">
-            @foreach (var season in Model.league.Seasons)
+            @foreach(var season in Model.league.Seasons)
             {
-                if (season.ID == Model.selectedSeason.ID)
+                if(season.ID == Model.selectedSeason.ID)
                 {
                     <option value="season-@season.ID" selected>@season.DisplayName</option>
                 }
@@ -84,14 +96,14 @@
         <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
     </div>
 
-    @if (Model.selectedSeason != null)
+    @if(Model.selectedSeason != null)
     {
         var overdueSets = Model.selectedSeason.GetOverdueSets();
         if(overdueSets.Any())
         {
             <h3 class="sets-subtitle">Overdue</h3>
             var i = 0;
-            foreach (var set in overdueSets)
+            foreach(var set in overdueSets)
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
@@ -107,7 +119,7 @@
         {
             <h3 class="sets-subtitle">Available</h3>
             var i = 0;
-            foreach (var set in Model.selectedSeason.GetAvailableSets())
+            foreach(var set in Model.selectedSeason.GetAvailableSets())
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">

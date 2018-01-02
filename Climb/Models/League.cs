@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
@@ -20,6 +21,8 @@ namespace Climb.Models
         public Game Game { get; set; }
         [ForeignKey(nameof(AdminID))]
         public User Admin { get; set; }
+        public int KingID { get; set; }
+        public DateTime KingReignStart { get; set; }
 
         public HashSet<LeagueUser> Members { get; set; }
         public HashSet<Season> Seasons { get; set; }
@@ -27,5 +30,10 @@ namespace Climb.Models
 
         public int MemberCount => Members?.Count(m => !m.HasLeft) ?? 0;
         public Season CurrentSeason => Seasons?.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
+
+        public int GetKingReignWeeks()
+        {
+            return (int)((DateTime.Now - KingReignStart).TotalDays / 7);
+        }
     }
 }
