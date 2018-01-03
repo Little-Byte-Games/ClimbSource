@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Climb.Models
 {
@@ -11,6 +12,8 @@ namespace Climb.Models
 
         [JsonIgnore]
         public Game Game { get; set; }
+        [JsonIgnore]
+        public HashSet<MatchCharacter> MatchCharacters { get; set; }
 
         public override string ToString()
         {
