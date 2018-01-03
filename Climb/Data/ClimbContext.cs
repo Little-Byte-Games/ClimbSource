@@ -45,9 +45,6 @@ namespace Climb.Models
                 .HasOne(lus => lus.Season)
                 .WithMany(s => s.Participants)
                 .HasForeignKey(lus => lus.SeasonID);
-
-            modelBuilder.Entity<MatchCharacter>()
-                .HasKey(mc => new {mc.MatchID, mc.CharacterID});
         }
     }
 }
