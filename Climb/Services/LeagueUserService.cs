@@ -24,8 +24,7 @@ namespace Climb.Services
             var date = DateTime.Today.Subtract(TimeSpan.FromDays(days));
             var matches = await context.Match
                 .Include(m => m.Set)
-                .Include(m => m.Player1Character)
-                .Include(m => m.Player2Character)
+                .Include(m => m.MatchCharacters)
                 .Where(m => (m.Set.Player1ID == id || m.Set.Player2ID == id) && m.Set.IsComplete && !m.Set.IsBye && m.Set.UpdatedDate >= date).Select(m => m).ToArrayAsync();
 
             foreach (var match in matches)

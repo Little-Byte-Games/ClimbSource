@@ -37,7 +37,7 @@ namespace Climb.Models
 
             foreach(var match in matches)
             {
-                if(match.Player1CharacterID == null || match.Player2CharacterID == null)
+                if(match.MatchCharacters.Count < 2)
                 {
                     continue;
                 }

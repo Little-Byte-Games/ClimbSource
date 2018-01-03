@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Climb.Models
@@ -21,9 +22,13 @@ namespace Climb.Models
         public Character WinningCharacter => null;
         public bool IsDitto => false;
 
+        [Obsolete]
         public int Player1CharacterID => 0;
+        [Obsolete]
         public int Player2CharacterID => 0;
+        [Obsolete]
         public Character Player1Character => null;
+        [Obsolete]
         public Character Player2Character => null;
     }
 }
