@@ -22,12 +22,12 @@ namespace Climb.Models
         public HashSet<Stage> Stages { get; set; }
         public HashSet<League> Leagues { get; set; }
 
-        public async Task<Dictionary<Character, (decimal , decimal)>> GetCharacterUsagePercentagesAsync(ClimbContext context)
+        public async Task<Dictionary<Character, (decimal, decimal)>> GetCharacterUsagePercentagesAsync(ClimbContext context)
         {
             var characterCounts = new Dictionary<Character, CharacterPercentages>();
             foreach(var character in Characters)
             {
-                    characterCounts.Add(character, new CharacterPercentages());
+                characterCounts.Add(character, new CharacterPercentages());
             }
 
             var matches = await context.Match
@@ -42,9 +42,15 @@ namespace Climb.Models
                     continue;
                 }
 
-                ++characterCounts[match.Player1Character].matches;
-                ++characterCounts[match.Player2Character].matches;
-                characterCounts[match.WinningCharacter].wins += match.IsDitto ? 2 : 1;
+                foreach(var matchCharacter in match.MatchCharacters)
+                {
+                    ++characterCounts[matchCharacter.Character].matches;
+                    if(matchCharacter.LeagueUserID == match.Set.WinnerID)
+                    {
+                        var isDitto = match.MatchCharacters.Count(mc => mc.CharacterID == matchCharacter.CharacterID) > 1;
+                        characterCounts[matchCharacter.Character].wins += isDitto ? 2 : 1;
+                    }
+                }
             }
 
             var matchCount = matches.Length * 2m;
@@ -56,6 +62,7 @@ namespace Climb.Models
 
                 dictionary.Add(characterCount.Key, (usage, win));
             }
+
             return dictionary;
         }
     }

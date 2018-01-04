@@ -1,5 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Climb.Models
@@ -18,17 +17,5 @@ namespace Climb.Models
         public Stage Stage { get; set; }
 
         public List<MatchCharacter> MatchCharacters { get; set; }
-
-        public Character WinningCharacter => null;
-        public bool IsDitto => false;
-
-        [Obsolete]
-        public int Player1CharacterID => 0;
-        [Obsolete]
-        public int Player2CharacterID => 0;
-        [Obsolete]
-        public Character Player1Character => null;
-        [Obsolete]
-        public Character Player2Character => null;
     }
 }

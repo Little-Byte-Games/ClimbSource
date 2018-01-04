@@ -22,20 +22,14 @@ namespace Climb.Services
 
             const int days = 100;
             var date = DateTime.Today.Subtract(TimeSpan.FromDays(days));
-            var matches = await context.Match
-                .Include(m => m.Set)
-                .Include(m => m.MatchCharacters)
-                .Where(m => (m.Set.Player1ID == id || m.Set.Player2ID == id) && m.Set.IsComplete && !m.Set.IsBye && m.Set.UpdatedDate >= date).Select(m => m).ToArrayAsync();
+            var characters = await context.MatchCharacters
+                .Include(mc => mc.Character)
+                .Include(mc => mc.Match).ThenInclude(m => m.Set)
+                .Where(mc => mc.LeagueUserID == id && mc.Match.Set.IsComplete && !mc.Match.Set.IsBye && mc.Match.Set.UpdatedDate >= date)
+                .Select(mc => mc.Character).ToArrayAsync();
 
-            foreach (var match in matches)
+            foreach (var character in characters)
             {
-                var character = match.Set.Player1ID == id ? match.Player1Character : match.Player2Character;
-
-                if(character == null)
-                {
-                    continue;
-                }
-
                 if (characterUsage.ContainsKey(character))
                 {
                     ++characterUsage[character];

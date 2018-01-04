@@ -91,7 +91,7 @@ namespace Climb.Controllers
                 return BadRequest($"Set {id} is locked.");
             }
 
-            matches.RemoveAll(m => m.Player1CharacterID < 0 || m.Player2CharacterID < 0 || m.StageID < 0);
+            matches.RemoveAll(m => m.MatchCharacters.Count == 0 || m.StageID < 0);
 
             try
             {
