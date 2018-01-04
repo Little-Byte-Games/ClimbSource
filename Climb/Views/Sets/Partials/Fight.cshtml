@@ -63,7 +63,7 @@
         @if(!Model.set.IsLocked)
         {
             <div class="add-match">
-                <button class="btn btn-primary" onclick="addMatch()">Add Match</button>
+                <button onclick="addMatch()">Add Match</button>
             </div>
         }
 
@@ -97,8 +97,8 @@
             </div>
             @if(!Model.set.IsLocked)
             {
-                <div class="submit form-group">
-                    <input id="submit-button" type="submit" value="Submit" class="btn btn-danger"/>
+                <div class="submit">
+                    <input id="submit-button" type="submit" value="Submit"/>
                 </div>
             }
         </form>
