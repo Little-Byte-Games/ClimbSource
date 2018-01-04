@@ -25,7 +25,7 @@ namespace Climb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if(environment.IsProduction() || true)
+            if(environment.IsProduction())
             {
                 services.AddDbContext<ClimbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
@@ -34,7 +34,6 @@ namespace Climb
             else
             {
                 services.AddDbContext<ClimbContext>(options =>
-                    //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
                         options.UseInMemoryDatabase("Test"));
                 services.AddTransient<ICdnService, FileStorageCdn>();
             }
