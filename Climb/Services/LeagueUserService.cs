@@ -40,7 +40,7 @@ namespace Climb.Services
                 }
             }
 
-            return characterUsage.OrderBy(x => x.Value).Take(count).Select(x => x.Key);
+            return characterUsage.OrderByDescending(x => x.Value).Take(count).Select(x => x.Key);
         }
     }
 }
