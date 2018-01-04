@@ -47,7 +47,7 @@ namespace Climb.Controllers
             }
 
             var set = await context.Set
-                .Include(s => s.Matches)
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
@@ -91,7 +91,7 @@ namespace Climb.Controllers
                 return BadRequest($"Set {id} is locked.");
             }
 
-            matches.RemoveAll(m => m.MatchCharacters.Count == 0 || m.StageID < 0);
+            matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
 
             try
             {
