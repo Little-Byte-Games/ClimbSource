@@ -2,11 +2,19 @@
     {
         "Name": "Smash Bros 4",
         "Url": "sb4",
-        "BannerPicUrl": "https://www.blugadgets.com/wp-content/uploads/2014/11/wiiu-super-smash-bros-artwork-banner.jpg"
+        "BannerPicUrl": "https://www.blugadgets.com/wp-content/uploads/2014/11/wiiu-super-smash-bros-artwork-banner.jpg",
+        "CharactersPerMatch": 1
     },
     {
         "Name": "Street Fighter V",
         "Url": "sfv",
-        "BannerPicUrl": "http://2.bp.blogspot.com/-7IZymFFUAIM/VoGzBL5VSvI/AAAAAAAAAwU/FIpXRvqqFkA/s1600/BrutalityClub_SFVBanner.jpg"
+        "BannerPicUrl": "http://2.bp.blogspot.com/-7IZymFFUAIM/VoGzBL5VSvI/AAAAAAAAAwU/FIpXRvqqFkA/s1600/BrutalityClub_SFVBanner.jpg",
+        "CharactersPerMatch": 1
+    },
+    {
+        "Name": "Dragon Ball Fighterz",
+        "Url": "dbf",
+        "BannerPicUrl": "http://playmoments.de/wp-content/uploads/2017/08/DragonBall_FighterZ_Preview_Banner_GC_2017.jpg",
+        "CharactersPerMatch": 3
     }
 ]

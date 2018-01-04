@@ -405,5 +405,126 @@
         "Name": "Zeku",
         "GameID": 2,
         "PicKey": "sfv_zeku.png"
+    },
+    // DBF
+    {
+        "Name": "Android 16",
+        "GameID": 3,
+        "PicKey": "dbf_android16.png"
+    },
+    {
+        "Name": "Android 18",
+        "GameID": 3,
+        "PicKey": "dbf_android18.png"
+    },
+    {
+        "Name": "Android 21",
+        "GameID": 3,
+        "PicKey": "dbf_android21.png"
+    },
+    {
+        "Name": "Beerus",
+        "GameID": 3,
+        "PicKey": "dbf_beerus.png"
+    },
+    {
+        "Name": "Captain Ginyu",
+        "GameID": 3,
+        "PicKey": "dbf_captainginyu.png"
+    },
+    {
+        "Name": "Cell",
+        "GameID": 3,
+        "PicKey": "dbf_cell.png"
+    },
+    {
+        "Name": "Frieza",
+        "GameID": 3,
+        "PicKey": "dbf_frieza.png"
+    },
+    {
+        "Name": "Gohan (Adult)",
+        "GameID": 3,
+        "PicKey": "dbf_gohanadult.png"
+    },
+    {
+        "Name": "Gohan (Teen)",
+        "GameID": 3,
+        "PicKey": "dbf_gohanteen.png"
+    },
+    {
+        "Name": "Goku (SS)",
+        "GameID": 3,
+        "PicKey": "dbf_gokuss.png"
+    },
+    {
+        "Name": "Goku (SSGSS)",
+        "GameID": 3,
+        "PicKey": "dbf_gokussgss.png"
+    },
+    {
+        "Name": "Goku Black",
+        "GameID": 3,
+        "PicKey": "dbf_gokublack.png"
+    },
+    {
+        "Name": "Gotenks",
+        "GameID": 3,
+        "PicKey": "dbf_gotenks.png"
+    },
+    {
+        "Name": "Hit",
+        "GameID": 3,
+        "PicKey": "dbf_hit.png"
+    },
+    {
+        "Name": "Kid Buu",
+        "GameID": 3,
+        "PicKey": "dbf_kidbuu.png"
+    },
+    {
+        "Name": "Krillin",
+        "GameID": 3,
+        "PicKey": "dbf_krillin.png"
+    },
+    {
+        "Name": "Majin Buu",
+        "GameID": 3,
+        "PicKey": "dbf_majinbuu.png"
+    },
+    {
+        "Name": "Nappa",
+        "GameID": 3,
+        "PicKey": "dbf_nappa.png"
+    },
+    {
+        "Name": "Trunks",
+        "GameID": 3,
+        "PicKey": "dbf_trunks.png"
+    },
+    {
+        "Name": "Piccolo",
+        "GameID": 3,
+        "PicKey": "dbf_piccolo.png"
+    },
+    {
+        "Name": "Tien Shinhan",
+        "GameID": 3,
+        "PicKey": "dbf_tienshinhan.png"
+    },
+    {
+        "Name": "Vegeta (SS)",
+        "GameID": 3,
+        "PicKey": "dbf_vegetass.png"
+    },
+    {
+        "Name": "Vegeta (SSGSS)",
+        "GameID": 3,
+        "PicKey": "dbf_vegetassgss.png"
+    },
+    {
+        "Name": "Yamcha",
+        "GameID": 3,
+        "PicKey": "dbf_yamcha.png"
     }
 ]
