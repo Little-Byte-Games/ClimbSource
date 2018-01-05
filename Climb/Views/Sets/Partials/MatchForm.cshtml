@@ -41,23 +41,14 @@
                     }
                 }
 
-                <td class="match-form-stage">
-                    <select name="matches[@Model.index].stageID" value="@Model.stage">
-                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+                @if(Model.set.League.Game.RequireStage)
+                {
+                    <td class="match-form-stage">
                         @{ var stages = Model.set.League.Game.Stages.OrderBy(c => c.Name).ToList(); }
-                        @foreach(var stage in stages)
-                        {
-                            if(stage.ID == Model.stage || environment.IsDevelopment() && Model.index == 0)
-                            {
-                                <option value="@stage.ID" selected>@stage</option>
-                            }
-                            else
-                            {
-                                <option value="@stage.ID">@stage</option>
-                            }
-                        }
-                    </select>
-                </td>
+                        @Html.Partial("~/Views/Sets/Partials/MatchStageInput.cshtml", new MatchStageInputViewModel(Model.index, Model.stage, stages))
+                    </td>
+                }
+
                 @if(!Model.set.IsLocked)
                 {
                     <td>
