@@ -3,7 +3,7 @@
 @model MatchCharacterInputModelView
 
 <input type="hidden" name="matches[@Model.matchIndex].MatchCharacters[@Model.index].LeagueUserID" value="@Model.leagueUserID" />
-<select name="matches[@Model.matchIndex].MatchCharacters[@Model.index].CharacterID" value="@Model.characterID">
+<select name="matches[@Model.matchIndex].MatchCharacters[@Model.index].CharacterID" value="@Model.characterID" class="match-form-input-character" title="character">
     <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
     @foreach (var character in Model.characters)
     {

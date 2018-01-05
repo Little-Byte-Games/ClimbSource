@@ -4,58 +4,51 @@
 @model MatchFormViewModel
 @inject IHostingEnvironment environment
 
-<link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 <script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
 
-<div>
-    <div>
-        <input type="hidden" value="@Model.index" name="matches[@Model.index].index"/>
+@{
+    var characters = Model.set.League.Game.Characters.OrderBy(c => c.Name).ToList();
+    var characterInputCount = 0;
+}
 
-        <table>
-            <tr>
-                <td class="match-form-score">
+<div class="match-form-container">
+    <input type="hidden" value="@Model.index" name="matches[@Model.index].index"/>
+    <div class="match-form-inputs">
+        <div>
+            <div class="match-form-playerdata">
+                <span class="match-form-player">P1</span>
+                <div class="pad-right">
                     @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player1Score, Model.index, 1))
-                </td>
-                @{
-                    var characters = Model.set.League.Game.Characters.OrderBy(c => c.Name).ToList();
-                    var characterInputCount = 0;
-
-                    foreach(var character in Model.player1Characters)
+                </div>
+                <div class="match-form-characters pad-right">
+                    @foreach(var character in Model.player1Characters)
                     {
-                        <td class="match-form-character">
-                            @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player1ID.Value))
-                        </td>
+                        @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player1ID.Value))
                         ++characterInputCount;
                     }
-                }
-                <td class="match-form-score">
+                </div>
+            </div>
+            <div class="match-form-playerdata">
+                <span class="match-form-player">P2</span>
+                <div class="pad-right">
                     @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player2Score, Model.index, 2))
-                </td>
-                @{
-                    foreach(var character in Model.player2Characters)
+                </div>
+                <div class="match-form-characters pad-right">
+                    @foreach(var character in Model.player1Characters)
                     {
-                        <td class="match-form-character">
-                            @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player2ID.Value))
-                        </td>
+                        @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player2ID.Value))
                         ++characterInputCount;
                     }
-                }
-
-                @if(Model.set.League.Game.RequireStage)
-                {
-                    <td class="match-form-stage">
-                        @{ var stages = Model.set.League.Game.Stages.OrderBy(c => c.Name).ToList(); }
-                        @Html.Partial("~/Views/Sets/Partials/MatchStageInput.cshtml", new MatchStageInputViewModel(Model.index, Model.stage, stages))
-                    </td>
-                }
-
-                @if(!Model.set.IsLocked)
-                {
-                    <td>
-                        <button type="button" onclick="removeMatch(@Model.index)">X</button>
-                    </td>
-                }
-            </tr>
-        </table>
+                </div>
+            </div>
+        </div>
+        @if(Model.set.League.Game.RequireStage)
+        {
+            <div class="match-form-stage">
+                @{ var stages = Model.set.League.Game.Stages.OrderBy(c => c.Name).ToList(); }
+                @Html.Partial("~/Views/Sets/Partials/MatchStageInput.cshtml", new MatchStageInputViewModel(Model.index, Model.stage, stages))
+            </div>
+        }
     </div>
+    <button class="match-form-remove" type="button" onclick="removeMatch(@Model.index)">X</button>
 </div>

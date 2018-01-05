@@ -2,7 +2,7 @@
 @using Climb.ViewModels.Sets
 @model MatchStageInputViewModel
 
-<select name="matches[@Model.matchIndex].stageID" value="@Model.stageIndex">
+<select name="matches[@Model.matchIndex].stageID" value="@Model.stageIndex" title="stage">
     <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
     @foreach(var stage in Model.stages)
     {
