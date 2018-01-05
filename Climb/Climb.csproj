@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180103082636_MatchCharacter.LeagueUser.cs" />
+    <Compile Remove="Migrations\20180103082636_MatchCharacter.LeagueUser.Designer.cs" />
+    <Compile Remove="Migrations\20180103083007_MatchCharacter.ID.cs" />
+    <Compile Remove="Migrations\20180103083007_MatchCharacter.ID.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.11" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.362" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />

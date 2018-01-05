@@ -47,7 +47,7 @@ namespace Climb.Controllers
             }
 
             var set = await context.Set
-                .Include(s => s.Matches)
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
@@ -75,7 +75,8 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(int id, List<Match> matches)
         {
-            var set = await context.Set.Include(s => s.Matches)
+            var set = await context.Set
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
@@ -90,7 +91,7 @@ namespace Climb.Controllers
                 return BadRequest($"Set {id} is locked.");
             }
 
-            matches.RemoveAll(m => m.Player1CharacterID < 0 || m.Player2CharacterID < 0 || m.StageID < 0);
+            matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
 
             try
             {

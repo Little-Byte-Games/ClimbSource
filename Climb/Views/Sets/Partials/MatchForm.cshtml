@@ -1,4 +1,5 @@
 ﻿@using Climb.ViewModels.Matches
+@using Climb.ViewModels.Sets
 @using Microsoft.AspNetCore.Hosting
 @model MatchFormViewModel
 @inject IHostingEnvironment environment
@@ -6,72 +7,52 @@
 <link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
 <script type="text/javascript" src="@Url.Content("/js/set.js")"></script>
 
-<div class="row">
-    <div class="col-md-4">
+<div>
+    <div>
         <input type="hidden" value="@Model.index" name="matches[@Model.index].index"/>
 
         <table>
             <tr>
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player1Score" name="matches[@Model.index].Player1Score" class="form-control player-score-1" onchange="scoreUpdated()"/>
+                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player1Score, Model.index, 1))
                 </td>
+                @{
+                    var characters = Model.set.League.Game.Characters.OrderBy(c => c.Name).ToList();
+                    var characterInputCount = 0;
+
+                    foreach(var character in Model.player1Characters)
+                    {
+                        <td class="match-form-character">
+                            @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player1ID.Value))
+                        </td>
+                        ++characterInputCount;
+                    }
+                }
                 <td class="match-form-score">
-                    <input type="number" value="@Model.player2Score" name="matches[@Model.index].Player2Score" class="form-control player-score-2" onchange="scoreUpdated()"/>
+                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player2Score, Model.index, 2))
                 </td>
-                <td class="match-form-character">
-                    <select name="matches[@Model.index].Player1CharacterID" class="form-control" value="@Model.player1Character">
-                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @{ var characters = Model.set.League.Game.Characters.OrderBy(c => c.Name).ToList();}
-                        @foreach (var character in characters)
-                        {
-                            if (character.ID == Model.player1Character || environment.IsDevelopment() && Model.index == 0)
-                            {
-                                <option value="@character.ID" selected>@character</option>
-                            }
-                            else
-                            {
-                                <option value="@character.ID">@character</option>
-                            }
-                        }
-                    </select>
-                </td>
-                <td class="match-form-character">
-                    <select name="matches[@Model.index].Player2CharacterID" class="form-control">
-                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @foreach (var character in characters)
-                        {
-                            if(character.ID == Model.player2Character || environment.IsDevelopment() && Model.index == 0)
-                            {
-                                <option value="@character.ID" selected>@character</option>
-                            }
-                            else
-                            {
-                                <option value="@character.ID">@character</option>
-                            }
-                        }
-                    </select>
-                </td>
-                <td class="match-form-stage">
-                    <select name="matches[@Model.index].stageID" class="form-control" value="@Model.stage">
-                        <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
-                        @{ var stages = Model.set.League.Game.Stages.OrderBy(c => c.Name).ToList();}
-                        @foreach (var stage in stages)
-                        {
-                            if (stage.ID == Model.stage || environment.IsDevelopment() && Model.index == 0)
-                            {
-                                <option value="@stage.ID" selected>@stage</option>
-                            }
-                            else
-                            {
-                                <option value="@stage.ID">@stage</option>
-                            }
-                        }
-                    </select>
-                </td>
+                @{
+                    foreach(var character in Model.player2Characters)
+                    {
+                        <td class="match-form-character">
+                            @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player2ID.Value))
+                        </td>
+                        ++characterInputCount;
+                    }
+                }
+
+                @if(Model.set.League.Game.RequireStage)
+                {
+                    <td class="match-form-stage">
+                        @{ var stages = Model.set.League.Game.Stages.OrderBy(c => c.Name).ToList(); }
+                        @Html.Partial("~/Views/Sets/Partials/MatchStageInput.cshtml", new MatchStageInputViewModel(Model.index, Model.stage, stages))
+                    </td>
+                }
+
                 @if(!Model.set.IsLocked)
                 {
                     <td>
-                        <button class="btn btn-danger" type="button" onclick="removeMatch(@Model.index)">X</button>
+                        <button type="button" onclick="removeMatch(@Model.index)">X</button>
                     </td>
                 }
             </tr>

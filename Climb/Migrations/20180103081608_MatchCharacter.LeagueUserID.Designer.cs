@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20180103081608_MatchCharacter.LeagueUserID")]
+    partial class MatchCharacterLeagueUserID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -220,8 +221,6 @@ namespace Climb.Migrations
                     b.HasKey("MatchID", "LeagueUserID", "CharacterID");
 
                     b.HasIndex("CharacterID");
-
-                    b.HasIndex("LeagueUserID");
 
                     b.ToTable("MatchCharacters");
                 });
@@ -519,11 +518,6 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Character", "Character")
                         .WithMany()
                         .HasForeignKey("CharacterID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
-                        .WithMany()
-                        .HasForeignKey("LeagueUserID")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Match", "Match")

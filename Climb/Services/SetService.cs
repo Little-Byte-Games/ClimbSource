@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Set = Climb.Models.Set;
 
@@ -37,6 +38,7 @@ namespace Climb.Services
 
         private static async Task UpdateMatches(Set set, IEnumerable<Match> matches, ClimbContext context)
         {
+            context.RemoveRange(set.Matches.SelectMany(m => m.MatchCharacters));
             context.RemoveRange(set.Matches);
             set.Matches.Clear();
             await context.SaveChangesAsync();

@@ -11,9 +11,10 @@ using System;
 namespace Climb.Migrations
 {
     [DbContext(typeof(ClimbContext))]
-    partial class ClimbContextModelSnapshot : ModelSnapshot
+    [Migration("20180103074306_MatchCharacter.PlayerIndex")]
+    partial class MatchCharacterPlayerIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,7 +197,7 @@ namespace Climb.Migrations
 
                     b.Property<int>("Player2Score");
 
-                    b.Property<int?>("SetID");
+                    b.Property<int>("SetID");
 
                     b.Property<int?>("StageID");
 
@@ -211,17 +212,20 @@ namespace Climb.Migrations
 
             modelBuilder.Entity("Climb.Models.MatchCharacter", b =>
                 {
-                    b.Property<int>("MatchID");
-
-                    b.Property<int>("LeagueUserID");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("CharacterID");
 
-                    b.HasKey("MatchID", "LeagueUserID", "CharacterID");
+                    b.Property<int>("MatchID");
+
+                    b.Property<int>("PlayerIndex");
+
+                    b.HasKey("ID");
 
                     b.HasIndex("CharacterID");
 
-                    b.HasIndex("LeagueUserID");
+                    b.HasIndex("MatchID");
 
                     b.ToTable("MatchCharacters");
                 });
@@ -519,11 +523,6 @@ namespace Climb.Migrations
                     b.HasOne("Climb.Models.Character", "Character")
                         .WithMany()
                         .HasForeignKey("CharacterID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Climb.Models.LeagueUser", "LeagueUser")
-                        .WithMany()
-                        .HasForeignKey("LeagueUserID")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Climb.Models.Match", "Match")

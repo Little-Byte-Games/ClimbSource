@@ -1,0 +1,19 @@
+﻿@using Climb.ViewModels.Matches
+@using Climb.ViewModels.Sets
+@model MatchCharacterInputModelView
+
+<input type="hidden" name="matches[@Model.matchIndex].MatchCharacters[@Model.index].LeagueUserID" value="@Model.leagueUserID" />
+<select name="matches[@Model.matchIndex].MatchCharacters[@Model.index].CharacterID" value="@Model.characterID">
+    <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+    @foreach (var character in Model.characters)
+    {
+        if (character.ID == Model.characterID)
+        {
+            <option value="@character.ID" selected>@character</option>
+        }
+        else
+        {
+            <option value="@character.ID">@character</option>
+        }
+    }
+</select>
