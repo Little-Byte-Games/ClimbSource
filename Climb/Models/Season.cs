@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Climb.Extensions;
 
 namespace Climb.Models
 {
@@ -21,7 +22,7 @@ namespace Climb.Models
         [JsonIgnore]
         public HashSet<Set> Sets { get; set; }
 
-        public string DisplayName => $"Season {Index + 1}";
+        public string DisplayName => $"Season {(Index + 1).ToRomainNumeral()}";
         public bool IsComplete => Sets != null && Sets.All(s => s.IsComplete);
 
         public SeasonStatus GetStatus()

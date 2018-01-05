@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Climb.ViewModels;
 
 namespace Climb.Models.AccountViewModels
 {
-    public class LoginViewModel
+    public class LoginViewModel : BaseViewModel
     {
         [Required]
         [EmailAddress]
@@ -14,5 +15,10 @@ namespace Climb.Models.AccountViewModels
 
         [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
+
+        public LoginViewModel()
+            : base(null)
+        {
+        }
     }
 }

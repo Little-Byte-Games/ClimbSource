@@ -1,12 +1,12 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
 @model LeagueHomeViewModel
-
-@inject ICdnService CDNService
+@inject ICdnService cdnService
 
 @{
     ViewData["Title"] = Model.league.Name;
     Layout = "_HomeLayout";
+    var returnUrl = Url.Action("Home", "Leagues", new { Model.league.ID });
 }
 
 @section Styles {
@@ -20,7 +20,7 @@
 }
 
 @section User_Content_Left {
-    <h4 align="center">Power Rankings</h4>
+    <h3 align="center">Power Rankings</h3>
     @{
         var users = Model.league.Members.ToList();
         users.Sort();
@@ -29,13 +29,31 @@
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
                 @await Html.PartialAsync("Partials/PowerRank", users[i])
+                @{
+                    if (users[i].ID == Model.league.KingID)
+                    {
+                        <div class="reign">
+                            @{
+                                var weeks = Model.league.GetKingReignWeeks();
+                                if (weeks > 0)
+                                {
+                                    <span>reign of @weeks week@(weeks > 1 ? "s" : "") began on @Model.league.KingReignStart.ToShortDateString()</span>
+                                }
+                                else
+                                {
+                                    <span>new reign started on @Model.league.KingReignStart.ToShortDateString()</span>
+                                }
+                            }
+                        </div>
+                    }
+                }
             </div>
         }
     }
 }
 
 @section User_Content_Middle {
-    <h4 align="center">Recent Activity</h4>
+    <h3 align="center">Recent Activity</h3>
     @if (Model.recentSets != null)
     {
         var i = 0;
@@ -43,7 +61,7 @@
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                 @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
             </div>
             ++i;
@@ -58,7 +76,7 @@
 }
 
 @section User_Content_Right {
-    <h4 align="center">Seasons</h4>
+    <h3 align="center">Seasons</h3>
     <div class="season-actions">
         <button onclick="createSeason(@Model.league.ID)">Create Season</button>
         <span>or view</span>
@@ -87,15 +105,15 @@
     @if (Model.selectedSeason != null)
     {
         var overdueSets = Model.selectedSeason.GetOverdueSets();
-        if(overdueSets.Any())
+        if (overdueSets.Any())
         {
-            <h3 class="sets-subtitle">Overdue</h3>
+            <h4>Overdue</h4>
             var i = 0;
             foreach (var set in overdueSets)
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;
@@ -103,15 +121,15 @@
         }
 
         var availableSets = Model.selectedSeason.GetAvailableSets();
-        if(availableSets.Any())
+        if (availableSets.Any())
         {
-            <h3 class="sets-subtitle">Available</h3>
+            <h4>Available</h4>
             var i = 0;
             foreach (var set in Model.selectedSeason.GetAvailableSets())
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;

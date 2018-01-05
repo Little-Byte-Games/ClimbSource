@@ -34,7 +34,6 @@ namespace Climb
             else
             {
                 services.AddDbContext<ClimbContext>(options =>
-                    //options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
                         options.UseInMemoryDatabase("Test"));
                 services.AddTransient<ICdnService, FileStorageCdn>();
             }
@@ -87,6 +86,7 @@ namespace Climb
                 }
             });
 
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseStaticFiles();
             app.UseAuthentication();
 

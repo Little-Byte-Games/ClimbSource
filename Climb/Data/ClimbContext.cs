@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Climb.Models
 {
@@ -22,6 +22,7 @@ namespace Climb.Models
         public DbSet<LeagueUser> LeagueUser { get; set; }
         public DbSet<LeagueUserSeason> LeagueUserSeason { get; set; }
         public DbSet<RankSnapshot> RankSnapshot { get; set; }
+        public DbSet<MatchCharacter> MatchCharacters { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,12 +39,15 @@ namespace Climb.Models
             modelBuilder.Entity<LeagueUserSeason>()
                 .HasOne(lus => lus.LeagueUser)
                 .WithMany(lu => lu.Seasons)
-                .HasForeignKey(bc => bc.LeagueUserID);
+                .HasForeignKey(lus => lus.LeagueUserID);
 
             modelBuilder.Entity<LeagueUserSeason>()
                 .HasOne(lus => lus.Season)
                 .WithMany(s => s.Participants)
                 .HasForeignKey(lus => lus.SeasonID);
+
+            modelBuilder.Entity<MatchCharacter>()
+                .HasKey(mc => new {mc.MatchID, mc.LeagueUserID, mc.CharacterID});
         }
     }
 }

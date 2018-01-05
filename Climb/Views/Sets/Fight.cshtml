@@ -10,18 +10,28 @@
 
 @Html.Partial("/Views/Sets/Partials/Fight.cshtml", SetFightViewModel.Create(Model.data, SetsController.MaxMatchCount))
 
+@if(ViewData.ContainsKey("ReturnUrl"))
+{
+    <div>
+        <a id="previous-page" href="@ViewData["ReturnUrl"]" style="width: auto;">Back</a>
+    </div>
+}
+
 @section Scripts
 {
     <script type="text/javascript">
         $(document).ready(() => {
             scoreUpdated();
 
-            $("#submit-button").click(function () {
+            $("#submit-button").click(function() {
                 $.post({
                     url: "/Sets/Submit",
                     data: $("#set-form").serialize(),
                     success: function() {
-                        alert("Set submitted!");
+                        var returnToPage = confirm("Set sumitted!\nReturn to previous page?");
+                        if (returnToPage) {
+                            document.getElementById('previous-page').click();
+                        }
                     },
                     error: function(response) {
                         alert(response.responseText);

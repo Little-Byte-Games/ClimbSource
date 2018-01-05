@@ -15,3 +15,10 @@
     justify-content: space-between;
     padding: 5px;
 }
+
+.reign {
+    text-align: center;
+    color: whitesmoke;
+    background-color: orange;
+    padding: 5px;
+}

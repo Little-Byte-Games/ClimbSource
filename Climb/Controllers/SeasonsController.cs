@@ -31,7 +31,7 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Create", new {leagueID})});
             }
 
             var viewModel = new CreateViewModel(user);
@@ -43,11 +43,12 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Home", new { id })});
             }
 
             var season = await context.Season
-                .Include(s => s.Sets).ThenInclude(s => s.League)
+                .Include(s => s.League).ThenInclude(l => l.Game)
+                .Include(s => s.Sets)
                 .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(season == null)

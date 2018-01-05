@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Climb.Core;
-using Climb.Models;
-using System.Collections.ObjectModel;
+﻿using Climb.Models;
+using System.Collections.Generic;
 using System.Linq;
 using Set = Climb.Models.Set;
 

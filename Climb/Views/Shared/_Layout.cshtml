@@ -19,82 +19,15 @@
 </head>
 <body>
 
-@if(Model != null && Model.user != null)
-{
-    <div class="menu-bar">
-        <h1 class="logo">CLIMB</h1>
-        <div class="menu">
-            <div class="dropdown">
-                <a asp-controller="Games" asp-action="Index">Games <span class="arrow">&#9660;</span></a>
-                <ul class="dropdown-items">
-                    @foreach(var game in Model.user.LeagueUsers.Select(l => l.League.Game))
-                    {
-                        <li>
-                            <a asp-controller="Games" asp-action="Home" asp-route-id="@game.ID">@game.Name</a>
-                        </li>
-                    }
-                    <li>
-                        <a asp-controller="Games" asp-action="Index">Search Games</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown">
-                <a asp-controller="Leagues" asp-action="Index">Leagues <span class="arrow">&#9660;</span></a>
-                <ul class="dropdown-items">
-                    @foreach(var league in Model.user.LeagueUsers.Select(l => l.League))
-                    {
-                        <li>
-                            <a asp-controller="Leagues" asp-action="Home" asp-route-id="@league.ID">@league.Name</a>
-                        </li>
-                    }
-                    <li>
-                        <a asp-controller="Leagues" asp-action="Index">Search Leagues</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown">
-                <a asp-controller="Users" asp-action="Home" asp-route-id="@Model.user.ID">@Model.user.Username</a>
-                <ul class="dropdown-items">
-                    <li>
-                        <a asp-controller="Users" asp-action="Account">Account</a>
-                    </li>
-                    <li>
-                        <a asp-controller="Account" asp-action="Logout">Logout</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown">
-                @if(hostingEnvironment.IsDevelopment())
-                {
-                    <a asp-controller="Admin" asp-action="Index">Admin</a>
-                }
-            </div>
-        </div>
-    </div>
-}
+@Html.Partial("~/Views/Shared/Navbar.cshtml", Model)
 
-<div class="container body-content">
+
+<div class="body-container">
     @RenderBody()
-    <footer class="content-footer">
-        <p>&copy; 2017 - Climb <a href="mailto:steve.yeager@littlebytegames.com?subject=Climb%20Feedback%20(Don't%20Change)" target="_blank">Got Feedback? Bugs? Ideas? Email me!</a>
-        </p>
-    </footer>
 </div>
+@Html.Partial("~/Views/Shared/Footer.cshtml")
 
-<environment include="Development">
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</environment>
-<environment exclude="Development">
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-            asp-fallback-test="window.jQuery"
-            crossorigin="anonymous"
-            integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-    </script>
-    <script src="~/js/site.min.js" asp-append-version="true"></script>
-</environment>
-
+@{await Html.RenderPartialAsync("~/Views/Shared/Common.cshtml");}
 @RenderSection("Scripts", required: false)
 </body>
 </html>

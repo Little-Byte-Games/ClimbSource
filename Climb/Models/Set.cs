@@ -30,7 +30,7 @@ namespace Climb.Models
         [JsonIgnore]
         public League League { get; set; }
 
-        public bool IsComplete => !IsBye && (Player1Score != null || Player2Score != null);
+        public bool IsComplete => IsBye || (Player1Score != null && Player2Score != null);
         [JsonIgnore]
         public string Player1Name => Player1?.User?.Username ?? "BYE";
         [JsonIgnore]
@@ -44,7 +44,6 @@ namespace Climb.Models
 
         public bool IsPlaying(int? leagueUserID)
         {
-            // TODO: Might be wrong.
             return leagueUserID == Player1ID || leagueUserID == Player2ID;
         }
 

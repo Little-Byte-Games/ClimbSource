@@ -37,17 +37,16 @@ namespace Climb.Controllers
         }
 
         #region Pages
-        [Authorize]
-        public async Task<IActionResult> Fight(int id)
+        public async Task<IActionResult> Fight(int id, string returnUrl = null)
         {
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return UserNotFound();
+                return RedirectToAction("Login", "Account", new {returnUrl = Url.Action("Fight", new {id})});
             }
 
             var set = await context.Set
-                .Include(s => s.Matches)
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
@@ -57,6 +56,11 @@ namespace Climb.Controllers
             if(set == null)
             {
                 return NotFound($"Could not find Set with ID '{id}'.");
+            }
+
+            if(!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                ViewData["ReturnUrl"] = returnUrl;
             }
 
             var viewModel = new GenericViewModel<Set>(user, set);
@@ -75,36 +79,37 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(int id, List<Match> matches)
         {
-            var set = await context.Set.Include(s => s.Matches)
+            var set = await context.Set
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
-            if (set == null)
+            if(set == null)
             {
                 return NotFound($"Could not find set with ID '{id}'.");
             }
 
-            if (set.IsLocked)
+            if(set.IsLocked)
             {
                 return BadRequest($"Set {id} is locked.");
             }
 
-            matches.RemoveAll(m => m.Player1CharacterID < 0 || m.Player2CharacterID < 0 || m.StageID < 0);
+            matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
 
             try
             {
                 await setService.Put(set, matches);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 Console.WriteLine(exception);
                 return BadRequest($"Set {id} could not be submitted.");
             }
 
-            if (FeatureToggles.Slack)
+            if(FeatureToggles.Slack)
             {
-                await SendSetCompletedMessage(set); 
+                await SendSetCompletedMessage(set);
             }
 
             return Ok(JsonConvert.SerializeObject(set));
@@ -114,7 +119,7 @@ namespace Climb.Controllers
         private async Task SendSetCompletedMessage(Set set)
         {
             var message = $"{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}";
-            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new { id = set.ID }, Protocol = "https"})}";
+            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
         }

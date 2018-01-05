@@ -28,6 +28,9 @@
         </div>
         <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
     </div>
-
-    <button class="set-submit" onclick="location.href = '/Sets/Fight/@Model.set.ID'">@(Model.set.IsComplete ? "Edit" : "Fight!")</button>
+    
+    <form asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" method="get">
+        <input type="hidden" name="returnUrl" value="@Model.returnUrl"/>
+        <button class="set-submit">@(Model.set.IsComplete ? "Edit" : "Fight!")</button>
+    </form>
 </div>

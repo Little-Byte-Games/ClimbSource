@@ -63,7 +63,7 @@
         @if(!Model.set.IsLocked)
         {
             <div class="add-match">
-                <button class="btn btn-primary" onclick="addMatch()">Add Match</button>
+                <button onclick="addMatch()">Add Match</button>
             </div>
         }
 
@@ -71,14 +71,6 @@
             <input type="hidden" name="id" value="@Model.set.ID"/>
             <div class="match-wrapper">
                 <div class="match-container">
-                    <div class="match-header">
-                        <div class="match-form-score">P1 Score</div>
-                        <div class="match-form-score">P2 Score</div>
-                        <div class="match-form-character">P1 Character</div>
-                        <div class="match-form-character">P2 Character</div>
-                        <div class="match-form-stage">Stage</div>
-                    </div>
-
                     <div id="matches" class="matches">
                         @for(int i = 0; i < SetsController.MaxMatchCount; i++)
                         {
@@ -88,7 +80,7 @@
                                 matchFound = true;
                             }
 
-                            <div class="match" @(matchFound ? null : Html.Raw("style=\"display: none\""))>
+                            <div @(matchFound ? null : Html.Raw("style=\"display: none\""))>
                                 @Html.Partial("/Views/Sets/Partials/MatchForm.cshtml", new MatchFormViewModel(i, Model.set, Model.matches[i]))
                             </div>
                         }
@@ -97,8 +89,8 @@
             </div>
             @if(!Model.set.IsLocked)
             {
-                <div class="submit form-group">
-                    <input id="submit-button" type="submit" value="Submit" class="btn btn-danger"/>
+                <div class="submit">
+                    <input id="submit-button" type="submit" value="Submit"/>
                 </div>
             }
         </form>

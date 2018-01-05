@@ -1,0 +1,18 @@
+﻿@using Climb.ViewModels.Matches
+@using Climb.ViewModels.Sets
+@model MatchStageInputViewModel
+
+<select name="matches[@Model.matchIndex].stageID" value="@Model.stageIndex" title="stage">
+    <option value="@MatchFormViewModel.NotSelectedValue">@MatchFormViewModel.NotSelected</option>
+    @foreach(var stage in Model.stages)
+    {
+        if(stage.ID == Model.stageIndex)
+        {
+            <option value="@stage.ID" selected>@stage</option>
+        }
+        else
+        {
+            <option value="@stage.ID">@stage</option>
+        }
+    }
+</select>
