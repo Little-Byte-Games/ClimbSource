@@ -6,6 +6,7 @@
 @{
     ViewBag.Title = Model.homeUser.Username;
     Layout = "_HomeLayout";
+    var returnUrl = Url.Action("Home", "Users", new { Model.homeUser.ID });
 }
 
 @section Styles {
@@ -65,7 +66,7 @@
     <h4>Overdue</h4>
     @foreach (var set in Model.overdueSets)
     {
-        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser, returnUrl);
         @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
     <h4>Available</h4>
@@ -73,7 +74,7 @@
     @foreach (var set in Model.availableSets)
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
-        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser);
+        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser, returnUrl);
         <div class="@row">
             @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
         </div>

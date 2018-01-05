@@ -1,21 +1,21 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
 @model LeagueHomeViewModel
-
-@inject ICdnService CDNService
+@inject ICdnService cdnService
 
 @{
     ViewData["Title"] = Model.league.Name;
     Layout = "_HomeLayout";
+    var returnUrl = Url.Action("Home", "Leagues", new { Model.league.ID });
 }
 
 @section Styles {
-    <link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
-    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet"/>
+    <link href="/css/league_home.css" rel="Stylesheet" type="text/css" />
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
 }
 
 @section Body_Banner {
-    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl"/>
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl" />
     <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
@@ -24,18 +24,18 @@
     @{
         var users = Model.league.Members.ToList();
         users.Sort();
-        for(var i = 0; i < users.Count; i++)
+        for (var i = 0; i < users.Count; i++)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
                 @await Html.PartialAsync("Partials/PowerRank", users[i])
                 @{
-                    if(users[i].ID == Model.league.KingID)
+                    if (users[i].ID == Model.league.KingID)
                     {
                         <div class="reign">
                             @{
                                 var weeks = Model.league.GetKingReignWeeks();
-                                if(weeks > 0)
+                                if (weeks > 0)
                                 {
                                     <span>reign of @weeks week@(weeks > 1 ? "s" : "") began on @Model.league.KingReignStart.ToShortDateString()</span>
                                 }
@@ -54,14 +54,14 @@
 
 @section User_Content_Middle {
     <h3 align="center">Recent Activity</h3>
-    @if(Model.recentSets != null)
+    @if (Model.recentSets != null)
     {
         var i = 0;
-        foreach(var set in Model.recentSets)
+        foreach (var set in Model.recentSets)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                 @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
             </div>
             ++i;
@@ -81,9 +81,9 @@
         <button onclick="createSeason(@Model.league.ID)">Create Season</button>
         <span>or view</span>
         <select id="seasons-dropdown">
-            @foreach(var season in Model.league.Seasons)
+            @foreach (var season in Model.league.Seasons)
             {
-                if(season.ID == Model.selectedSeason.ID)
+                if (season.ID == Model.selectedSeason.ID)
                 {
                     <option value="season-@season.ID" selected>@season.DisplayName</option>
                 }
@@ -102,18 +102,18 @@
         <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
     </div>
 
-    @if(Model.selectedSeason != null)
+    @if (Model.selectedSeason != null)
     {
         var overdueSets = Model.selectedSeason.GetOverdueSets();
-        if(overdueSets.Any())
+        if (overdueSets.Any())
         {
             <h4>Overdue</h4>
             var i = 0;
-            foreach(var set in overdueSets)
+            foreach (var set in overdueSets)
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;
@@ -121,15 +121,15 @@
         }
 
         var availableSets = Model.selectedSeason.GetAvailableSets();
-        if(availableSets.Any())
+        if (availableSets.Any())
         {
             <h4>Available</h4>
             var i = 0;
-            foreach(var set in Model.selectedSeason.GetAvailableSets())
+            foreach (var set in Model.selectedSeason.GetAvailableSets())
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;

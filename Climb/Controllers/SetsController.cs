@@ -37,13 +37,12 @@ namespace Climb.Controllers
         }
 
         #region Pages
-        [Authorize]
-        public async Task<IActionResult> Fight(int id)
+        public async Task<IActionResult> Fight(int id, string returnUrl = null)
         {
             var user = await GetViewUserAsync();
             if(user == null)
             {
-                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Fight", new { id }) });
+                return RedirectToAction("Login", "Account", new {returnUrl = Url.Action("Fight", new {id})});
             }
 
             var set = await context.Set
@@ -57,6 +56,11 @@ namespace Climb.Controllers
             if(set == null)
             {
                 return NotFound($"Could not find Set with ID '{id}'.");
+            }
+
+            if(!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                ViewData["ReturnUrl"] = returnUrl;
             }
 
             var viewModel = new GenericViewModel<Set>(user, set);
@@ -81,12 +85,12 @@ namespace Climb.Controllers
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
                 .SingleOrDefaultAsync(s => s.ID == id);
-            if (set == null)
+            if(set == null)
             {
                 return NotFound($"Could not find set with ID '{id}'.");
             }
 
-            if (set.IsLocked)
+            if(set.IsLocked)
             {
                 return BadRequest($"Set {id} is locked.");
             }
@@ -97,15 +101,15 @@ namespace Climb.Controllers
             {
                 await setService.Put(set, matches);
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 Console.WriteLine(exception);
                 return BadRequest($"Set {id} could not be submitted.");
             }
 
-            if (FeatureToggles.Slack)
+            if(FeatureToggles.Slack)
             {
-                await SendSetCompletedMessage(set); 
+                await SendSetCompletedMessage(set);
             }
 
             return Ok(JsonConvert.SerializeObject(set));
@@ -115,7 +119,7 @@ namespace Climb.Controllers
         private async Task SendSetCompletedMessage(Set set)
         {
             var message = $"{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}";
-            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new { id = set.ID }, Protocol = "https"})}";
+            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
         }
