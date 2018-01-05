@@ -1,4 +1,4 @@
 ﻿@using Climb.ViewModels.Sets
 @model MatchScoreInputViewModel
 
-<input type="number" value="@Model.score" name="matches[@Model.index].Player1Score" class="player-score-@Model.playerNumber" onchange="scoreUpdated()" />
+<input type="number" value="@Model.score" name="matches[@Model.index].Player@(Model.playerNumber)Score" class="player-score-@Model.playerNumber" onchange="scoreUpdated()" />
