@@ -23,18 +23,5 @@
     {
         "Name": "Battlefield",
         "GameID": 1
-    },
-    //SFV
-    {
-        "Name": "Suzaku Castle",
-        "GameID": 2
-    },
-    {
-        "Name": "English Manor",
-        "GameID": 2
-    },
-    {
-        "Name": "Forgotten Waterfall",
-        "GameID": 2
     }
 ]
