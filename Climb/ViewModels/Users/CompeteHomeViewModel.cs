@@ -52,7 +52,7 @@ namespace Climb.ViewModels
                 }
                 seasonUsers.Add(seasonUser);
 
-                var sets = seasonUser.Season.Sets.Where(s => !s.IsComplete && s.IsPlaying(leagueUser));
+                var sets = seasonUser.Season.Sets.Where(s => !s.IsComplete && s.IsPlaying(leagueUser)).OrderByDescending(s => s.UpdatedDate);
                 foreach(var set in sets)
                 {
                     if(set.DueDate < now)

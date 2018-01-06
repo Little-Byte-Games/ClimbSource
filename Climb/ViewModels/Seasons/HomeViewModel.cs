@@ -25,7 +25,7 @@ namespace Climb.ViewModels.Seasons
         {
             var leagueUser = user.LeagueUsers.FirstOrDefault(l => l.LeagueID == season.LeagueID);
 
-            var recentSets = season.Sets.Where(s => s.IsComplete);
+            var recentSets = season.Sets.Where(s => s.IsComplete).OrderByDescending(s => s.UpdatedDate);
 
             var viewModel = new HomeViewModel(user, season, leagueUser, recentSets);
             return viewModel;
