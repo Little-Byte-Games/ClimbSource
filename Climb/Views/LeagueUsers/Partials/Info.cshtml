@@ -1,0 +1,16 @@
+﻿@using Climb.Services
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Climb.ViewModels.LeagueUsers.InfoViewModel
+@inject ICdnService cdnService
+
+<div class="league-user">
+    <div class="league-user-info">
+        <img class="league-user-profile-image" src="@Model.profilePicUrl" />
+        <span class="league-user-username">@Model.leagueUser.User.Username</span>
+        <span class="league-user-league-name">(@Model.leagueUser.League.Name)</span>
+    </div>
+    <div class="league-user-rank">
+        <span class="league-user-rank-number">@Model.leagueUser.Rank</span>
+        <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", Model.leagueUser.GetRankTrend())</span>
+    </div>
+</div>

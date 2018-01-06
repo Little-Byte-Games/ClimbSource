@@ -1,5 +1,6 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
+@using Climb.ViewModels.LeagueUsers
 @model CompeteHomeViewModel
 @inject ICdnService cdnService
 
@@ -29,16 +30,11 @@
         @foreach (var leagueUser in Model.homeUser.LeagueUsers)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
-            <div class="league-user @row">
-                <div class="league-user-info">
-                    <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)" />
-                    <span class="league-user-username">@Model.homeUser.Username</span>
-                    <span class="league-user-league-name">(@leagueUser.League.Name)</span>
-                </div>
-                <div class="league-user-rank">
-                    <span class="league-user-rank-number">@leagueUser.Rank</span>
-                    <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", leagueUser.GetRankTrend())</span>
-                </div>
+            <div class="@row">
+                @{
+                    var viewModel = InfoViewModel.Create(leagueUser, Model.user, cdnService);
+                    Html.RenderPartial("~/Views/LeagueUsers/Partials/Info.cshtml", viewModel);
+                }
             </div>
             ++i;
         }
