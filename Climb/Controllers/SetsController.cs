@@ -113,15 +113,6 @@ namespace Climb.Controllers
 
             return Ok(JsonConvert.SerializeObject(set));
         }
-        #endregion
-
-        private async Task SendSetCompletedMessage(Set set)
-        {
-            var message = $"{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}";
-            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
-            var apiKey = configuration.GetSection("Slack")["Key"];
-            await SlackController.SendGroupMessage(apiKey, message);
-        }
 
         [HttpPost]
         public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
@@ -129,13 +120,13 @@ namespace Climb.Controllers
             var challenged = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
             if(challenged == null)
             {
-                return NotFound($"No challenged league user with id '{challengedID} found.");
+                return BadRequest($"No challenged league user with id '{challengedID} found.");
             }
 
             var challenger = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengerID);
             if(challenger == null)
             {
-                return NotFound($"No challenger league user with id '{challengerID} found.");
+                return BadRequest($"No challenger league user with id '{challengerID} found.");
             }
 
             var set = new Set
@@ -149,6 +140,15 @@ namespace Climb.Controllers
             await context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Fight), new {id = set.ID});
+        }
+        #endregion
+
+        private async Task SendSetCompletedMessage(Set set)
+        {
+            var message = $"{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}";
+            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
+            var apiKey = configuration.GetSection("Slack")["Key"];
+            await SlackController.SendGroupMessage(apiKey, message);
         }
     }
 }

@@ -26,11 +26,7 @@
         </div>
         @if(Model.ShowFightButton)
         {
-            <form asp-controller="Sets" asp-action="Exhibition" method="post">
-                <input type="hidden" name="challengerID" value="@Model.viewingLeagueUser.ID" />
-                <input type="hidden" name="challengedID" value="@Model.leagueUser.ID" />
-                <button class="fight-button">Fight!</button>
-            </form>
+            <button class="fight-button" type="button" onclick="createExhibition(@Model.viewingLeagueUser.ID, @Model.leagueUser.ID)">Fight!</button>
         }
     </div>
 </div>
