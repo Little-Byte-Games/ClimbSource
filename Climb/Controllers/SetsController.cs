@@ -3,7 +3,6 @@ using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -133,31 +132,23 @@ namespace Climb.Controllers
                 return NotFound($"No challenged league user with id '{challengedID} found.");
             }
 
-            var challenger = await context.User
-                .Include(u => u.LeagueUsers)
-                .SingleOrDefaultAsync(u => u.ID == challengerID);
+            var challenger = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengerID);
             if(challenger == null)
             {
-                return NotFound($"No challenger user with id '{challengerID} found.");
-            }
-
-            var challengerLeagueUser = challenger.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == challenged.LeagueID);
-            if(challengerLeagueUser == null)
-            {
-                return NotFound($"No challenger league user for league ID '{challenged.LeagueID}' found.");
+                return NotFound($"No challenger league user with id '{challengerID} found.");
             }
 
             var set = new Set
             {
-                Player1ID = challengerLeagueUser.ID,
+                Player1ID = challengerID,
                 Player2ID = challengedID,
                 DueDate = DateTime.Now.Date,
-                LeagueID = challengerLeagueUser.LeagueID,
+                LeagueID = challenger.LeagueID,
             };
             await context.Set.AddAsync(set);
             await context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Fight), new {id = set.ID});
+            return CreatedAtAction(nameof(Fight), new {id = set.ID});
         }
     }
 }

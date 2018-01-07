@@ -1,7 +1,9 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
+@using Climb.ViewModels.LeagueUsers
 @model LeagueHomeViewModel
 @inject ICdnService cdnService
+@inject ILeagueUserService leagueUserService
 
 @{
     ViewData["Title"] = Model.league.Name;
@@ -28,8 +30,9 @@
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @await Html.PartialAsync("Partials/PowerRank", users[i])
                 @{
+                    var viewModel = await PowerRankViewModel.Create(users[i], Model.user, cdnService, leagueUserService, false);
+                    @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
                     if (users[i].ID == Model.league.KingID)
                     {
                         <div class="reign">

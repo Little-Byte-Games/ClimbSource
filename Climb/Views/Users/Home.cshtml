@@ -3,6 +3,7 @@
 @using Climb.ViewModels.LeagueUsers
 @model CompeteHomeViewModel
 @inject ICdnService cdnService
+@inject ILeagueUserService leagueUserService
 
 @{
     ViewBag.Title = Model.homeUser.Username;
@@ -13,6 +14,7 @@
 @section Styles {
     <link href="/css/user/home.css" type="text/css" rel="stylesheet" />
     <link href="/css/season.css" type="text/css" rel="stylesheet" />
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
 }
 
 @section Body_Banner {
@@ -31,10 +33,8 @@
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @{
-                    var viewModel = InfoViewModel.Create(leagueUser, Model.user, cdnService);
-                    Html.RenderPartial("~/Views/LeagueUsers/Partials/Info.cshtml", viewModel);
-                }
+                @{ var viewModel = await PowerRankViewModel.Create(leagueUser, Model.user, cdnService, leagueUserService, true); }
+                @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
             </div>
             ++i;
         }
