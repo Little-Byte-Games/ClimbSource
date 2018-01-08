@@ -97,7 +97,7 @@ namespace Climb.Controllers
         {
             try
             {
-                await accountService.CreateUser("a@a.com", "Abc_123");
+                await accountService.CreateUser("a@a.com", "admin", "Abc_123");
             }
             catch (Exception exception)
             {

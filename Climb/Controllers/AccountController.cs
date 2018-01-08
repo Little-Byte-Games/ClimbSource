@@ -231,7 +231,7 @@ namespace UserApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var result = await accountService.CreateUser(model.Email, model.Password);
+                var result = await accountService.CreateUser(model.Email, model.Username, model.Password);
                 if(result.Succeeded)
                 {
                     return RedirectToLocal(returnUrl);
