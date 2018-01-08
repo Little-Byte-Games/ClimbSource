@@ -231,6 +231,12 @@ namespace UserApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+                var usernameTaken = await context.User.AnyAsync(u => u.Username == model.Username);
+                if(usernameTaken)
+                {
+                    ViewData["UsernameTaken"] = $"Username '{model.Username}' is already taken.";
+                }
+
                 var result = await accountService.CreateUser(model.Email, model.Username, model.Password);
                 if(result.Succeeded)
                 {

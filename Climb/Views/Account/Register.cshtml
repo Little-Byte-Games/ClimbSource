@@ -15,6 +15,7 @@
             <label asp-for="Username"></label>
             <input asp-for="Username"/>
             <span asp-validation-for="Username"></span>
+            <span class="input-error">@ViewData["UsernameTaken"]</span>
         </div>
         <div>
             <label asp-for="Email"></label>
