@@ -3,19 +3,13 @@
 }
 
 .profile-image {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     position: absolute;
     left: 50%;
-    margin-left: -100px;
-    top: 50px;
+    margin-left: -75px;
+    top: 75px;
     z-index: 1;
-    border: 10px solid transparent;
-    -moz-border-image: -moz-linear-gradient(top left, silver 0, gray 100%);
-    -webkit-border-image: -webkit-linear-gradient(top left, silver 0, gray 100%);
-    border-image: linear-gradient(to bottom right, silver 0, gray 100%);
-    border-image-slice: 1;
-    box-shadow: 0 10px 15px black;
 }
 
 .user-content {
