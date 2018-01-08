@@ -16,7 +16,6 @@ namespace Climb.Data
             {
                 context.Database.EnsureDeleted();
             }
-            context.Database.EnsureCreated();
 
             if(context.Game.Any())
             {
