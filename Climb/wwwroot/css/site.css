@@ -365,6 +365,7 @@ h4 {
     display: inline-block;
 }
 
+.game-name,
 .league-name,
 .season-name,
 .user-username {
