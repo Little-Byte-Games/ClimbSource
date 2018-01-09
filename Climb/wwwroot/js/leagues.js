@@ -25,7 +25,7 @@ function createSeason(leagueID) {
             location.href = "/Seasons/Home/" + season.ID;
         },
         error: function(response) {
-            alert(JSON.stringify(response));
+            alert("Can't create season\n" + response.responseText);
         }
     });
 }

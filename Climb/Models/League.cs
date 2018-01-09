@@ -29,7 +29,7 @@ namespace Climb.Models
         public HashSet<Set> Sets { get; set; }
 
         public int MemberCount => Members?.Count(m => !m.HasLeft) ?? 0;
-        public Season CurrentSeason => Seasons?.FirstOrDefault(s => !s.IsComplete && s.Sets.Count > 0);
+        public Season CurrentSeason => Seasons?.FirstOrDefault(s => !s.IsComplete && s.Sets?.Count > 0);
 
         public int GetKingReignWeeks()
         {

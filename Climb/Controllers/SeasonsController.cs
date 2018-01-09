@@ -107,11 +107,16 @@ namespace Climb.Controllers
         public async Task<IActionResult> CreateAndStart(int leagueID)
         {
             var league = await context.League
-                .Include(l => l.Seasons)
+                .Include(l => l.Seasons).ThenInclude(s => s.Sets)
                 .SingleOrDefaultAsync(l => l.ID == leagueID);
             if (league == null)
             {
-                return NotFound();
+                return BadRequest($"League with ID '{leagueID}' not found.");
+            }
+
+            if(league.CurrentSeason != null)
+            {
+                return BadRequest("There is already a running season.");
             }
 
             var season = await seasonService.Create(league);
