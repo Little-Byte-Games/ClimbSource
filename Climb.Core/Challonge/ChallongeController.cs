@@ -49,10 +49,10 @@ namespace Climb.Core.Challonge
             TournamentCreateResponse createResponse = JsonConvert.DeserializeObject<TournamentCreateResponse>(content);
 
             var participantIDs = new Dictionary<int, int>();
-            foreach(var participant in participants)
+            foreach(var (id, username, displayName) in participants)
             {
-                var participantID = await CreateParticipant(apiKey, createResponse.tournament.id, participant.username, participant.displayName);
-                participantIDs.Add(participant.id, participantID);
+                var participantID = await CreateParticipant(apiKey, createResponse.tournament.id, username, displayName);
+                participantIDs.Add(id, participantID);
             }
 
             var createdTournament = new CreatedTournament(createResponse.tournament.id, tournamentUrl, participantIDs);
