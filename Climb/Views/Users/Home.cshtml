@@ -20,7 +20,10 @@
 @section Body_Banner {
     <div>
         <img class="user-header-image" src="~/images/user/Banner_Smoke.png" />
-        <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)" />
+        <div class="profile">
+            <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)" />
+            <span class="profile-username">@Model.homeUser.Username</span>
+        </div>
     </div>
 }
 
