@@ -34,7 +34,6 @@ function createLeague() {
         url: "/Leagues/Create",
         data: form.serialize(),
         success: response => {
-            //var league = JSON.parse(response);
             location.href = "/Leagues/Home/" + response.id;
         },
         error: function (response) {
