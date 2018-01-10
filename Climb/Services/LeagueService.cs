@@ -35,7 +35,7 @@ namespace Climb.Services
             {
                 leagueUser = new LeagueUser
                 {
-                    Elo = 2000,
+                    Points = 2000,
                     League = league,
                     User = user
                 };
@@ -118,7 +118,7 @@ namespace Climb.Services
             foreach (var set in unlockedSets)
             {
                 var player1Won = set.WinnerID == set.Player1ID;
-                var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Elo, set.Player2.Elo, player1Won);
+                var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Points, set.Player2.Points, player1Won);
                 AccumulateEloDelta(memberEloDeltas, set.Player1, newElo.Item1);
                 AccumulateEloDelta(memberEloDeltas, set.Player2, newElo.Item2);
 
@@ -132,7 +132,7 @@ namespace Climb.Services
             {
                 if (memberEloDeltas.TryGetValue(member.ID, out var eloDelta))
                 {
-                    member.Elo += eloDelta;
+                    member.Points += eloDelta;
                 }
             }
         }
@@ -149,14 +149,14 @@ namespace Climb.Services
                     lastSnapshot = member.RankSnapshots?.MaxBy(rs => rs.CreatedDate);
                 }
                 var rankDelta = member.Rank - (lastSnapshot?.Rank ?? 0);
-                var eloDelta = member.Elo - (lastSnapshot?.Elo ?? 0);
+                var eloDelta = member.Points - (lastSnapshot?.Points ?? 0);
                 var rankSnapshot = new RankSnapshot
                 {
                     LeagueUser = member,
                     Rank = member.Rank,
                     DeltaRank = rankDelta,
-                    Elo = member.Elo,
-                    DeltaElo = eloDelta,
+                    Points = member.Points,
+                    DeltaPoints = eloDelta,
                     CreatedDate = createdDate
                 };
                 rankSnapshots.Add(rankSnapshot);
@@ -172,7 +172,7 @@ namespace Climb.Services
                 memberEloDeltas.Add(member.ID, 0);
             }
 
-            var deltaElo = newElo - member.Elo;
+            var deltaElo = newElo - member.Points;
             memberEloDeltas[member.ID] += deltaElo;
         }
 
@@ -184,9 +184,9 @@ namespace Climb.Services
             for (var i = 0; i < members.Count; i++)
             {
                 LeagueUser member = members[i];
-                if (member.Elo != lastElo)
+                if (member.Points != lastElo)
                 {
-                    lastElo = member.Elo;
+                    lastElo = member.Points;
                     rank = i + 1;
                 }
                 member.Rank = rank;

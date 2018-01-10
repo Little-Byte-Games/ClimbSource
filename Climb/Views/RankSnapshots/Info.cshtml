@@ -27,12 +27,12 @@
 		<span style="color: @color">@Model.Rank (@delta)</span>
 		<span>|</span>
 		deltaDirection = "";
-		if(Model.DeltaElo < 0)
+		if(Model.DeltaPoints < 0)
 		{
 			color = "red";
 			deltaDirection = "-";
 		}
-		else if(Model.DeltaElo > 0)
+		else if(Model.DeltaPoints > 0)
 		{
 			color = "green";
 			deltaDirection = "+";
@@ -41,8 +41,8 @@
 		{
 			color = "yellow";
 		}
-		delta = deltaDirection + Math.Abs(Model.DeltaElo);
+		delta = deltaDirection + Math.Abs(Model.DeltaPoints);
 		<span>Score</span>
-		<span style="color: @color">@Model.Elo (@delta)</span>
+		<span style="color: @color">@Model.Points (@delta)</span>
 	}
 </div>

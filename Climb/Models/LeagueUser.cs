@@ -21,7 +21,7 @@ namespace Climb.Models
         public int ID { get; set; }
         public int UserID { get; set; }
         public int LeagueID { get; set; }
-        public int Elo { get; set; }
+        public int Points { get; set; }
         public string ProfilePicKey { get; set; }
         public bool HasLeft { get; set; }
         public int Rank { get; set; }
@@ -46,7 +46,7 @@ namespace Climb.Models
 
         public int CompareTo(LeagueUser other)
         {
-            return other.Elo.CompareTo(Elo);
+            return other.Points.CompareTo(Points);
         }
 
         public int GetRankTrendDelta()

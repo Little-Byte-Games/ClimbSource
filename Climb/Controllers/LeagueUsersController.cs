@@ -55,7 +55,7 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateElo(int id, int elo)
+        public async Task<IActionResult> UpdatePoints(int id, int points)
         {
             var leagueUser = await context.LeagueUser.FirstOrDefaultAsync(lu => lu.ID == id);
             if(leagueUser == null)
@@ -63,7 +63,7 @@ namespace Climb.Controllers
                 return NotFound($"No league user with ID '{id}' found.");
             }
 
-            leagueUser.Elo = elo;
+            leagueUser.Points = points;
             context.Update(leagueUser);
             await context.SaveChangesAsync();
 

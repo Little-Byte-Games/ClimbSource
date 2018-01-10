@@ -25,7 +25,7 @@ namespace Climb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if(environment.IsProduction())
+            if(environment.IsProduction() || true)
             {
                 services.AddDbContext<ClimbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
