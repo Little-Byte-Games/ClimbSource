@@ -44,7 +44,10 @@ namespace Climb.Controllers
                 .Include(l => l.Game)
                 .ToListAsync();
 
-            var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues);
+            var games = await context.Game.OrderBy(g => g.Name).ToListAsync();
+
+
+            var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues, games);
             return View(viewModel);
         }
 

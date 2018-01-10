@@ -1,0 +1,50 @@
+﻿.container {
+    margin: 50px 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.buttons {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.actions-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+#membershipButtons {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 50px;
+}
+
+#memberships {
+    width: 50%;
+}
+
+.create {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.action-button {
+    width: 50%;
+    height: 40px;
+    color: whitesmoke;
+    background-color: gray;
+    border-radius: 5px;
+    margin: 0 auto;
+}

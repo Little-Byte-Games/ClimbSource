@@ -6,7 +6,7 @@
 		<br />
 		@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.league)
 		<br />
-		<span>Admin: @Model.league.Admin.Username | Members: @Model.league.MemberCount</span>
+		<span>Admin: @Html.Partial("~/Views/Users/Partials/Name.cshtml", Model.league.Admin) | Members: @Model.league.MemberCount</span>
 		<br />
 		@{
 			if (Model.membership == League.Membership.Member)
