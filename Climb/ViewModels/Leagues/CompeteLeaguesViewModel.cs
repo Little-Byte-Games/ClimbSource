@@ -29,21 +29,19 @@ namespace Climb.ViewModels
 
             foreach(var league in leagues)
             {
-                if (league.AdminID == user.ID)
+                if(league.AdminID == user.ID)
                 {
                     adminOf.Add(league);
                 }
+
+                var leagueUser = leagueUsers.FirstOrDefault(lu => lu.LeagueID == league.ID);
+                if(leagueUser == null || leagueUser.HasLeft)
+                {
+                    nonmemberOf.Add(league);
+                }
                 else
                 {
-                    var leagueUser = leagueUsers.FirstOrDefault(lu => lu.LeagueID == league.ID);
-                    if (leagueUser == null || leagueUser.HasLeft)
-                    {
-                        nonmemberOf.Add(league);
-                    }
-                    else
-                    {
-                        memberOf.Add(league);
-                    }
+                    memberOf.Add(league);
                 }
             }
 

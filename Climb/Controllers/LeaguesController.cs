@@ -168,8 +168,8 @@ namespace Climb.Controllers
         {
             if(ModelState.IsValid)
             {
-                var adminExists = await context.User.AnyAsync(u => u.ID == league.AdminID);
-                if (!adminExists)
+                var admin = await context.User.FirstOrDefaultAsync(u => u.ID == league.AdminID);
+                if (admin == null)
                 {
                     return BadRequest($"No User with ID '{league.AdminID}' found.");
                 }
@@ -189,6 +189,7 @@ namespace Climb.Controllers
                 }
 
                 await context.AddAsync(league);
+                await leagueService.JoinLeague(admin, league);
                 await context.SaveChangesAsync();
 
                 return CreatedAtAction("Home", league);
