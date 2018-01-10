@@ -191,7 +191,7 @@ namespace Climb.Controllers
                 await context.AddAsync(league);
                 await context.SaveChangesAsync();
 
-                return CreatedAtAction("Home", new {league.ID});
+                return CreatedAtAction("Home", league);
             }
 
             return BadRequest(ModelState.GetErrors());

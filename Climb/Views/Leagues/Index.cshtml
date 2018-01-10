@@ -19,7 +19,7 @@
         </div>
         <h3>New</h3>
         <div class="actions-container">
-            <form class="create" asp-controller="Leagues" asp-action="Create" method="post">
+            <form id="new-league-form" class="create" asp-controller="Leagues" asp-action="Create" method="post">
                 <input type="hidden" name="AdminID" value="@Model.user.ID"/>
                 <div class="input-group">
                     <label>League Name</label>
@@ -34,7 +34,7 @@
                         }
                     </select>
                 </div>
-                <button class="action-button">Create New</button>
+                <button type="button" class="action-button" onclick="createLeague()">Create New</button>
             </form>
         </div>
     </div>
