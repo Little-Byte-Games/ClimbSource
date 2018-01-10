@@ -49,6 +49,7 @@ h2 {
 }
 
 h3 {
+    text-align: center;
     padding: 10px;
     font-size: 1.5em;
     color: whitesmoke;
@@ -56,6 +57,7 @@ h3 {
 }
 
 h4 {
+    text-align: center;
     padding: 10px;
     font-size: 1.2em;
     color: whitesmoke;
