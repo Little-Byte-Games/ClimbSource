@@ -130,54 +130,6 @@ h4 {
     color: orangered;
 }
 
-/* ////////// */
-/* Player/League Profile */
-/* ////////// */
-
-.profile-head {
-    font-weight: bold;
-    font-size: 0.75em;
-    text-transform: uppercase;
-}
-
-.profile-text {
-    font-size: 1.5em;
-    overflow: auto;
-    text-justify: none;
-    /*background-color: hotpink;*/
-}
-
-.profile-pic {
-    margin: 10px;
-    border: 10px solid #FF8800;
-    position: relative;
-    float: left;
-    width: 225px;
-    height: 225px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.profile-pic img, .event-pic img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 100%;
-    width: auto;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.profile-pic img.portrait, .event-pic img.portrait {
-    width: 100%;
-    height: auto;
-}
-
-.profile-pic img.landscape, .event-pic img.landscape {
-    object-fit: cover;
-}
-
 .logo {
     height: 100%;
     line-height: 46px;
