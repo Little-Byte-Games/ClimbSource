@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Climb.Extensions;
 
 namespace Climb.Controllers
 {
@@ -28,13 +29,13 @@ namespace Climb.Controllers
             var leagueUser = await context.LeagueUser
                 .Include(lu => lu.RankSnapshots)
                 .SingleOrDefaultAsync(lu => lu.ID == id);
-            if (leagueUser == null)
+            if(leagueUser == null)
             {
                 return NotFound();
             }
 
             var rankDifference = leagueUser.GetRankTrendDelta();
-            return Ok(new { leagueUserID = id, rankDelta = rankDifference });
+            return Ok(new {leagueUserID = id, rankDelta = rankDifference});
         }
 
         [HttpPost]
@@ -52,13 +53,29 @@ namespace Climb.Controllers
 
             return Ok(new {id, slackUsername});
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateElo(int id, int elo)
+        {
+            var leagueUser = await context.LeagueUser.FirstOrDefaultAsync(lu => lu.ID == id);
+            if(leagueUser == null)
+            {
+                return NotFound($"No league user with ID '{id}' found.");
+            }
+
+            leagueUser.Elo = elo;
+            context.Update(leagueUser);
+            await context.SaveChangesAsync();
+
+            return Ok(leagueUser);
+        }
         #endregion
 
         [HttpPost]
         public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {
             var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
-            if (leagueUser == null)
+            if(leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
             }
