@@ -11,8 +11,6 @@
     }
 
     document.getElementById(membership).style.display = "block";
-
-
     document.getElementById("membershipButtons." + membership).classList.add("active");
 }
 
