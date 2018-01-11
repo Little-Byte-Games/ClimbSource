@@ -1,9 +1,9 @@
-﻿using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Climb.Consts;
+﻿using Climb.Consts;
 using Climb.Models;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Climb.Services
 {
@@ -22,28 +22,9 @@ namespace Climb.Services
             Directory.CreateDirectory(Path.Combine(localCdnPath, CdnConsts.CharacterIcons));
         }
 
-        public string GetProfilePic(User user)
+        public string GetProfilePic(IProfile profile)
         {
-            return string.IsNullOrWhiteSpace(user.ProfilePicKey) ? LeagueUser.MissingPic : "/" + Path.Combine(Cdn, CdnConsts.ProfilePics, user.ProfilePicKey);
-        }
-
-        public string GetProfilePic(LeagueUser leagueUser)
-        {
-            string profilePicKey;
-            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
-            {
-                profilePicKey = leagueUser.ProfilePicKey;
-            }
-            else if(!string.IsNullOrWhiteSpace(leagueUser.User.ProfilePicKey))
-            {
-                profilePicKey = leagueUser.User.ProfilePicKey;
-            }
-            else
-            {
-                return LeagueUser.MissingPic;
-            }
-
-            return $"/{Cdn}/{CdnConsts.ProfilePics}/{profilePicKey}";
+            return string.IsNullOrWhiteSpace(profile.ProfilePicKey) ? LeagueUser.MissingPic : "/" + Path.Combine(Cdn, CdnConsts.ProfilePics, profile.ProfilePicKey);
         }
 
         public async Task<string> UploadProfilePic(IFormFile file)
@@ -66,10 +47,11 @@ namespace Climb.Services
             var fileExtension = Path.GetExtension(file.FileName);
             var fileKey = Path.GetInvalidFileNameChars().Aggregate(Path.GetFileNameWithoutExtension(file.FileName), (current, c) => current.Replace(c, '_')) + fileExtension;
             var filePath = Path.Combine(localCdnPath, folderName, fileKey);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            using(var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);
             }
+
             return fileKey;
         }
     }

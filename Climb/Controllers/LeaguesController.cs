@@ -61,7 +61,7 @@ namespace Climb.Controllers
 
             var league = await context.League
                 .Include(l => l.Game)
-                .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .Include(l => l.Members)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2)

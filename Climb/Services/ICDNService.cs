@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
-using Climb.Models;
+﻿using Climb.Models;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Climb.Services
 {
+    // TODO: Make abstract class.
     public interface ICdnService
     {
         int MaxFileSize { get; }
 
-        string GetProfilePic(User user);
-        string GetProfilePic(LeagueUser leagueUser);
+        string GetProfilePic(IProfile profile);
         Task<string> UploadProfilePic(IFormFile file);
 
         string GetCharacterPic(Character character);

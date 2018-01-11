@@ -49,7 +49,7 @@ namespace Climb.Controllers
             var season = await context.Season
                 .Include(s => s.League).ThenInclude(l => l.Game)
                 .Include(s => s.Sets)
-                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser).ThenInclude(lu => lu.User)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(season == null)
             {

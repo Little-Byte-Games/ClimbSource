@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using Climb.Services;
 
 namespace Climb
 {
@@ -21,7 +22,8 @@ namespace Climb
                 {
                     var context = services.GetRequiredService<ClimbContext>();
                     var hostingEnvironment = services.GetRequiredService<IHostingEnvironment>();
-                    DbInitializer.Initialize(context, hostingEnvironment, false);
+                    var leagueService = services.GetRequiredService<ILeagueService>();
+                    DbInitializer.Initialize(context, hostingEnvironment, leagueService, false);
                 }
                 catch (Exception ex)
                 {

@@ -2,7 +2,7 @@
 
 namespace Climb.Models
 {
-    public class User
+    public class User : IProfile
     {
         public int ID { get; set; }
         public string Username { get; set; }

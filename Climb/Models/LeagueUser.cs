@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Climb.Models
 {
-    public class LeagueUser : IComparable<LeagueUser>
+    public class LeagueUser : IComparable<LeagueUser>, IProfile
     {
         public enum Trend
         {
@@ -21,6 +21,7 @@ namespace Climb.Models
         public int ID { get; set; }
         public int UserID { get; set; }
         public int LeagueID { get; set; }
+        public string DisplayName { get; set; }
         public int Points { get; set; }
         public string ProfilePicKey { get; set; }
         public bool HasLeft { get; set; }
@@ -42,7 +43,7 @@ namespace Climb.Models
         public HashSet<RankSnapshot> RankSnapshots { get; set; }
 
         [JsonIgnore]
-        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? User.Username : $"<@{SlackUsername}>({User.Username})";
+        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"<@{SlackUsername}>({DisplayName})";
 
         public int CompareTo(LeagueUser other)
         {

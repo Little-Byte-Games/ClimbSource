@@ -40,7 +40,7 @@ namespace Climb.Controllers
         [HttpPost]
         public IActionResult ResetDB()
         {
-            DbInitializer.Initialize(context, environment, true);
+            DbInitializer.Initialize(context, environment, leagueService, true);
             return Ok("Db reset");
         }
 

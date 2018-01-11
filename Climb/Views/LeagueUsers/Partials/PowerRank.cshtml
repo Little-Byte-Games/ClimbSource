@@ -10,7 +10,7 @@
         {
             @Html.Partial("~/Views/Leagues/Partials/Name.cshtml", Model.leagueUser.League)
         }
-        @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.leagueUser.User)
+        @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.leagueUser)
 
         <div>
             <span>(@Model.leagueUser.Points) @Html.Partial("/Views/LeagueUsers/Partials/RankTrend.cshtml", Model.leagueUser.GetRankTrend())</span>

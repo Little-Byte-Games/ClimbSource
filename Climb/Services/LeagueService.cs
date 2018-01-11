@@ -37,7 +37,9 @@ namespace Climb.Services
                 {
                     Points = 2000,
                     League = league,
-                    User = user
+                    User = user,
+                    DisplayName = user.Username,
+                    ProfilePicKey = user.ProfilePicKey
                 };
                 await context.AddAsync(leagueUser);
             }

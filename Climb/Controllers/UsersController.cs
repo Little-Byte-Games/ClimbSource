@@ -40,13 +40,7 @@ namespace Climb.Controllers
                 id = user.ID;
             }
 
-            var homeUser = context.User
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                .SingleOrDefault(u => u.ID == id);
+            var homeUser = context.User.Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons).Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User).SingleOrDefault(u => u.ID == id);
             if(homeUser == null)
             {
                 return NotFound($"Could not find User with ID '{id}'.");
@@ -60,7 +54,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Account()
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
@@ -79,13 +73,25 @@ namespace Climb.Controllers
                 return BadRequest("Need to submit a picture.");
             }
 
-            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
-            if (user == null)
+            var user = await context.User
+                .Include(u => u.LeagueUsers)
+                .SingleOrDefaultAsync(u => u.ID == id);
+            if(user == null)
             {
                 return NotFound($"No User with ID '{id}' found.");
             }
 
-            user.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            var picKey = await cdnService.UploadProfilePic(file);
+            foreach(var leagueUser in user.LeagueUsers)
+            {
+                if(leagueUser.ProfilePicKey == user.ProfilePicKey)
+                {
+                    leagueUser.ProfilePicKey = picKey;
+                    context.Update(leagueUser);
+                }
+            }
+
+            user.ProfilePicKey = picKey;
             context.Update(user);
             await context.SaveChangesAsync();
 
@@ -97,28 +103,29 @@ namespace Climb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, [Bind("ID,Username")] User user)
         {
-            if (id != user.ID)
+            if(id != user.ID)
             {
                 return NotFound($"ID's do not match {id} vs {user.ID}");
             }
 
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
                     context.Update(user);
                     await context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch(DbUpdateConcurrencyException)
                 {
                     var userExists = await userService.DoesUserExist(user.ID);
-                    if (!userExists)
+                    if(!userExists)
                     {
                         return NotFound();
                     }
 
                     throw;
                 }
+
                 return RedirectToAction(nameof(Account));
             }
 
