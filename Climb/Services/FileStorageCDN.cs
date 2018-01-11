@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Climb.Services
 {
-    public class FileStorageCdn : ICdnService
+    public class FileStorageCdn : CdnService
     {
         private const string Cdn = @"temp\cdn";
         private readonly string localCdnPath;
-
-        public int MaxFileSize => 15 * 1024;
 
         public FileStorageCdn()
         {
@@ -53,6 +51,11 @@ namespace Climb.Services
             }
 
             return fileKey;
+        }
+
+        protected override Task UploadImageInternal(ImageTypes imageType, IFormFile imageFile, string fileKey)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
