@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-using Climb.Extensions;
 
 namespace Climb.Controllers
 {
@@ -13,14 +12,12 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext context;
         private readonly ICdnService cdnService;
-        private readonly LeagueUserService leagueUserService;
 
         public LeagueUsersController(ClimbContext context, ICdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
             : base(userService, userManager)
         {
             this.context = context;
             this.cdnService = cdnService;
-            leagueUserService = new LeagueUserService(context);
         }
 
         #region API
