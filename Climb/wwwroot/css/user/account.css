@@ -23,7 +23,7 @@ h4 {
 }
 
 .input {
-    width: 80%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -32,4 +32,8 @@ h4 {
 
 .upload-size {
     font-size: 8px;
+}
+
+.profile-pic {
+    background-color: gray;
 }

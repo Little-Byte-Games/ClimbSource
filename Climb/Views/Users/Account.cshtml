@@ -40,27 +40,33 @@
     <h3>League Accounts</h3>
     @foreach(var leagueUser in Model.user.LeagueUsers)
     {
-    <div class="league-account account">
-        <h4>@leagueUser.League.Name</h4>
-        <span>ID: @leagueUser.ID</span>
-        <form asp-controller="LeagueUsers" asp-action="UpdateSlackUsername" method="post">
-            <input type="hidden" name="id" value="@leagueUser.ID" />
-            <label>Slack Username</label>
-            <input type="text" name="slackUsername" value="@leagueUser.SlackUsername" />
-            <input type="submit" value="Update" />
-        </form>
-        <div class="input">
-            <img class="profile-pic" src="@cdnService.GetProfilePic(leagueUser)" width="50" height="50" />
-            <div>
-                <form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="@leagueUser.ID" />
-                    <input type="file" name="file" accept="image/*" />
-                    <input type="submit" value="Update" />
-                </form>
-                <span class="upload-size">Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
+        <div class="league-account account">
+            <h4>@leagueUser.League.Name</h4>
+            <span>ID: @leagueUser.ID</span>
+            <form class="input" asp-controller="LeagueUsers" asp-action="UpdateDisplayName" method="post">
+                <input type="hidden" name="id" value="@leagueUser.ID"/>
+                <label>Display Name</label>
+                <input type="text" name="DisplayName" value="@leagueUser.DisplayName"/>
+                <input type="submit" value="Update"/>
+            </form>
+            <form class="input" asp-controller="LeagueUsers" asp-action="UpdateSlackUsername" method="post">
+                <input type="hidden" name="id" value="@leagueUser.ID"/>
+                <label>Slack Name</label>
+                <input type="text" name="slackUsername" value="@leagueUser.SlackUsername"/>
+                <input type="submit" value="Update"/>
+            </form>
+            <div class="input">
+                <img class="profile-pic" src="@cdnService.GetProfilePic(leagueUser)" width="50" height="50"/>
+                <div>
+                    <form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="@leagueUser.ID"/>
+                        <input type="file" name="file" accept="image/*"/>
+                        <input type="submit" value="Update"/>
+                    </form>
+                    <span class="upload-size">Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
+                </div>
             </div>
         </div>
-    </div>
     }
 </div>
 

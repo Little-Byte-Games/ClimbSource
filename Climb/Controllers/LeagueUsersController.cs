@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Climb.Controllers
@@ -49,6 +50,30 @@ namespace Climb.Controllers
             await context.SaveChangesAsync();
 
             return Ok(new {id, slackUsername});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDisplayName(int id, string displayName)
+        {
+            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
+            if(leagueUser == null)
+            {
+                return NotFound($"No league user with ID '{id}' found.");
+            }
+
+            var regex = new Regex(@"\s+");
+            var strippedName = regex.Replace(displayName.ToLower(), string.Empty);
+            var isNameTaken = await context.LeagueUser.AnyAsync(lu => lu.ID != id && regex.Replace(lu.DisplayName, string.Empty) == strippedName);
+            if(isNameTaken)
+            {
+                return BadRequest($"League member with name similar to '{displayName}' already exists.");
+            }
+
+            leagueUser.DisplayName = displayName;
+            context.Update(leagueUser);
+            await context.SaveChangesAsync();
+
+            return Ok(leagueUser);
         }
 
         [HttpPost]
