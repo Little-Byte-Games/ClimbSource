@@ -15,7 +15,7 @@
                 <span class="set-season-separator">|</span>
                 <span>@Model.set.DueDate.ToShortDateString()</span>
             </div>
-            <span>@Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player1?.User) v @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.set.Player2?.User)</span>
+            <span>@Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player1) v @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player2)</span>
             <br/>
             @if(Model.set.IsComplete)
             {
