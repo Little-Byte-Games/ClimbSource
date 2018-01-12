@@ -5,7 +5,7 @@
 
 <div class="standing-container">
     <span class="standing-rank">@Model.Standing</span>
-    <img class="standing-profilepic" src="@cdnService.GetProfilePic(Model.LeagueUser)"/>
+    <img class="standing-profilepic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.LeagueUser.ProfilePicKey)"/>
 
     <div class="standing-info">
         @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.LeagueUser)

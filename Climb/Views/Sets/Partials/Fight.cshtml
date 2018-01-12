@@ -15,7 +15,7 @@
         <div class="player-container">
             <div class="player">
                 <div class="player-picture">
-                    <img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player1)"/>
+                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player1.ProfilePicKey)"/>
                 </div>
                 <div class="player-info">
                     <div class="player-info-name">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="player-picture">
-                    <img class="profile-picture" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
+                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
                 </div>
             </div>
         </div>

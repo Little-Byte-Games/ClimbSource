@@ -6,7 +6,7 @@
 
 <div class="set-container">
     <div class="set-main">
-        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player1)"/>
+        <img class="set-player-image" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player1.ProfilePicKey)"/>
         <div class="set-info">
             <div class="set-season">
                 @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.set.League)
@@ -26,7 +26,7 @@
                 <span>---</span>
             }
         </div>
-        <img class="set-player-image" src="@cdnService.GetProfilePic(Model.set.Player2)"/>
+        <img class="set-player-image" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
     </div>
     
     <form asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" method="get">
