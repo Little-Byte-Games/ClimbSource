@@ -64,55 +64,6 @@ h4 {
     background-color: orange;
 }
 
-
-/* ////////// */
-/* Main Page Content */
-/* ////////// */
-
-.content {
-    display: grid;
-    grid-template-areas: "header header header" "banner banner banner" "left center right" "footer footer footer";
-    width: auto;
-    position: relative;
-    top: 55px;
-    background-color: #EEE;
-    align-items: start;
-}
-
-.content-header {
-    grid-area: header;
-    background-color: #FF8800;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.content-left {
-    grid-area: left;
-}
-
-.content-center {
-    grid-area: center;
-    display: grid;
-    grid-template-areas: "title" "date" "content" "link";
-    grid-template-rows: auto auto 1fr auto;
-    align-content: space-between;
-}
-
-.content-right {
-    grid-area: right;
-}
-
-.content-left, .content-center, .content-right {
-    margin: 50px;
-    background-color: #FFF;
-    box-shadow: 0px 0px 20px #CCC;
-}
-
-.content-left p, .content-right p {
-    margin: 0 50px;
-    /*background-color: green;*/
-}
-
 .content-footer {
     display: flex;
     justify-content: center;
