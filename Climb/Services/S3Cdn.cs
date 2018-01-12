@@ -14,8 +14,10 @@ namespace Climb.Services
         private readonly string secretKey;
         private readonly string environment;
         private readonly string bucketName;
+        
+        protected override string Root { get; }
 
-        public S3Cdn(IConfiguration configuration, IHostingEnvironment environment) : base("https://s3.amazonaws.com")
+        public S3Cdn(IConfiguration configuration, IHostingEnvironment environment)
         {
             var awsSection = configuration.GetSection("AWS");
 
@@ -35,6 +37,8 @@ namespace Climb.Services
             {
                 throw new NotSupportedException($"Environment {environment.EnvironmentName} does not have a corresponding CDN bucket.");
             }
+
+            Root = $"https://s3.amazonaws.com/{bucketName}/{this.environment}";
         }
 
 

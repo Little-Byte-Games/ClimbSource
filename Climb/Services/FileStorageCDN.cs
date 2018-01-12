@@ -9,9 +9,12 @@ namespace Climb.Services
         private const string Cdn = @"temp\cdn";
         private readonly string localCdnPath;
 
-        public FileStorageCdn() : base(@"temp\cdn")
+        protected override string Root { get; }
+
+        public FileStorageCdn()
         {
             localCdnPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", Cdn);
+            Root = @"\temp\cdn";
         }
 
         protected override async Task UploadImageInternal(IFormFile imageFile, string folder, string fileKey)

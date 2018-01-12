@@ -18,15 +18,15 @@ namespace Climb.Services
             CharacterPic,
         }
 
-        private readonly string root;
         public readonly ReadOnlyDictionary<ImageTypes, ImageRules> imageData;
 
-        protected CdnService(string root)
+        protected abstract string Root { get; }
+
+        protected CdnService()
         {
-            this.root = root;
             var imageDataDict = new Dictionary<ImageTypes, ImageRules>
             {
-                {ImageTypes.ProfilePic, new ImageRules(15 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
+                {ImageTypes.ProfilePic, new ImageRules(20 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
                 {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners")},
                 {ImageTypes.CharacterPic, new ImageRules(10 * 1024, 60, 60, "characters")},
             };
@@ -38,7 +38,7 @@ namespace Climb.Services
         public string GetImageUrl(ImageTypes imageType, string imageKey)
         {
             var imageTypeData = imageData[imageType];
-            return string.IsNullOrWhiteSpace(imageKey) ? imageTypeData.missingUrl : $"/{root}/{imageTypeData.folder}/{imageKey}";
+            return string.IsNullOrWhiteSpace(imageKey) ? imageTypeData.missingUrl : $"{Root}/{imageTypeData.folder}/{imageKey}";
         }
 
         public async Task<string> UploadImage(ImageTypes imageType, IFormFile imageFile)
