@@ -95,7 +95,28 @@ namespace Climb.Controllers
             context.Update(user);
             await context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(user);
+        }
+        
+        public async Task<IActionResult> UploadProfileBanner(int id, IFormFile file)
+        {
+            if(file == null)
+            {
+                return BadRequest("Need to submit a picture.");
+            }
+
+            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+            if(user == null)
+            {
+                return NotFound($"No User with ID '{id}' found.");
+            }
+
+            var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfileBanner, file);
+            user.BannerPicKey = picKey;
+            context.Update(user);
+            await context.SaveChangesAsync();
+
+            return Ok(user);
         }
         #endregion
 

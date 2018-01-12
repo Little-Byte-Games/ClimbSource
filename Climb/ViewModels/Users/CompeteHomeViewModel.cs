@@ -23,6 +23,7 @@ namespace Climb.ViewModels
 
         public readonly User homeUser;
         public readonly string profilePicUrl;
+        public readonly string profileBannerUrl;
         public readonly HashSet<LeagueUser> possibleExhibitions;
         public readonly ReadOnlyCollection<LeagueUserSet> overdueSets;
         public readonly ReadOnlyCollection<LeagueUserSet> availableSets;
@@ -30,11 +31,12 @@ namespace Climb.ViewModels
 
         public bool IsHome => user == homeUser;
 
-        private CompeteHomeViewModel(User user, User homeUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets, IList<LeagueUserSeason> seasons, string profilePicUrl) : base(user)
+        private CompeteHomeViewModel(User user, User homeUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets, IList<LeagueUserSeason> seasons, string profilePicUrl, string profileBannerUrl) : base(user)
         {
             this.homeUser = homeUser;
             this.possibleExhibitions = possibleExhibitions;
             this.profilePicUrl = profilePicUrl;
+            this.profileBannerUrl = profileBannerUrl;
             this.seasons = new ReadOnlyCollection<LeagueUserSeason>(seasons);
             this.overdueSets = new ReadOnlyCollection<LeagueUserSet>(overdueSets);
             this.availableSets = new ReadOnlyCollection<LeagueUserSet>(availableSets);
@@ -79,8 +81,9 @@ namespace Climb.ViewModels
             }
 
             var profilePicUrl = cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, homeUser.ProfilePicKey);
+            var profileBannerUrl = cdnService.GetImageUrl(CdnService.ImageTypes.ProfileBanner, homeUser.BannerPicKey);
 
-            return new CompeteHomeViewModel(user, homeUser, possibleExhibitions, overdueSets, availableSets, seasonUsers, profilePicUrl);
+            return new CompeteHomeViewModel(user, homeUser, possibleExhibitions, overdueSets, availableSets, seasonUsers, profilePicUrl, profileBannerUrl);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()

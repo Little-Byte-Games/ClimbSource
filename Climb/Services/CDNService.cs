@@ -27,7 +27,7 @@ namespace Climb.Services
             var imageDataDict = new Dictionary<ImageTypes, ImageRules>
             {
                 {ImageTypes.ProfilePic, new ImageRules(20 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
-                {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners")},
+                {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners", "/images/user/Banner_Smoke.png")},
                 {ImageTypes.CharacterPic, new ImageRules(10 * 1024, 60, 60, "characters")},
             };
             imageData = new ReadOnlyDictionary<ImageTypes, ImageRules>(imageDataDict);
