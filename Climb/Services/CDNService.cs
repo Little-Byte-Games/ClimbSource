@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Models;
 
 namespace Climb.Services
 {
@@ -17,23 +18,27 @@ namespace Climb.Services
             CharacterPic,
         }
 
-        private readonly ReadOnlyDictionary<ImageTypes, ImageRules> imageData;
+        private readonly string root;
+        public readonly ReadOnlyDictionary<ImageTypes, ImageRules> imageData;
 
-        protected CdnService()
+        protected CdnService(string root)
         {
+            this.root = root;
             var imageDataDict = new Dictionary<ImageTypes, ImageRules>
             {
-                {ImageTypes.ProfilePic, new ImageRules(15 * 1024, 60, 60)},
-                {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300)},
-                {ImageTypes.ProfilePic, new ImageRules(10 * 1024, 60, 60)},
+                {ImageTypes.ProfilePic, new ImageRules(15 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
+                {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners")},
+                {ImageTypes.CharacterPic, new ImageRules(10 * 1024, 60, 60, "characters")},
             };
             imageData = new ReadOnlyDictionary<ImageTypes, ImageRules>(imageDataDict);
         }
 
-        protected abstract Task UploadImageInternal(ImageTypes imageType, IFormFile imageFile, string fileKey);
+        protected abstract Task UploadImageInternal(IFormFile imageFile, string folder, string fileKey);
 
         public string GetImageUrl(ImageTypes imageType, string imageKey)
         {
+            var imageTypeData = imageData[imageType];
+            return string.IsNullOrWhiteSpace(imageKey) ? imageTypeData.missingUrl : $"/{root}/{imageTypeData.folder}/{imageKey}";
         }
 
         public async Task<string> UploadImage(ImageTypes imageType, IFormFile imageFile)
@@ -44,7 +49,7 @@ namespace Climb.Services
             }
 
             var fileKey = GenerateFileKey(imageFile);
-            await UploadImageInternal(imageType, imageFile, fileKey);
+            await UploadImageInternal(imageFile, imageData[imageType].folder, fileKey);
             return fileKey;
         }
 

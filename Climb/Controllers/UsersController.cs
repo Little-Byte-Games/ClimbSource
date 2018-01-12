@@ -16,9 +16,9 @@ namespace Climb.Controllers
     public class UsersController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICdnService cdnService;
+        private readonly CdnService cdnService;
 
-        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, ICdnService cdnService)
+        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, CdnService cdnService)
             : base(userService, userManager)
         {
             this.context = context;
@@ -46,7 +46,7 @@ namespace Climb.Controllers
                 return NotFound($"Could not find User with ID '{id}'.");
             }
 
-            var viewModel = CompeteHomeViewModel.Create(user, homeUser);
+            var viewModel = CompeteHomeViewModel.Create(user, homeUser, cdnService);
             return View(viewModel);
         }
 
@@ -81,7 +81,7 @@ namespace Climb.Controllers
                 return NotFound($"No User with ID '{id}' found.");
             }
 
-            var picKey = await cdnService.UploadProfilePic(file);
+            var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
             foreach(var leagueUser in user.LeagueUsers)
             {
                 if(leagueUser.ProfilePicKey == user.ProfilePicKey)

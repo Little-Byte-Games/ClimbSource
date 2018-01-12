@@ -15,9 +15,9 @@ namespace Climb.Controllers
     public class GamesController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICdnService cdnService;
+        private readonly CdnService cdnService;
 
-        public GamesController(ClimbContext context, ICdnService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
+        public GamesController(ClimbContext context, CdnService cdnService, UserManager<ApplicationUser> userManager, IUserService userService)
             : base(userService, userManager)
         {
             this.context = context;
@@ -94,7 +94,7 @@ namespace Climb.Controllers
                 return NotFound($"Could not find Game with ID '{id}'.");
             }
 
-            var picKey = await cdnService.UploadCharacterPic(file);
+            var picKey = await cdnService.UploadImage(CdnService.ImageTypes.CharacterPic, file);
 
             var character = new Character
             {

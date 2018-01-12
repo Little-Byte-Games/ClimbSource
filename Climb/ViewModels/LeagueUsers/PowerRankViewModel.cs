@@ -28,12 +28,12 @@ namespace Climb.ViewModels.LeagueUsers
             this.characterPicUrls = characterPicUrls.ToImmutableArray();
         }
 
-        public static async Task<PowerRankViewModel> Create(LeagueUser leagueUser, User viewingUser, ICdnService cdnService, ILeagueUserService leagueUserService, bool showLeague)
+        public static async Task<PowerRankViewModel> Create(LeagueUser leagueUser, User viewingUser, CdnService cdnService, ILeagueUserService leagueUserService, bool showLeague)
         {
             var viewingLeagueUser = viewingUser.LeagueUsers.FirstOrDefault(lu => lu.LeagueID == leagueUser.LeagueID);
-            var profilePicUrl = cdnService.GetProfilePic(leagueUser);
+            var profilePicUrl = cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, leagueUser.ProfilePicKey);
             var characters = await leagueUserService.GetMostUsedCharacters(leagueUser.ID, CharacterMax);
-            var characterPicUrls = characters.Select(cdnService.GetCharacterPic);
+            var characterPicUrls = characters.Select(c => cdnService.GetImageUrl(CdnService.ImageTypes.CharacterPic, c.PicKey));
 
             return new PowerRankViewModel(leagueUser, viewingLeagueUser, profilePicUrl, characterPicUrls, showLeague);
         }

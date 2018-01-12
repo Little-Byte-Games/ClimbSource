@@ -25,17 +25,17 @@ namespace Climb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if(environment.IsProduction())
+            if(environment.IsProduction() || true)
             {
                 services.AddDbContext<ClimbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
-                services.AddTransient<ICdnService, CdnService>();
+                services.AddSingleton<CdnService, S3Cdn>();
             }
             else
             {
                 services.AddDbContext<ClimbContext>(options =>
                         options.UseInMemoryDatabase("Test"));
-                services.AddTransient<ICdnService, FileStorageCdn>();
+                services.AddSingleton<CdnService, FileStorageCdn>();
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
