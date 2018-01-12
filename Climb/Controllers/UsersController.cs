@@ -59,7 +59,8 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var viewModel = new UserAccountViewModel(user);
+            var appUser = await userManager.GetUserAsync(User);
+            var viewModel = new UserAccountViewModel(user, appUser);
             return View(viewModel);
         }
         #endregion
@@ -151,7 +152,8 @@ namespace Climb.Controllers
             }
 
             var viewUser = await GetViewUserAsync();
-            var viewModel = new UserAccountViewModel(viewUser);
+            var appUser = await userManager.GetUserAsync(User);
+            var viewModel = new UserAccountViewModel(viewUser, appUser);
             return View(nameof(Account), viewModel);
         }
     }
