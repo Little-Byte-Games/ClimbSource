@@ -98,7 +98,7 @@ namespace Climb.Controllers
 
             return Ok(user);
         }
-        
+
         public async Task<IActionResult> UploadProfileBanner(int id, IFormFile file)
         {
             if(file == null)
@@ -132,29 +132,36 @@ namespace Climb.Controllers
 
             if(ModelState.IsValid)
             {
-                try
+                var userToUpdate = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+                if(userToUpdate == null)
                 {
-                    context.Update(user);
-                    await context.SaveChangesAsync();
+                    return NotFound($"No User with ID '{id}' found.");
                 }
-                catch(DbUpdateConcurrencyException)
+
+                var updateSuccess = await TryUpdateModelAsync(userToUpdate,
+                    "user",
+                    u => u.Username);
+
+                if(updateSuccess)
                 {
-                    var userExists = await userService.DoesUserExist(user.ID);
-                    if(!userExists)
+                    try
                     {
-                        return NotFound();
+                        await context.SaveChangesAsync();
                     }
+                    catch(DbUpdateConcurrencyException)
+                    {
+                        var userExists = await userService.DoesUserExist(user.ID);
+                        if(!userExists)
+                        {
+                            return NotFound();
+                        }
 
-                    throw;
+                        throw;
+                    }
                 }
-
-                return RedirectToAction(nameof(Account));
             }
 
-            var viewUser = await GetViewUserAsync();
-            var appUser = await userManager.GetUserAsync(User);
-            var viewModel = new UserAccountViewModel(viewUser, appUser);
-            return View(nameof(Account), viewModel);
+            return RedirectToAction(nameof(Account));
         }
     }
 }
