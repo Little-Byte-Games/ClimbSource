@@ -1,81 +1,61 @@
-﻿using Amazon;
-using Amazon.S3.Transfer;
-using Climb.Consts;
-using Climb.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Climb.Models;
 
 namespace Climb.Services
 {
-    // TODO: Rename to S3Cdn
-    public class CdnService : ICdnService
+    public abstract class CdnService
     {
-        private readonly string accessKey;
-        private readonly string secretKey;
-        private readonly string rootUrl;
-        private readonly string environment;
-        private readonly string bucketName;
-        private readonly string profilePics;
-        private readonly string characterPics;
-
-        public int MaxFileSize => 15 * 1024;
-
-        public CdnService(IConfiguration configuration, IHostingEnvironment environment)
+        public enum ImageTypes
         {
-            var awsSection = configuration.GetSection("AWS");
-
-            accessKey = awsSection["AccessKey"];
-            secretKey = awsSection["SecretKey"];
-
-            rootUrl = CdnConsts.RootUrl;
-            bucketName = CdnConsts.AppBucket;
-            rootUrl += "/" + bucketName;
-
-            if(environment.IsDevelopment())
-            {
-                this.environment = "dev";
-            }
-            else if(environment.IsProduction())
-            {
-                this.environment = "rel";
-            }
-            else
-            {
-                throw new NotSupportedException($"Environment {environment.EnvironmentName} does not have a corresponding CDN bucket.");
-            }
-            rootUrl += "/" + this.environment;
-
-            profilePics = CdnConsts.ProfilePics;
-            characterPics = CdnConsts.CharacterIcons;
+            ProfilePic,
+            ProfileBanner,
+            CharacterPic,
         }
 
-        public string GetProfilePic(IProfile profile)
+        public readonly ReadOnlyDictionary<ImageTypes, ImageRules> imageData;
+
+        protected abstract string Root { get; }
+
+        protected CdnService()
         {
-            return string.IsNullOrWhiteSpace(profile.ProfilePicKey) ? LeagueUser.MissingPic : string.Join("/", rootUrl, profilePics, profile.ProfilePicKey); 
+            var imageDataDict = new Dictionary<ImageTypes, ImageRules>
+            {
+                {ImageTypes.ProfilePic, new ImageRules(20 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
+                {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners")},
+                {ImageTypes.CharacterPic, new ImageRules(10 * 1024, 60, 60, "characters")},
+            };
+            imageData = new ReadOnlyDictionary<ImageTypes, ImageRules>(imageDataDict);
         }
 
-        public async Task<string> UploadProfilePic(IFormFile file)
+        protected abstract Task UploadImageInternal(IFormFile imageFile, string folder, string fileKey);
+
+        public string GetImageUrl(ImageTypes imageType, string imageKey)
         {
-            var fileKey = GenerateFileKey(file);
-            await UploadFile(file, profilePics, fileKey);
+            var imageTypeData = imageData[imageType];
+            return string.IsNullOrWhiteSpace(imageKey) ? imageTypeData.missingUrl : $"{Root}/{imageTypeData.folder}/{imageKey}";
+        }
+
+        public async Task<string> UploadImage(ImageTypes imageType, IFormFile imageFile)
+        {
+            if(!IsValid(imageType, imageFile))
+            {
+                throw new ArgumentException($"Fill size {imageFile.Length:N0}B exceeds limit {imageData[imageType].maxFileSize:N0}B.");
+            }
+
+            var fileKey = GenerateFileKey(imageFile);
+            await UploadImageInternal(imageFile, imageData[imageType].folder, fileKey);
             return fileKey;
         }
 
-        public string GetCharacterPic(Character character)
+        private bool IsValid(ImageTypes imageType, IFormFile file)
         {
-            return string.Join("/", rootUrl, characterPics, character.PicKey);
-        }
-
-        public async Task<string> UploadCharacterPic(IFormFile file)
-        {
-            var fileKey = GenerateFileKey(file);
-            await UploadFile(file, characterPics, fileKey);
-            return fileKey;
+            return file.Length <= imageData[imageType].maxFileSize;
         }
 
         private static string GenerateFileKey(IFormFile file)
@@ -85,17 +65,6 @@ namespace Climb.Services
             fileName = fileName.Replace(".", "");
             var fileKey = $"{fileName}_{Guid.NewGuid()}{fileExtension}";
             return fileKey;
-        }
-
-        private async Task UploadFile(IFormFile file, string folder, string fileKey)
-        {
-            if(file.Length > MaxFileSize)
-            {
-                throw new ArgumentException($"Fill size {file.Length:N0}B exceeds limit {MaxFileSize:N0}B.");
-            }
-
-            var transfer = new TransferUtility(accessKey, secretKey, RegionEndpoint.USEast1);
-            await transfer.UploadAsync(file.OpenReadStream(), string.Join("/", bucketName, environment, folder), fileKey);
         }
     }
 }

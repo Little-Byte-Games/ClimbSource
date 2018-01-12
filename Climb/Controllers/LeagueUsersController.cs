@@ -12,9 +12,9 @@ namespace Climb.Controllers
     public class LeagueUsersController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICdnService cdnService;
+        private readonly CdnService cdnService;
 
-        public LeagueUsersController(ClimbContext context, ICdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
+        public LeagueUsersController(ClimbContext context, CdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
             : base(userService, userManager)
         {
             this.context = context;
@@ -102,7 +102,7 @@ namespace Climb.Controllers
                 return NotFound($"No league user with ID '{id}' found.");
             }
 
-            leagueUser.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            leagueUser.ProfilePicKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
             context.Update(leagueUser);
             await context.SaveChangesAsync();
 

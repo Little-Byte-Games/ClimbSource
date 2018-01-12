@@ -2,7 +2,7 @@
 @using Climb.ViewModels
 @using Climb.ViewModels.LeagueUsers
 @model CompeteHomeViewModel
-@inject ICdnService cdnService
+@inject CdnService cdnService
 @inject ILeagueUserService leagueUserService
 
 @{
@@ -21,7 +21,7 @@
     <div>
         <img class="user-header-image" src="~/images/user/Banner_Smoke.png" />
         <div class="profile">
-            <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)" />
+            <img class="profile-image" src="@Model.profilePicUrl" />
             <span class="profile-username">@Model.homeUser.Username</span>
         </div>
     </div>

@@ -2,7 +2,7 @@
 @using Climb.ViewModels.Games
 @using Microsoft.AspNetCore.Hosting
 @model HomeViewModel
-@inject ICdnService cdnService
+@inject CdnService cdnService
 @inject ClimbContext context
 @inject IHostingEnvironment environment
 
@@ -49,7 +49,7 @@
             @foreach (var character in Model.game.Characters.OrderBy(c => c.Name))
             {
                 <div>
-                    <img src="@cdnService.GetCharacterPic(character)" width="25" />
+                    <img src="@cdnService.GetImageUrl(CdnService.ImageTypes.CharacterPic, character.PicKey)" width="25" />
                     <span>@character</span>
                     <span>Used @percentages[character].Item1.ToString("P1")</span>
                     <span>Win Rate @percentages[character].Item2.ToString("P1")</span>

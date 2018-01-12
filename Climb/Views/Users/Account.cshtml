@@ -2,7 +2,7 @@
 @using Climb.ViewModels.Users
 @model UserAccountViewModel
 
-@inject ICdnService cdnService
+@inject CdnService cdnService
 
 @{
     ViewBag.Title = "Account";
@@ -25,14 +25,14 @@
             <input type="submit" value="Update"/>
         </form>
         <div class="input">
-            <img class="profile-pic" src="@cdnService.GetProfilePic(Model.user)" width="50" height="50"/>
+            <img class="profile-pic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.user.ProfilePicKey)" width="50" height="50"/>
             <div>
                 <form id="user-profile-pic-form" asp-controller="Users" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="@Model.user.ID"/>
                     <input type="file" name="file" accept="image/*"/>
                     <input id="user-profile-pic-submit" type="button" value="Update"/>
                 </form>
-                <span class="upload-size">Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
+                <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfilePic].maxFileSize.ToString("N0"))B</span>
             </div>
         </div>
     </div>
@@ -56,14 +56,14 @@
                 <input type="submit" value="Update"/>
             </form>
             <div class="input">
-                <img class="profile-pic" src="@cdnService.GetProfilePic(leagueUser)" width="50" height="50"/>
+                <img class="profile-pic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, leagueUser.ProfilePicKey)" width="50" height="50"/>
                 <div>
                     <form asp-controller="LeagueUsers" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="@leagueUser.ID"/>
-                        <input type="file" name="file" accept="image/*"/>
-                        <input type="submit" value="Update"/>
+                        <input type="hidden" name="id" value="@leagueUser.ID" />
+                        <input type="file" name="file" accept="image/*" />
+                        <input type="submit" value="Update" />
                     </form>
-                    <span class="upload-size">Max File Size = @(cdnService.MaxFileSize.ToString("N0"))B</span>
+                    <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfilePic].maxFileSize.ToString("N0"))B</span>
                 </div>
             </div>
         </div>
