@@ -1,4 +1,5 @@
 ﻿.container {
+    width: 1000px;
     margin: 50px 10%;
     display: flex;
     flex-direction: row;
@@ -6,7 +7,7 @@
 }
 
 .buttons {
-    width: 30%;
+    width: 40%;
     display: flex;
     flex-direction: column;
 }
