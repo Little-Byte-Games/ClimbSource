@@ -26,7 +26,7 @@ namespace Climb.Services
             await context.User.AddAsync(user);
             await context.SaveChangesAsync();
 
-            var applicationUser = new ApplicationUser { UserName = username, Email = email, User = user };
+            var applicationUser = new ApplicationUser { UserName = email, Email = email, User = user };
             var result = await userManager.CreateAsync(applicationUser, password);
             if (result.Succeeded)
             {
