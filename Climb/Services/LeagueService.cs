@@ -35,7 +35,8 @@ namespace Climb.Services
             {
                 leagueUser = new LeagueUser
                 {
-                    Points = 2000,
+                    Rank = int.MaxValue,
+                    Points = LeagueUser.StartingPoints,
                     League = league,
                     User = user,
                     DisplayName = user.Username,

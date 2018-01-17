@@ -24,16 +24,16 @@
 @section User_Content_Left {
     <h3 align="center">Power Rankings</h3>
     @{
-        var users = Model.league.Members.ToList();
-        users.Sort();
-        for (var i = 0; i < users.Count; i++)
+        var i = 0;
+        foreach(var member in Model.members)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
+            ++i;
             <div class="@row">
                 @{
-                    var viewModel = await PowerRankViewModel.Create(users[i], Model.user, cdnService, leagueUserService, false);
+                    var viewModel = await PowerRankViewModel.Create(member, Model.user, cdnService, leagueUserService, false);
                     @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
-                    if (users[i].ID == Model.league.KingID)
+                    if (member.ID == Model.league.KingID)
                     {
                         <div class="reign">
                             @{

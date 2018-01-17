@@ -11,6 +11,7 @@ namespace Climb.ViewModels
         public readonly IConfiguration configuration;
         public readonly IEnumerable<Set> recentSets;
         public readonly Season selectedSeason;
+        public readonly IEnumerable<LeagueUser> members;
 
         public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
             : base(user)
@@ -19,6 +20,7 @@ namespace Climb.ViewModels
             this.configuration = configuration;
             this.recentSets = recentSets;
             selectedSeason = seasonID == null ? null : league.Seasons.Single(s => s.ID == seasonID);
+            members = league.Members.OrderBy(lu => lu.Rank);
         }
     }
 }

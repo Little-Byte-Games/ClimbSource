@@ -16,6 +16,7 @@ namespace Climb.Models
             BigDown,
         }
 
+        public const int StartingPoints = 2000;
         public const string MissingPic = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
 
         public int ID { get; set; }

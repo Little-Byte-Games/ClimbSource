@@ -18,6 +18,7 @@ namespace Climb.ViewModels.LeagueUsers
         public readonly bool showLeague;
 
         public bool ShowFightButton => viewingLeagueUser != null && viewingLeagueUser.ID != leagueUser.ID;
+        public string Rank => leagueUser.Rank == int.MaxValue ? "-" : leagueUser.Rank.ToString();
 
         private PowerRankViewModel(LeagueUser leagueUser, LeagueUser viewingLeagueUser, string profilePicUrl, IEnumerable<string> characterPicUrls, bool showLeague)
         {
