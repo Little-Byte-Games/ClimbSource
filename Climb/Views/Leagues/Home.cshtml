@@ -8,16 +8,16 @@
 @{
     ViewData["Title"] = Model.league.Name;
     Layout = "_HomeLayout";
-    var returnUrl = Url.Action("Home", "Leagues", new { Model.league.ID });
+    var returnUrl = Url.Action("Home", "Leagues", new {Model.league.ID});
 }
 
 @section Styles {
-    <link href="/css/league_home.css" rel="Stylesheet" type="text/css" />
-    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
+    <link href="/css/league_home.css" rel="Stylesheet" type="text/css"/>
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet"/>
 }
 
 @section Body_Banner {
-    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl" />
+    <img class="body-banner-image" src="@Model.league.Game.BannerPicUrl"/>
     <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
@@ -25,30 +25,53 @@
     <h3 align="center">Power Rankings</h3>
     @{
         var i = 0;
-        foreach(var member in Model.members)
+        if(Model.king != null)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             ++i;
-            <div class="@row">
-                @{
-                    var viewModel = await PowerRankViewModel.Create(member, Model.user, cdnService, leagueUserService, false);
-                    @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
-                    if (member.ID == Model.league.KingID)
-                    {
-                        <div class="reign">
-                            @{
-                                var weeks = Model.league.GetKingReignWeeks();
-                                if (weeks > 0)
-                                {
-                                    <span>reign of @weeks week@(weeks > 1 ? "s" : "") began on @Model.league.KingReignStart.ToShortDateString()</span>
-                                }
-                                else
-                                {
-                                    <span>new reign started on @Model.league.KingReignStart.ToShortDateString()</span>
-                                }
-                            }
-                        </div>
+            <div id="reign">
+                <div class="members">@Model.reign</div>
+                <div class="@row">
+                    @{
+                        var viewModel = await PowerRankViewModel.Create(Model.king, Model.user, cdnService, leagueUserService, false);
+                        @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
                     }
+                </div>
+            </div>
+        }
+
+        if(Model.nonkingMembers.Any())
+        {
+            <div id="members-nonking">
+                <div class="members">Contenders</div>
+                @foreach(var member in Model.nonkingMembers)
+                {
+                    var row = i % 2 == 0 ? "row-even" : "row-odd";
+                    ++i;
+                    <div class="@row">
+                        @{
+                            var viewModel = await PowerRankViewModel.Create(member, Model.user, cdnService, leagueUserService, false);
+                            @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        if(Model.newMembers.Any())
+        {
+            <div id="members-new">
+                <div class="members">Newcomers</div>
+                @foreach(var member in Model.newMembers)
+                {
+                    var row = i % 2 == 0 ? "row-even" : "row-odd";
+                    ++i;
+                    <div class="@row">
+                        @{
+                            var viewModel = await PowerRankViewModel.Create(member, Model.user, cdnService, leagueUserService, false);
+                            @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
+                        }
+                    </div>
                 }
             </div>
         }
@@ -57,10 +80,10 @@
 
 @section User_Content_Middle {
     <h3 align="center">Recent Activity</h3>
-    @if (Model.recentSets != null)
+    @if(Model.recentSets != null)
     {
         var i = 0;
-        foreach (var set in Model.recentSets)
+        foreach(var set in Model.recentSets)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
@@ -84,9 +107,9 @@
         <button onclick="createSeason(@Model.league.ID)">Create Season</button>
         <span>or view</span>
         <select id="seasons-dropdown">
-            @foreach (var season in Model.league.Seasons)
+            @foreach(var season in Model.league.Seasons)
             {
-                if (season.ID == Model.selectedSeason.ID)
+                if(season.ID == Model.selectedSeason.ID)
                 {
                     <option value="season-@season.ID" selected>@season.DisplayName</option>
                 }
@@ -105,14 +128,14 @@
         <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
     </div>
 
-    @if (Model.selectedSeason != null)
+    @if(Model.selectedSeason != null)
     {
         var overdueSets = Model.selectedSeason.GetOverdueSets();
-        if (overdueSets.Any())
+        if(overdueSets.Any())
         {
             <h4>Overdue</h4>
             var i = 0;
-            foreach (var set in overdueSets)
+            foreach(var set in overdueSets)
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
@@ -124,11 +147,11 @@
         }
 
         var availableSets = Model.selectedSeason.GetAvailableSets();
-        if (availableSets.Any())
+        if(availableSets.Any())
         {
             <h4>Available</h4>
             var i = 0;
-            foreach (var set in Model.selectedSeason.GetAvailableSets())
+            foreach(var set in Model.selectedSeason.GetAvailableSets())
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
