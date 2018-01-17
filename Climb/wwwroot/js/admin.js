@@ -72,3 +72,18 @@ function sendSetReminders() {
         }
     });
 }
+
+function updateFeatureToggles() {
+    openModal("Updating Feature Toggles");
+    var form = $("#feature-toggle-form");
+    $.post({
+        url: form.attr("action"),
+        data: form.serialize(),
+        success(response) {
+            displayResult(response);
+        },
+        error(response) {
+            displayResult(JSON.stringify(response));
+        }
+    });
+}

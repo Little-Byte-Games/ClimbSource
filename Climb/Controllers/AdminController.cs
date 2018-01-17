@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using Climb.Consts;
+using Climb.FormModels.Admin;
 
 namespace Climb.Controllers
 {
@@ -120,6 +122,15 @@ namespace Climb.Controllers
             }
 
             return Ok("Admin User Created");
+        }
+
+        [HttpPost]
+        public IActionResult UpdateFeatureToggles(UpdateFeatureTogglesModel toggles)
+        {
+            FeatureToggles.Slack = toggles.Slack;
+            FeatureToggles.Challonge = toggles.Challonge;
+
+            return Ok("Feature toggles updated.");
         }
         #endregion
     }
