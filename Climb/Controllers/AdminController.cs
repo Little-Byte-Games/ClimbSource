@@ -63,7 +63,10 @@ namespace Climb.Controllers
                 foreach(var league in leagues)
                 {
                     var rankSnapshots = await leagueService.TakeSnapshot(league);
-                    await leagueService.SendSnapshotUpdate(rankSnapshots, league);
+                    if (FeatureToggles.Slack)
+                    {
+                        await leagueService.SendSnapshotUpdate(rankSnapshots, league); 
+                    }
                 }
             }
             catch(Exception exception)
