@@ -52,11 +52,11 @@ namespace Climb.Services
             var memberEloDeltas = new Dictionary<int, int>();
             var unlockedSets = league.Sets.Where(s => !s.IsLocked && s.IsComplete).ToList();
             context.UpdateRange(unlockedSets);
-            context.UpdateRange(league.Members);
 
             CalculateEloDeltas(memberEloDeltas, unlockedSets);
-            AssignElo(league, memberEloDeltas);
-            UpdateRanks(league.Members.ToList());
+            var updatedMembers = AssignElo(league, memberEloDeltas);
+            context.UpdateRange(updatedMembers);
+            UpdateRanks(updatedMembers);
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             UpdateKing(league);
@@ -68,8 +68,13 @@ namespace Climb.Services
 
         private static void UpdateKing(League league)
         {
-            var currentKing = league.Members.First(lu => lu.Rank == 1);
-            if(currentKing.ID != league.KingID)
+            var currentKing = league.Members.FirstOrDefault(lu => lu.Rank == 1);
+            if(currentKing == null)
+            {
+                league.KingID = null;
+                league.KingReignStart = DateTime.Now;
+            }
+            else if(currentKing.ID != league.KingID)
             {
                 league.KingID = currentKing.ID;
                 league.KingReignStart = DateTime.Now;
@@ -127,15 +132,19 @@ namespace Climb.Services
             }
         }
 
-        private static void AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
+        private static List<LeagueUser> AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
         {
+            List<LeagueUser> updatedMembers = new List<LeagueUser>(memberEloDeltas.Count);
             foreach (var member in league.Members)
             {
                 if (memberEloDeltas.TryGetValue(member.ID, out var eloDelta))
                 {
                     member.Points += eloDelta;
+                    updatedMembers.Add(member);
                 }
             }
+
+            return updatedMembers;
         }
 
         private async Task<HashSet<RankSnapshot>> CreateSnapshots(League league)
@@ -181,13 +190,13 @@ namespace Climb.Services
         {
             members.Sort();
             var rank = 0;
-            var lastElo = -1;
+            var lastPoints = -1;
             for (var i = 0; i < members.Count; i++)
             {
                 LeagueUser member = members[i];
-                if (member.Points != lastElo)
+                if (member.Points != lastPoints)
                 {
-                    lastElo = member.Points;
+                    lastPoints = member.Points;
                     rank = i + 1;
                 }
                 member.Rank = rank;

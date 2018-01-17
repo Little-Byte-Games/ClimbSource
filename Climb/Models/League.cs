@@ -27,7 +27,7 @@ namespace Climb.Models
         public Game Game { get; set; }
         [ForeignKey(nameof(AdminID))]
         public User Admin { get; set; }
-        public int KingID { get; set; }
+        public int? KingID { get; set; }
         public DateTime KingReignStart { get; set; }
 
         public HashSet<LeagueUser> Members { get; set; }
