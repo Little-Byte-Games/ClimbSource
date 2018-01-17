@@ -30,7 +30,7 @@
         <div class="dropdown">
             <a asp-controller="Leagues" asp-action="Index">Leagues <span>&#9660;</span></a>
             <ul class="dropdown-items">
-                @foreach(var league in Model.user.LeagueUsers.Select(l => l.League))
+                @foreach(var league in Model.user.LeagueUsers.Where(lu => !lu.HasLeft).Select(l => l.League))
                 {
                 <li>
                     <a asp-controller="Leagues" asp-action="Home" asp-route-id="@league.ID">@league.Name</a>
