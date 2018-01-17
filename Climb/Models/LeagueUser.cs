@@ -57,7 +57,10 @@ namespace Climb.Models
         {
             const int trendMonths = 1;
             var trendStart = DateTime.Today.AddMonths(-trendMonths);
-            var trendSnapshots = RankSnapshots.Where(rs => rs.CreatedDate >= trendStart).OrderByDescending(rs => rs.CreatedDate).ToList();
+            var trendSnapshots = RankSnapshots
+                .Where(rs => rs.CreatedDate >= trendStart)
+                .OrderByDescending(rs => rs.CreatedDate)
+                .ToList();
             if (trendSnapshots.Count < 2)
             {
                 return 0;
