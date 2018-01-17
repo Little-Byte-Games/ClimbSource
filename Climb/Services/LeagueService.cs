@@ -51,12 +51,12 @@ namespace Climb.Services
         {
             var memberEloDeltas = new Dictionary<int, int>();
             var unlockedSets = league.Sets.Where(s => !s.IsLocked && s.IsComplete).ToList();
+            context.UpdateRange(league.Members);
             context.UpdateRange(unlockedSets);
 
             CalculateEloDeltas(memberEloDeltas, unlockedSets);
-            var updatedMembers = AssignElo(league, memberEloDeltas);
-            context.UpdateRange(updatedMembers);
-            UpdateRanks(updatedMembers);
+            AssignElo(league, memberEloDeltas);
+            UpdateRanks(memberEloDeltas, league.Members.ToList());
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             UpdateKing(league);
@@ -68,15 +68,15 @@ namespace Climb.Services
 
         private static void UpdateKing(League league)
         {
-            var currentKing = league.Members.FirstOrDefault(lu => lu.Rank == 1);
-            if(currentKing == null)
+            var kings = league.Members.Where(lu => lu.Rank == 1).ToArray();
+            if(kings.Length != 1)
             {
                 league.KingID = null;
                 league.KingReignStart = DateTime.Now;
             }
-            else if(currentKing.ID != league.KingID)
+            else if(kings[0].ID != league.KingID)
             {
-                league.KingID = currentKing.ID;
+                league.KingID = kings[0].ID;
                 league.KingReignStart = DateTime.Now;
             }
         }
@@ -119,7 +119,7 @@ namespace Climb.Services
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
-        private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, List<Set> unlockedSets)
+        private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, IEnumerable<Set> unlockedSets)
         {
             foreach (var set in unlockedSets)
             {
@@ -132,19 +132,15 @@ namespace Climb.Services
             }
         }
 
-        private static List<LeagueUser> AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
+        private static void AssignElo(League league, IReadOnlyDictionary<int, int> memberEloDeltas)
         {
-            List<LeagueUser> updatedMembers = new List<LeagueUser>(memberEloDeltas.Count);
             foreach (var member in league.Members)
             {
                 if (memberEloDeltas.TryGetValue(member.ID, out var eloDelta))
                 {
                     member.Points += eloDelta;
-                    updatedMembers.Add(member);
                 }
             }
-
-            return updatedMembers;
         }
 
         private async Task<HashSet<RankSnapshot>> CreateSnapshots(League league)
@@ -186,7 +182,7 @@ namespace Climb.Services
             memberEloDeltas[member.ID] += deltaElo;
         }
 
-        private static void UpdateRanks(List<LeagueUser> members)
+        private static void UpdateRanks(IReadOnlyDictionary<int, int> memberEloDeltas, List<LeagueUser> members)
         {
             members.Sort();
             var rank = 0;
@@ -194,6 +190,12 @@ namespace Climb.Services
             for (var i = 0; i < members.Count; i++)
             {
                 LeagueUser member = members[i];
+
+                if(!memberEloDeltas.ContainsKey(member.ID) && member.IsNew)
+                {
+                    continue;
+                }
+
                 if (member.Points != lastPoints)
                 {
                     lastPoints = member.Points;
