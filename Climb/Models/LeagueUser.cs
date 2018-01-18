@@ -16,7 +16,6 @@ namespace Climb.Models
             BigDown,
         }
 
-        private const int StartingRank = int.MaxValue;
         private const int StartingPoints = 2000;
         public const string MissingPic = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
 
@@ -27,7 +26,8 @@ namespace Climb.Models
         public int Points { get; set; } = StartingPoints;
         public string ProfilePicKey { get; set; }
         public bool HasLeft { get; set; }
-        public int Rank { get; set; } = StartingRank;
+        public int Rank { get; set; }
+        public bool IsNew { get; set; } = true;
         public string SlackUsername { get; set; }
         public string ChallongeUsername { get; set; }
 
@@ -46,7 +46,6 @@ namespace Climb.Models
 
         [JsonIgnore]
         public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"<@{SlackUsername}>({DisplayName})";
-        public bool IsNew => Rank == StartingRank;
 
         public int CompareTo(LeagueUser other)
         {
@@ -56,12 +55,14 @@ namespace Climb.Models
         public int GetRankTrendDelta()
         {
             const int trendMonths = 1;
+            const int requiredMonthsBeforeTrend = 4;
+
             var trendStart = DateTime.Today.AddMonths(-trendMonths);
             var trendSnapshots = RankSnapshots
                 .Where(rs => rs.CreatedDate >= trendStart)
                 .OrderByDescending(rs => rs.CreatedDate)
                 .ToList();
-            if (trendSnapshots.Count < 2)
+            if (trendSnapshots.Count < requiredMonthsBeforeTrend)
             {
                 return 0;
             }

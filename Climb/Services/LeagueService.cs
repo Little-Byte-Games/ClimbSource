@@ -139,6 +139,8 @@ namespace Climb.Services
                 if (memberEloDeltas.TryGetValue(member.ID, out var eloDelta))
                 {
                     member.Points += eloDelta;
+                    member.IsNew = false;
+                    member.Rank = league.Members.Count;
                 }
             }
         }

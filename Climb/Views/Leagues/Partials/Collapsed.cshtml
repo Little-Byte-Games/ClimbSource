@@ -1,30 +1,26 @@
 ﻿@model Climb.ViewModels.LeagueCollapsedViewModel
 
-<div class="panel panel-default">
-	<div align="center" style="padding: 4px">
-		<span>@Html.Partial("/Views/Games/Partials/Name.cshtml", Model.league.Game)</span>
-		<br />
-		@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.league)
-		<br />
-		<span>Admin: @Html.Partial("~/Views/Users/Partials/Name.cshtml", Model.league.Admin) | Members: @Model.league.MemberCount</span>
-		<br />
-		@{
-			if (Model.membership == League.Membership.Member)
-			{
-				<form asp-controller="Leagues" asp-action="Leave" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
-					<button type="submit" class="btn btn-danger">Leave</button>
-				</form>
-			}
-			else if (Model.membership == League.Membership.Admin)
-			{
-				<a class="btn btn-primary" role="button" asp-controller="Leagues" asp-action="Edit" asp-route-id="@Model.league.ID">Manage</a>
-			}
-			else
-			{
-				<form asp-controller="Leagues" asp-action="Join" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
-					<button type="submit" class="btn btn-success">Join</button>
-				</form>
-			}
-		}
-	</div>
+<div class="panel">
+    <div align="center" style="padding: 4px">
+        <span>@Html.Partial("/Views/Games/Partials/Name.cshtml", Model.league.Game)</span>
+        <br/>
+        @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.league)
+        <br/>
+        <span>Admin: @Html.Partial("~/Views/Users/Partials/Name.cshtml", Model.league.Admin) | Members: @Model.league.Members.Count</span>
+        <br/>
+        @{
+            if(Model.membership == League.Membership.Member)
+            {
+                <form asp-controller="Leagues" asp-action="Leave" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
+                    <button type="submit">Leave</button>
+                </form>
+            }
+            else if(Model.membership != League.Membership.Admin)
+            {
+                <form asp-controller="Leagues" asp-action="Join" asp-route-leagueID="@Model.league.ID" asp-route-userID="@Model.userID" method="post">
+                    <button type="submit">Join</button>
+                </form>
+            }
+        }
+    </div>
 </div>
