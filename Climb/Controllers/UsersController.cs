@@ -130,7 +130,7 @@ namespace Climb.Controllers
                 return NotFound($"ID's do not match {id} vs {user.ID}");
             }
 
-            if(ModelState.IsValid)
+            if(TryValidateModel(user))
             {
                 var userToUpdate = await context.User.SingleOrDefaultAsync(u => u.ID == id);
                 if(userToUpdate == null)
