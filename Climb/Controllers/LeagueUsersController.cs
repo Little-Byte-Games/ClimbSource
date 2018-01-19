@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Climb.Controllers
@@ -37,43 +36,32 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSlackUsername(int id, string slackUsername)
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Update([Bind("ID,DisplayName,SlackUsername,ChallongeUsername")]
+            LeagueUser leagueUser)
         {
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
-            if(leagueUser == null)
+            if(TryValidateModel(leagueUser))
             {
-                return NotFound($"No league user with ID '{id}' found.");
+                var leagueUserToUpdate = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == leagueUser.ID);
+                if(leagueUserToUpdate == null)
+                {
+                    return NotFound($"No LeagueUser with ID '{leagueUser.ID}' found.");
+                }
+
+                var updateSuccess = await TryUpdateModelAsync(leagueUserToUpdate,
+                    "",
+                    u => u.DisplayName,
+                    u => u.SlackUsername,
+                    u => u.ChallongeUsername);
+
+                if(updateSuccess)
+                {
+                    await context.SaveChangesAsync();
+                    return Ok(leagueUser);
+                }
             }
 
-            leagueUser.SlackUsername = slackUsername;
-            context.Update(leagueUser);
-            await context.SaveChangesAsync();
-
-            return Ok(new {id, slackUsername});
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UpdateDisplayName(int id, string displayName)
-        {
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
-            if(leagueUser == null)
-            {
-                return NotFound($"No league user with ID '{id}' found.");
-            }
-
-            var regex = new Regex(@"\s+");
-            var strippedName = regex.Replace(displayName.ToLower(), string.Empty);
-            var isNameTaken = await context.LeagueUser.AnyAsync(lu => lu.ID != id && regex.Replace(lu.DisplayName, string.Empty) == strippedName);
-            if(isNameTaken)
-            {
-                return BadRequest($"League member with name similar to '{displayName}' already exists.");
-            }
-
-            leagueUser.DisplayName = displayName;
-            context.Update(leagueUser);
-            await context.SaveChangesAsync();
-
-            return Ok(leagueUser);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         [HttpPost]
