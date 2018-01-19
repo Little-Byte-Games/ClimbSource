@@ -4,7 +4,7 @@ h4 {
 }
 
 #container {
-    width: 30%;
+    width: 50%;
     margin: 50px auto;
 }
 
@@ -17,9 +17,48 @@ h4 {
 }
 
 .account {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.account-forms {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.pic-form {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.pic-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-file {
+    overflow: scroll;
+}
+
+.account-form {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input input {
+    width: 250px;
+}
+
+form button {
+    margin: auto;
 }
 
 .input {

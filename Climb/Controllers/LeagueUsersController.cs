@@ -36,35 +36,6 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Update([Bind("ID,DisplayName,SlackUsername,ChallongeUsername")]
-            LeagueUser leagueUser)
-        {
-            if(TryValidateModel(leagueUser))
-            {
-                var leagueUserToUpdate = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == leagueUser.ID);
-                if(leagueUserToUpdate == null)
-                {
-                    return NotFound($"No LeagueUser with ID '{leagueUser.ID}' found.");
-                }
-
-                var updateSuccess = await TryUpdateModelAsync(leagueUserToUpdate,
-                    "",
-                    u => u.DisplayName,
-                    u => u.SlackUsername,
-                    u => u.ChallongeUsername);
-
-                if(updateSuccess)
-                {
-                    await context.SaveChangesAsync();
-                    return Ok(leagueUser);
-                }
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpPost]
         public async Task<IActionResult> UpdatePoints(int id, int points)
         {
             var leagueUser = await context.LeagueUser.FirstOrDefaultAsync(lu => lu.ID == id);
@@ -78,6 +49,37 @@ namespace Climb.Controllers
             await context.SaveChangesAsync();
 
             return Ok(leagueUser);
+        }
+        #endregion
+
+        #region Page Forms
+        
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Update([Bind("ID,DisplayName,SlackUsername,ChallongeUsername")]LeagueUser leagueUser)
+        {
+            if(TryValidateModel(leagueUser))
+            {
+                var leagueUserToUpdate = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == leagueUser.ID);
+                if(leagueUserToUpdate == null)
+                {
+                    return NotFound($"No LeagueUser with ID '{leagueUser.ID}' found.");
+                }
+
+                var updateSuccess = await TryUpdateModelAsync(leagueUserToUpdate,
+                    "leagueUser",
+                    u => u.DisplayName,
+                    u => u.SlackUsername,
+                    u => u.ChallongeUsername);
+
+                if(updateSuccess)
+                {
+                    await context.SaveChangesAsync();
+                    return RedirectToAction("Account", "Users");
+                }
+            }
+
+            return RedirectToAction("Account", "Users");
         }
         #endregion
 
