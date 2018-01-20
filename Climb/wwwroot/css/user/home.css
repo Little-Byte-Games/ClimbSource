@@ -5,11 +5,12 @@
 .profile {
     position: absolute;
     left: 50%;
-    margin-left: -75px;
+    margin-left: -150px;
     top: 75px;
     z-index: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .profile-image {
