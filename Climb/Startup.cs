@@ -13,30 +13,28 @@ namespace Climb
 {
     public class Startup
     {
-        private readonly IHostingEnvironment environment;
-
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if(environment.IsProduction())
-            {
-                services.AddDbContext<ClimbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
-                services.AddSingleton<CdnService, S3Cdn>();
-            }
-            else
-            {
-                services.AddDbContext<ClimbContext>(options =>
-                        options.UseInMemoryDatabase("Test"));
-                services.AddSingleton<CdnService, FileStorageCdn>();
-            }
+#if DB_MEMORY
+            services.AddDbContext<ClimbContext>(options => options.UseInMemoryDatabase("Test"));
+#elif DB_LOCAL
+            services.AddDbContext<ClimbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
+#elif DB_AZURE
+            services.AddDbContext<ClimbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
+#endif
+
+#if CDN_LOCAL
+            services.AddSingleton<CdnService, FileStorageCdn>();
+#elif CDN_S3
+            services.AddSingleton<CdnService, S3Cdn>();
+#endif
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
@@ -54,16 +52,13 @@ namespace Climb
 
             services.AddMvc();
 
-            services.Configure<MvcOptions>(options =>
-            {
-                options.Filters.Add(new RequireHttpsAttribute());
-            });
+            services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
@@ -75,7 +70,7 @@ namespace Climb
 
             app.Use(async (context, next) =>
             {
-                if (context.Request.IsHttps)
+                if(context.Request.IsHttps)
                 {
                     await next();
                 }
