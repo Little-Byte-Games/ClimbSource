@@ -5,6 +5,6 @@ namespace Climb.Services
 {
     public interface IAccountService
     {
-        Task<IdentityResult> CreateUser(string email, string password);
+        Task<IdentityResult> CreateUser(string email, string username, string password);
     }
 }

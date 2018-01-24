@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model Climb.ViewModels.LeagueUsers.PowerRankViewModel
+
+<div class="powerrank-container">
+    <span class="powerrank-rank">@Model.Rank</span>
+    <img class="powerrank-profilepic" src="@Model.profilePicUrl"/>
+
+    <div class="powerrank-info">
+        @if(Model.showLeague)
+        {
+            @Html.Partial("~/Views/Leagues/Partials/Name.cshtml", Model.leagueUser.League)
+        }
+        @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.leagueUser)
+
+        <div>
+            <span>(@Model.leagueUser.Points) @Html.Partial("/Views/LeagueUsers/Partials/RankTrend.cshtml", Model.leagueUser.GetRankTrend())</span>
+        </div>
+    </div>
+
+    <div class="powerrank-right">
+        <div class="powerrank-info-characters">
+            @foreach(var characterUrl in Model.characterPicUrls)
+            {
+                <img src="@characterUrl"/>
+            }
+        </div>
+        @if(Model.ShowFightButton)
+        {
+            <button class="fight-button" type="button" onclick="createExhibition(@Model.viewingLeagueUser.ID, @Model.leagueUser.ID)">Fight!</button>
+        }
+    </div>
+</div>

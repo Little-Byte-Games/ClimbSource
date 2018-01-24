@@ -1,0 +1,78 @@
+﻿h3,
+h4 {
+    width: 100%;
+}
+
+#container {
+    width: 50%;
+    margin: 50px auto;
+}
+
+#site-account {
+    margin-bottom: 50px;
+}
+
+.league-account {
+    margin-bottom: 20px;
+}
+
+.account {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.account-forms {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.pic-form {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+.pic-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-file {
+    overflow: scroll;
+}
+
+.account-form {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input input {
+    width: 250px;
+}
+
+form button {
+    margin: auto;
+}
+
+.input {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.upload-size {
+    font-size: 8px;
+}
+
+.profile-pic {
+    background-color: gray;
+}

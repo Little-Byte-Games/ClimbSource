@@ -101,7 +101,11 @@ namespace Climb.Migrations
 
                     b.Property<string>("BannerPicUrl");
 
+                    b.Property<int>("CharactersPerMatch");
+
                     b.Property<string>("Name");
+
+                    b.Property<bool>("RequireStage");
 
                     b.Property<string>("Url");
 
@@ -119,11 +123,13 @@ namespace Climb.Migrations
 
                     b.Property<int>("GameID");
 
-                    b.Property<int>("KingID");
+                    b.Property<int?>("KingID");
 
                     b.Property<DateTime>("KingReignStart");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30);
 
                     b.HasKey("ID");
 
@@ -141,11 +147,15 @@ namespace Climb.Migrations
 
                     b.Property<string>("ChallongeUsername");
 
-                    b.Property<int>("Elo");
+                    b.Property<string>("DisplayName");
 
                     b.Property<bool>("HasLeft");
 
+                    b.Property<bool>("IsNew");
+
                     b.Property<int>("LeagueID");
+
+                    b.Property<int>("Points");
 
                     b.Property<string>("ProfilePicKey");
 
@@ -233,13 +243,13 @@ namespace Climb.Migrations
 
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<int>("DeltaElo");
+                    b.Property<int>("DeltaPoints");
 
                     b.Property<int>("DeltaRank");
 
-                    b.Property<int>("Elo");
-
                     b.Property<int>("LeagueUserID");
+
+                    b.Property<int>("Points");
 
                     b.Property<int>("Rank");
 
@@ -328,6 +338,8 @@ namespace Climb.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BannerPicKey");
 
                     b.Property<string>("ProfilePicKey");
 

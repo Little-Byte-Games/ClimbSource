@@ -1,0 +1,10 @@
+﻿@model LeagueUser
+
+@if(Model == null)
+{
+	<span>BYE</span>
+}
+else
+{
+	<a class="user-username" asp-controller="Users" asp-action="Home" asp-route-id="@Model.UserID">@Model.DisplayName</a>
+}

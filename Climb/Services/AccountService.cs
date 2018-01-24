@@ -20,9 +20,9 @@ namespace Climb.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<IdentityResult> CreateUser(string email, string password)
+        public async Task<IdentityResult> CreateUser(string email, string username, string password)
         {
-            var user = new User { Username = email };
+            var user = new User { Username = username };
             await context.User.AddAsync(user);
             await context.SaveChangesAsync();
 

@@ -132,7 +132,7 @@ namespace Climb.Services
             foreach (var participant in season.Participants)
             {
                 var leagueUserID = participant.LeagueUserID;
-                points.Add(leagueUserID, new SeasonStanding(leagueUserID, participant.LeagueUser.Elo));
+                points.Add(leagueUserID, new SeasonStanding(leagueUserID, participant.LeagueUser.Points));
             }
 
             foreach(var set in season.Sets)

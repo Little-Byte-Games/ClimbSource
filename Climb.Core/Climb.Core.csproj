@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Configurations>Debug;Release;Debug_Memory;Release_Prod;Debug_Prod</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

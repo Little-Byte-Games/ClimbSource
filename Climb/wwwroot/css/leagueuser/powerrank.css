@@ -3,17 +3,19 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 5px 0;
+    padding: 5px;
 }
 
 .powerrank-rank {
-    width: 80px;
-    font-size: 60px;
+    width: 70px;
+    font-size: 50px;
     text-align: center;
 }
 
 .powerrank-profilepic {
-    height: 100%;
+    width: 80px;
+    height: 80px;
+    padding: 10px;
 }
 
 .powerrank-info {
@@ -23,24 +25,40 @@
     flex-grow: 100;
 }
 
-.powerrank-info a {
-    font-size: 24px;
-}
-
 .powerrank-info-bottom {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
+.powerrank-right {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .powerrank-info-characters {
-    height: 60%;
-    margin-right: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .powerrank-info-characters img {
-    height: 80%;
+    width: 30px;
+    height: 30px;
+}
+
+.league-name {
+    font-size: 12px;
+}
+
+.user-username {
+    font-size: 20px;
+}
+
+.fight-button {
+    width: 60px;
+    margin-left: auto;
 }

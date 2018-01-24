@@ -23,8 +23,6 @@ namespace Climb.Services
             const int days = 100;
             var date = DateTime.Today.Subtract(TimeSpan.FromDays(days));
             var characters = await context.MatchCharacters
-                .Include(mc => mc.Character)
-                .Include(mc => mc.Match).ThenInclude(m => m.Set)
                 .Where(mc => mc.LeagueUserID == id && mc.Match.Set.IsComplete && !mc.Match.Set.IsBye && mc.Match.Set.UpdatedDate >= date)
                 .Select(mc => mc.Character).ToArrayAsync();
 

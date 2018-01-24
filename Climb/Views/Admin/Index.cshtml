@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Climb.Consts
+@{
     Layout = null;
 }
 
@@ -32,6 +33,20 @@
     <h2>League</h2>
     <button onclick="takeSnapshots()">Take Snapshots</button>
     <button onclick="sendSetReminders()">Send Set Reminders</button>
+</div>
+<div>
+    <h2>Feature Toggles</h2>
+    <form id="feature-toggle-form" asp-controller="Admin" asp-action="UpdateFeatureToggles" method="post">
+        <div>
+            @Html.CheckBox("Slack", FeatureToggles.Slack)
+            <label>Slack</label>
+        </div>
+        <div>
+            @Html.CheckBox("Challonge", FeatureToggles.Challonge)
+            <label>Challonge</label>
+        </div>
+        <button type="button" onclick="updateFeatureToggles()">Update</button>
+    </form>
 </div>
 </body>
 </html>

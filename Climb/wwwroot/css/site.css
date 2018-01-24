@@ -12,6 +12,8 @@ html, body {
 }
 
 body {
+    min-width: 1500px;
+    width: 100%;
     margin: 0;
     padding: 0;
     display: flex;
@@ -49,6 +51,7 @@ h2 {
 }
 
 h3 {
+    text-align: center;
     padding: 10px;
     font-size: 1.5em;
     color: whitesmoke;
@@ -56,125 +59,28 @@ h3 {
 }
 
 h4 {
+    text-align: center;
     padding: 10px;
     font-size: 1.2em;
     color: whitesmoke;
     background-color: orange;
 }
 
-
-/* ////////// */
-/* Main Page Content */
-/* ////////// */
-
-.content {
-    display: grid;
-    grid-template-areas: "header header header" "banner banner banner" "left center right" "footer footer footer";
-    width: auto;
-    position: relative;
-    top: 55px;
-    background-color: #EEE;
-    align-items: start;
-}
-
-.content-header {
-    grid-area: header;
-    background-color: #FF8800;
-    padding: 20px 0;
-    text-align: center;
-}
-
-.content-left {
-    grid-area: left;
-}
-
-.content-center {
-    grid-area: center;
-    display: grid;
-    grid-template-areas: "title" "date" "content" "link";
-    grid-template-rows: auto auto 1fr auto;
-    align-content: space-between;
-}
-
-.content-right {
-    grid-area: right;
-}
-
-.content-left, .content-center, .content-right {
-    margin: 50px;
-    background-color: #FFF;
-    box-shadow: 0px 0px 20px #CCC;
-}
-
-.content-left p, .content-right p {
-    margin: 0 50px;
-    /*background-color: green;*/
-}
-
 .content-footer {
+    display: flex;
+    justify-content: center;
+    align-content: center;
     width: 100%;
     height: 60px;
+    line-height: 50px;
     bottom: 0;
-    padding: 25px 0;
     background-color: #333333;
-    box-shadow: 0px 1px 3px #000;
+    box-shadow: 0 1px 3px #000;
     color: whitesmoke;
-}
-
-.content-footer p {
-    text-align: center;
 }
 
 .content-footer a {
     color: orangered;
-}
-
-/* ////////// */
-/* Player/League Profile */
-/* ////////// */
-
-.profile-head {
-    font-weight: bold;
-    font-size: 0.75em;
-    text-transform: uppercase;
-}
-
-.profile-text {
-    font-size: 1.5em;
-    overflow: auto;
-    text-justify: none;
-    /*background-color: hotpink;*/
-}
-
-.profile-pic {
-    margin: 10px;
-    border: 10px solid #FF8800;
-    position: relative;
-    float: left;
-    width: 225px;
-    height: 225px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.profile-pic img, .event-pic img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 100%;
-    width: auto;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.profile-pic img.portrait, .event-pic img.portrait {
-    width: 100%;
-    height: auto;
-}
-
-.profile-pic img.landscape, .event-pic img.landscape {
-    object-fit: cover;
 }
 
 .logo {
@@ -366,9 +272,20 @@ h4 {
     display: inline-block;
 }
 
+.game-name,
 .league-name,
 .season-name,
 .user-username {
-    color: black;
+    color: orangered;
     text-decoration: none;
+}
+
+.fight-button {
+    background-color: firebrick;
+    border: 1px #333333 solid;
+}
+
+.validation-error {
+    color: red;
+    font-weight: bold;
 }

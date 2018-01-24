@@ -7,7 +7,7 @@
             var tieBreaker = new TieBreaker();
             tieBreaker.AddTieBreakAttempt(new TiedWinsTieBreak());
             tieBreaker.AddTieBreakAttempt(new TotalWinsTieBreak());
-            tieBreaker.AddTieBreakAttempt(new EloTieBreak());
+            tieBreaker.AddTieBreakAttempt(new PointsTieBreak());
             return tieBreaker;
         }
     }

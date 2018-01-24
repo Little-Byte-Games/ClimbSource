@@ -2,11 +2,11 @@
 
 namespace Climb.Core
 {
-    public class EloTieBreak : TieBreakAttempt
+    public class PointsTieBreak : TieBreakAttempt
     {
         public override int GetUserScore(IList<SeasonStanding> standingData, SeasonStanding current)
         {
-            return current.elo;
+            return current.points;
         }
     }
 }

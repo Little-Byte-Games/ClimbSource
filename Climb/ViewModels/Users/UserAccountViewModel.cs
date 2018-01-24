@@ -4,9 +4,12 @@ namespace Climb.ViewModels.Users
 {
     public class UserAccountViewModel : BaseViewModel
     {
-        public UserAccountViewModel(User user)
+        public readonly ApplicationUser appUser;
+
+        public UserAccountViewModel(User user, ApplicationUser appUser)
             : base(user)
         {
+            this.appUser = appUser;
         }
     }
 }

@@ -4,130 +4,130 @@
 }
 
 .form-container {
-	display: flex;
-	justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .form {
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	border: 1px solid lightgray;
-	width: 800px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    width: 800px;
 }
 
 .header {
-	background-color: black;
-	color: white;
-	display: flex;
-	justify-content: center;
-	width: 100%;
+    background-color: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .player-container {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-	height: 100px;
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2a05ff+0,ffffff+45,ffffff+50,ffffff+55,ff6a00+100 */
-	background: #2a05ff; /* Old browsers */
-	background: -moz-linear-gradient(-45deg,  #2a05ff 0%, #ffffff 45%, #ffffff 50%, #ffffff 55%, #ff6a00 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(-45deg,  #2a05ff 0%,#ffffff 45%,#ffffff 50%,#ffffff 55%,#ff6a00 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(135deg,  #2a05ff 0%,#ffffff 45%,#ffffff 50%,#ffffff 55%,#ff6a00 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2a05ff', endColorstr='#ff6a00',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100px;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2a05ff+0,ffffff+45,ffffff+50,ffffff+55,ff6a00+100 */
+    background: #2a05ff; /* Old browsers */
+    background: -moz-linear-gradient(-45deg, #2a05ff 0%, #ffffff 45%, #ffffff 50%, #ffffff 55%, #ff6a00 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #2a05ff 0%,#ffffff 45%,#ffffff 50%,#ffffff 55%,#ff6a00 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #2a05ff 0%,#ffffff 45%,#ffffff 50%,#ffffff 55%,#ff6a00 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2a05ff', endColorstr='#ff6a00',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 .player {
-	display: flex;
+    display: flex;
 }
 
 .player-picture {
-	width: 100px;
-	height: 100px;
+    width: 100px;
+    height: 100px;
 }
 
 .player-info {
-	display: flex;
-	flex-direction: column;
-	width: 250px;
+    display: flex;
+    flex-direction: column;
+    width: 250px;
 }
 
 .player-info-name {
-	height: 50%;
-	font-size: 24px;
+    height: 50%;
+    font-size: 24px;
 }
 
 .player-info-rank {
-	height: 50%;
-	display: flex;
-	justify-content: center;
-	font-size: 24px;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    font-size: 24px;
 }
 
 .versus {
-	font-size: 48px;
-	line-height: 100px;
-	display: inline-block;
-	vertical-align: middle;
+    font-size: 48px;
+    line-height: 100px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .profile-picture-container {
-	display: flex;
-	height: 50px;
+    display: flex;
+    height: 50px;
 }
 
 .profile-picture {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .set-count-container {
-	display: flex;
-	justify-content: center;
-	height: 60px;
+    display: flex;
+    justify-content: center;
+    height: 60px;
 }
 
 .set-count {
-	width: 60px;
-	font-size: 48px;
-	text-align: center;
+    width: 60px;
+    font-size: 48px;
+    text-align: center;
 }
 
 .set-count-separator {
-	font-size: 48px;
-	line-height: 60px;
-	display: inline-block;
-	vertical-align: middle;
+    font-size: 48px;
+    line-height: 60px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .add-match {
-	display: flex;
-	justify-content: center;
-	height: 40px;
+    display: flex;
+    justify-content: center;
+    height: 40px;
 }
 
 .match-wrapper {
-	display: flex;
-	justify-content: center;
-	width: 100%;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .match-container {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .matches {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .submit {
-	display: flex;
-	justify-content: center;
-	height: 40px;
-	margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    height: 40px;
+    margin-top: 10px;
 }
 
 .text-right {

@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Climb.Extensions;
 
 namespace Climb.Controllers
 {
@@ -31,7 +33,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
@@ -42,39 +44,42 @@ namespace Climb.Controllers
                 .Include(l => l.Game)
                 .ToListAsync();
 
-            var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues);
+            var games = await context.Game.OrderBy(g => g.Name).ToListAsync();
+
+
+            var viewModel = CompeteLeaguesViewModel.Create(user, user.LeagueUsers, leagues, games);
             return View(viewModel);
         }
 
         public async Task<IActionResult> Home(int id)
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
 
             var league = await context.League
                 .Include(l => l.Game)
-                .Include(l => l.Members).ThenInclude(lu => lu.User)
+                .Include(l => l.Members)
                 .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1)
                 .Include(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2)
                 .SingleOrDefaultAsync(l => l.ID == id);
-            if (league == null)
+            if(league == null)
             {
                 return NotFound();
             }
 
             var currentSeason = league.CurrentSeason;
-            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete);
+            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete).OrderByDescending(s => s.UpdatedDate);
 
             int? seasonID = null;
-            if (currentSeason != null)
+            if(currentSeason != null)
             {
                 seasonID = currentSeason.ID;
             }
-            else if (league.Seasons?.Count > 0)
+            else if(league.Seasons?.Count > 0)
             {
                 seasonID = league.Seasons.Last().ID;
             }
@@ -86,7 +91,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Schedule(int? leagueID, int? seasonIndex)
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
@@ -97,7 +102,7 @@ namespace Climb.Controllers
             var selectedLeague = leagues.SingleOrDefault(l => l.ID == leagueID);
             List<Season> selectedSeasons = null;
 
-            if (leagueUser != null)
+            if(leagueUser != null)
             {
                 var seasons = await context.Season
                     .Include(s => s.Participants)
@@ -116,20 +121,21 @@ namespace Climb.Controllers
 
         #region API
         [HttpPost]
-        public async Task<IActionResult> TakeAllRankSnapshots([FromServices]IHttpContextAccessor contextAccessor)
+        public async Task<IActionResult> TakeAllRankSnapshots([FromServices] IHttpContextAccessor contextAccessor)
         {
             var key = contextAccessor.HttpContext.Request.Headers["key"];
-            if (key == "steve")
+            if(key == "steve")
             {
                 var leagues = await context.League
                     .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                     .Include(l => l.Members).ThenInclude(lu => lu.User)
                     .ToArrayAsync();
-                foreach (var league in leagues)
+                foreach(var league in leagues)
                 {
                     var rankSnapshots = await leagueService.TakeSnapshot(league);
                     await leagueService.SendSnapshotUpdate(rankSnapshots, league);
                 }
+
                 return Accepted();
             }
 
@@ -150,10 +156,46 @@ namespace Climb.Controllers
                 {
                     await leagueService.SendSetReminders(league);
                 }
+
                 return Accepted();
             }
 
             return Forbid();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(League league)
+        {
+            if(ModelState.IsValid)
+            {
+                var admin = await context.User.FirstOrDefaultAsync(u => u.ID == league.AdminID);
+                if (admin == null)
+                {
+                    return BadRequest($"No User with ID '{league.AdminID}' found.");
+                }
+
+                var gameExists = await context.Game.AnyAsync(g => g.ID == league.GameID);
+                if (!gameExists)
+                {
+                    return BadRequest($"No Game with ID '{league.GameID}' found.");
+                }
+
+                var regex = new Regex(@"\s+");
+                var strippedName = regex.Replace(league.Name.ToLower(), string.Empty);
+                var isNameTaken = await context.League.AnyAsync(l => regex.Replace(l.Name.ToLower(), string.Empty) == strippedName);
+                if(isNameTaken)
+                {
+                    return BadRequest($"League with name similar to '{league.Name}' already exists.");
+                }
+
+                await context.AddAsync(league);
+                await leagueService.JoinLeague(admin, league);
+                await context.SaveChangesAsync();
+
+                return CreatedAtAction("Home", league);
+            }
+
+            return BadRequest(ModelState.GetErrors());
         }
         #endregion
 
@@ -204,9 +246,9 @@ namespace Climb.Controllers
             }
 
             var rankSnapshots = await leagueService.TakeSnapshot(league);
-            if (FeatureToggles.Slack)
+            if(FeatureToggles.Slack)
             {
-                await leagueService.SendSnapshotUpdate(rankSnapshots, league); 
+                await leagueService.SendSnapshotUpdate(rankSnapshots, league);
             }
 
             return RedirectToAction(nameof(Home), new {id});

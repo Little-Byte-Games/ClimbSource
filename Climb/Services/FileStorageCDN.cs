@@ -1,76 +1,36 @@
-﻿using System.IO;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using System.IO;
 using System.Threading.Tasks;
-using Climb.Consts;
-using Climb.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace Climb.Services
 {
-    public class FileStorageCdn : ICdnService
+    public class FileStorageCdn : CdnService
     {
         private const string Cdn = @"temp\cdn";
         private readonly string localCdnPath;
 
-        public int MaxFileSize => 15 * 1024;
+        protected override string Root { get; }
 
         public FileStorageCdn()
         {
             localCdnPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", Cdn);
-            Directory.CreateDirectory(localCdnPath);
-            Directory.CreateDirectory(Path.Combine(localCdnPath, CdnConsts.ProfilePics));
-            Directory.CreateDirectory(Path.Combine(localCdnPath, CdnConsts.CharacterIcons));
+            Root = @"\temp\cdn";
         }
 
-        public string GetProfilePic(User user)
+        protected override async Task UploadImageInternal(IFormFile imageFile, string folder, string fileKey)
         {
-            return string.IsNullOrWhiteSpace(user.ProfilePicKey) ? LeagueUser.MissingPic : "/" + Path.Combine(Cdn, CdnConsts.ProfilePics, user.ProfilePicKey);
-        }
+            var folderPath = Path.Combine(localCdnPath, folder);
+            var filePath = Path.Combine(folderPath, fileKey);
 
-        public string GetProfilePic(LeagueUser leagueUser)
-        {
-            string profilePicKey;
-            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
+            if(!Directory.Exists(folderPath))
             {
-                profilePicKey = leagueUser.ProfilePicKey;
-            }
-            else if(!string.IsNullOrWhiteSpace(leagueUser.User.ProfilePicKey))
-            {
-                profilePicKey = leagueUser.User.ProfilePicKey;
-            }
-            else
-            {
-                return LeagueUser.MissingPic;
+                Directory.CreateDirectory(folderPath);
             }
 
-            return $"/{Cdn}/{CdnConsts.ProfilePics}/{profilePicKey}";
-        }
-
-        public async Task<string> UploadProfilePic(IFormFile file)
-        {
-            return await UploadFile(file, CdnConsts.ProfilePics);
-        }
-
-        public string GetCharacterPic(Character character)
-        {
-            return "/" + Path.Combine(Cdn, CdnConsts.CharacterIcons, character.PicKey);
-        }
-
-        public async Task<string> UploadCharacterPic(IFormFile file)
-        {
-            return await UploadFile(file, CdnConsts.CharacterIcons);
-        }
-
-        private async Task<string> UploadFile(IFormFile file, string folderName)
-        {
-            var fileExtension = Path.GetExtension(file.FileName);
-            var fileKey = Path.GetInvalidFileNameChars().Aggregate(Path.GetFileNameWithoutExtension(file.FileName), (current, c) => current.Replace(c, '_')) + fileExtension;
-            var filePath = Path.Combine(localCdnPath, folderName, fileKey);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            using(var fileStream = new FileStream(filePath, FileMode.Create))
             {
-                await file.CopyToAsync(fileStream);
+                await imageFile.CopyToAsync(fileStream);
             }
-            return fileKey;
         }
     }
 }

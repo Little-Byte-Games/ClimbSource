@@ -5,10 +5,33 @@
     <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
     <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <UserSecretsId>aspnet-Climb-AA3EE316-0A0C-4126-9AE8-5F8D37A7F17B</UserSecretsId>
+    <Configurations>Debug;Release;Debug_Memory;Release_Prod;Debug_Prod</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;DB_LOCAL;CDN_LOCAL</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Prod|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;DB_AZURE;CDN_S3</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Memory|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;DB_MEMORY;CDN_LOCAL;DEBUG_MEMORY</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;DB_LOCAL;CDN_S3</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Prod|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;DB_AZURE;CDN_S3</DefineConstants>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,11 +42,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\Debug.pubxml" />
+    <None Remove="Properties\PublishProfiles\Release.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.16.2" />
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.362" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />
@@ -41,6 +68,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\temp\" />
   </ItemGroup>
 
 </Project>

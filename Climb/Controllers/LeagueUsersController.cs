@@ -11,15 +11,13 @@ namespace Climb.Controllers
     public class LeagueUsersController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICdnService cdnService;
-        private readonly LeagueUserService leagueUserService;
+        private readonly CdnService cdnService;
 
-        public LeagueUsersController(ClimbContext context, ICdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
+        public LeagueUsersController(ClimbContext context, CdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
             : base(userService, userManager)
         {
             this.context = context;
             this.cdnService = cdnService;
-            leagueUserService = new LeagueUserService(context);
         }
 
         #region API
@@ -28,29 +26,60 @@ namespace Climb.Controllers
             var leagueUser = await context.LeagueUser
                 .Include(lu => lu.RankSnapshots)
                 .SingleOrDefaultAsync(lu => lu.ID == id);
-            if (leagueUser == null)
+            if(leagueUser == null)
             {
                 return NotFound();
             }
 
             var rankDifference = leagueUser.GetRankTrendDelta();
-            return Ok(new { leagueUserID = id, rankDelta = rankDifference });
+            return Ok(new {leagueUserID = id, rankDelta = rankDifference});
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSlackUsername(int id, string slackUsername)
+        public async Task<IActionResult> UpdatePoints(int id, int points)
         {
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
+            var leagueUser = await context.LeagueUser.FirstOrDefaultAsync(lu => lu.ID == id);
             if(leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
             }
 
-            leagueUser.SlackUsername = slackUsername;
+            leagueUser.Points = points;
             context.Update(leagueUser);
             await context.SaveChangesAsync();
 
-            return Ok(new {id, slackUsername});
+            return Ok(leagueUser);
+        }
+        #endregion
+
+        #region Page Forms
+        
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Update([Bind("ID,DisplayName,SlackUsername,ChallongeUsername")]LeagueUser leagueUser)
+        {
+            if(TryValidateModel(leagueUser))
+            {
+                var leagueUserToUpdate = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == leagueUser.ID);
+                if(leagueUserToUpdate == null)
+                {
+                    return NotFound($"No LeagueUser with ID '{leagueUser.ID}' found.");
+                }
+
+                var updateSuccess = await TryUpdateModelAsync(leagueUserToUpdate,
+                    "leagueUser",
+                    u => u.DisplayName,
+                    u => u.SlackUsername,
+                    u => u.ChallongeUsername);
+
+                if(updateSuccess)
+                {
+                    await context.SaveChangesAsync();
+                    return RedirectToAction("Account", "Users");
+                }
+            }
+
+            return RedirectToAction("Account", "Users");
         }
         #endregion
 
@@ -58,12 +87,12 @@ namespace Climb.Controllers
         public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {
             var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
-            if (leagueUser == null)
+            if(leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
             }
 
-            leagueUser.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            leagueUser.ProfilePicKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
             context.Update(leagueUser);
             await context.SaveChangesAsync();
 

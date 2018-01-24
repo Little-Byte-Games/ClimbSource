@@ -16,9 +16,9 @@ namespace Climb.Controllers
     public class UsersController : ModelController
     {
         private readonly ClimbContext context;
-        private readonly ICdnService cdnService;
+        private readonly CdnService cdnService;
 
-        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, ICdnService cdnService)
+        public UsersController(ClimbContext context, IUserService userService, UserManager<ApplicationUser> userManager, CdnService cdnService)
             : base(userService, userManager)
         {
             this.context = context;
@@ -40,19 +40,13 @@ namespace Climb.Controllers
                 id = user.ID;
             }
 
-            var homeUser = context.User
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
-                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
-                .SingleOrDefault(u => u.ID == id);
+            var homeUser = context.User.Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons).Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User).SingleOrDefault(u => u.ID == id);
             if(homeUser == null)
             {
                 return NotFound($"Could not find User with ID '{id}'.");
             }
 
-            var viewModel = CompeteHomeViewModel.Create(user, homeUser);
+            var viewModel = CompeteHomeViewModel.Create(user, homeUser, cdnService);
             return View(viewModel);
         }
 
@@ -60,12 +54,13 @@ namespace Climb.Controllers
         public async Task<IActionResult> Account()
         {
             var user = await GetViewUserAsync();
-            if (user == null)
+            if(user == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new UserAccountViewModel(user);
+            var appUser = await userManager.GetUserAsync(User);
+            var viewModel = new UserAccountViewModel(user, appUser);
             return View(viewModel);
         }
         #endregion
@@ -79,17 +74,50 @@ namespace Climb.Controllers
                 return BadRequest("Need to submit a picture.");
             }
 
-            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
-            if (user == null)
+            var user = await context.User
+                .Include(u => u.LeagueUsers)
+                .SingleOrDefaultAsync(u => u.ID == id);
+            if(user == null)
             {
                 return NotFound($"No User with ID '{id}' found.");
             }
 
-            user.ProfilePicKey = await cdnService.UploadProfilePic(file);
+            var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
+            foreach(var leagueUser in user.LeagueUsers)
+            {
+                if(leagueUser.ProfilePicKey == user.ProfilePicKey)
+                {
+                    leagueUser.ProfilePicKey = picKey;
+                    context.Update(leagueUser);
+                }
+            }
+
+            user.ProfilePicKey = picKey;
             context.Update(user);
             await context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(user);
+        }
+
+        public async Task<IActionResult> UploadProfileBanner(int id, IFormFile file)
+        {
+            if(file == null)
+            {
+                return BadRequest("Need to submit a picture.");
+            }
+
+            var user = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+            if(user == null)
+            {
+                return NotFound($"No User with ID '{id}' found.");
+            }
+
+            var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfileBanner, file);
+            user.BannerPicKey = picKey;
+            context.Update(user);
+            await context.SaveChangesAsync();
+
+            return Ok(user);
         }
         #endregion
 
@@ -97,34 +125,43 @@ namespace Climb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, [Bind("ID,Username")] User user)
         {
-            if (id != user.ID)
+            if(id != user.ID)
             {
                 return NotFound($"ID's do not match {id} vs {user.ID}");
             }
 
-            if (ModelState.IsValid)
+            if(TryValidateModel(user))
             {
-                try
+                var userToUpdate = await context.User.SingleOrDefaultAsync(u => u.ID == id);
+                if(userToUpdate == null)
                 {
-                    context.Update(user);
-                    await context.SaveChangesAsync();
+                    return NotFound($"No User with ID '{id}' found.");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var userExists = await userService.DoesUserExist(user.ID);
-                    if (!userExists)
-                    {
-                        return NotFound();
-                    }
 
-                    throw;
+                var updateSuccess = await TryUpdateModelAsync(userToUpdate,
+                    "user",
+                    u => u.Username);
+
+                if(updateSuccess)
+                {
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                    }
+                    catch(DbUpdateConcurrencyException)
+                    {
+                        var userExists = await userService.DoesUserExist(user.ID);
+                        if(!userExists)
+                        {
+                            return NotFound();
+                        }
+
+                        throw;
+                    }
                 }
-                return RedirectToAction(nameof(Account));
             }
 
-            var viewUser = await GetViewUserAsync();
-            var viewModel = new UserAccountViewModel(viewUser);
-            return View(nameof(Account), viewModel);
+            return RedirectToAction(nameof(Account));
         }
     }
 }

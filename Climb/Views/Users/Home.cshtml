@@ -1,7 +1,9 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
+@using Climb.ViewModels.LeagueUsers
 @model CompeteHomeViewModel
-@inject ICdnService cdnService
+@inject CdnService cdnService
+@inject ILeagueUserService leagueUserService
 
 @{
     ViewBag.Title = Model.homeUser.Username;
@@ -12,12 +14,16 @@
 @section Styles {
     <link href="/css/user/home.css" type="text/css" rel="stylesheet" />
     <link href="/css/season.css" type="text/css" rel="stylesheet" />
+    <link href="/css/leagueuser/powerrank.css" type="text/css" rel="stylesheet" />
 }
 
 @section Body_Banner {
     <div>
-        <img class="user-header-image" src="~/images/user/Banner_Smoke.png" />
-        <img class="profile-image" src="@cdnService.GetProfilePic(Model.homeUser)" />
+        <img class="user-header-image" src="@Model.profileBannerUrl" />
+        <div class="profile">
+            <img class="profile-image" src="@Model.profilePicUrl" />
+            <span class="profile-username">@Model.homeUser.Username</span>
+        </div>
     </div>
 }
 
@@ -29,16 +35,9 @@
         @foreach (var leagueUser in Model.homeUser.LeagueUsers)
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
-            <div class="league-user @row">
-                <div class="league-user-info">
-                    <img class="league-user-profile-image" src="@cdnService.GetProfilePic(leagueUser)" />
-                    <span class="league-user-username">@Model.homeUser.Username</span>
-                    <span class="league-user-league-name">(@leagueUser.League.Name)</span>
-                </div>
-                <div class="league-user-rank">
-                    <span class="league-user-rank-number">@leagueUser.Rank</span>
-                    <span class="league-user-rank-trend">@Html.Partial("~/Views/LeagueUsers/Partials/RankTrend.cshtml", leagueUser.GetRankTrend())</span>
-                </div>
+            <div class="@row">
+                @{ var viewModel = await PowerRankViewModel.Create(leagueUser, Model.user, cdnService, leagueUserService, true); }
+                @await Html.PartialAsync("~/Views/LeagueUsers/Partials/PowerRank.cshtml", viewModel)
             </div>
             ++i;
         }

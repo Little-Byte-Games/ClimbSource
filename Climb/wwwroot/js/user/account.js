@@ -35,7 +35,22 @@ function onUpdateUserProfilePicClick() {
     $.post({
         url: "/Users/UploadProfilePic",
         data: new FormData(form[0]),
-        //data: form.serialize(),
+        processData: false,
+        contentType: false,
+        success: function () {
+            location.reload();
+        },
+        error: function (response) {
+            alert(response.statusText + "\n" + response.responseText);
+        }
+    });
+}
+
+function onUpdateUserProfileBannerClick() {
+    var form = $("#user-profile-banner-form");
+    $.post({
+        url: "/Users/UploadProfileBanner",
+        data: new FormData(form[0]),
         processData: false,
         contentType: false,
         success: function () {

@@ -3,7 +3,6 @@ using Climb.Core;
 using Climb.Models;
 using Climb.Services;
 using Climb.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -114,6 +113,34 @@ namespace Climb.Controllers
 
             return Ok(JsonConvert.SerializeObject(set));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
+        {
+            var challenged = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
+            if(challenged == null)
+            {
+                return BadRequest($"No challenged league user with id '{challengedID} found.");
+            }
+
+            var challenger = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengerID);
+            if(challenger == null)
+            {
+                return BadRequest($"No challenger league user with id '{challengerID} found.");
+            }
+
+            var set = new Set
+            {
+                Player1ID = challengerID,
+                Player2ID = challengedID,
+                DueDate = DateTime.Now.Date,
+                LeagueID = challenger.LeagueID,
+            };
+            await context.Set.AddAsync(set);
+            await context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Fight), new {id = set.ID});
+        }
         #endregion
 
         private async Task SendSetCompletedMessage(Set set)
@@ -122,42 +149,6 @@ namespace Climb.Controllers
             message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Exhibition(int challengerID, int challengedID)
-        {
-            var challenged = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == challengedID);
-            if(challenged == null)
-            {
-                return NotFound($"No challenged league user with id '{challengedID} found.");
-            }
-
-            var challenger = await context.User
-                .Include(u => u.LeagueUsers)
-                .SingleOrDefaultAsync(u => u.ID == challengerID);
-            if(challenger == null)
-            {
-                return NotFound($"No challenger user with id '{challengerID} found.");
-            }
-
-            var challengerLeagueUser = challenger.LeagueUsers.SingleOrDefault(lu => lu.LeagueID == challenged.LeagueID);
-            if(challengerLeagueUser == null)
-            {
-                return NotFound($"No challenger league user for league ID '{challenged.LeagueID}' found.");
-            }
-
-            var set = new Set
-            {
-                Player1ID = challengerLeagueUser.ID,
-                Player2ID = challengedID,
-                DueDate = DateTime.Now.Date,
-                LeagueID = challengerLeagueUser.LeagueID,
-            };
-            await context.Set.AddAsync(set);
-            await context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Fight), new {id = set.ID});
         }
     }
 }

@@ -9,16 +9,16 @@ namespace Climb.Core
         public const int LosingPoints = 1;
 
         public readonly int leagueUserID;
-        public readonly int elo;
+        public readonly int points;
         private readonly Dictionary<int, int> beatenOpponents = new Dictionary<int, int>();
         public int wins;
         public int losses;
         public decimal tieBreaker;
 
-        public SeasonStanding(int leagueUserID, int elo)
+        public SeasonStanding(int leagueUserID, int points)
         {
             this.leagueUserID = leagueUserID;
-            this.elo = elo;
+            this.points = points;
         }
 
         public int CompareTo(SeasonStanding other)

@@ -9,17 +9,17 @@
     Layout = null;
 }
 
-<link href="/css/login.css" rel="stylesheet" type="text/css" />
-<link href="/css/site.css" rel="stylesheet" type="text/css" />
+<link href="/css/login.css" rel="stylesheet" type="text/css"/>
+<link href="/css/site.css" rel="stylesheet" type="text/css"/>
 
-@if (hostingEnvironment.IsDevelopment())
+@if(hostingEnvironment.IsDevelopment())
 {
     <button onclick="createAdminAccount()">Create admin account</button>
 }
 <div class="container">
     <div class="panel">
         <section>
-            <h4 class="sub-title">CLIMB</h4>
+            <h3 class="sub-title">CLIMB</h3>
             <div class="panel-form">
                 <div align="center">
                     <span class="input-error">@ViewData["Error"]</span>
@@ -27,19 +27,19 @@
                 <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
                     <div class="panel-form-input">
                         <label asp-for="Email"></label>
-                        <input asp-for="Email" />
+                        <input asp-for="Email"/>
                     </div>
                     <span class="input-error" asp-validation-for="Email"></span>
                     <div class="panel-form-input">
                         <label asp-for="Password"></label>
-                        <input asp-for="Password" />
+                        <input asp-for="Password"/>
                     </div>
                     <span class="input-error" asp-validation-for="Password"></span>
                     <div class="panel-form-input">
                         <label asp-for="RememberMe">
                             @Html.DisplayNameFor(m => m.RememberMe)
                         </label>
-                        <input asp-for="RememberMe" />
+                        <input asp-for="RememberMe"/>
                     </div>
                     <div class="panel-form-input">
                         <button type="submit">Log in</button>
@@ -62,17 +62,21 @@
 
 @await Html.PartialAsync("~/Views/Shared/Common.cshtml")
 
-<script>
-    function createAdminAccount() {
-        $.post({
-            url: '/Admin/CreateAdminAccount',
-            success() {
-                window.location.href = "/Users/Home";
-            },
-            error(response) {
-                alert(response);
-                alert(JSON.stringify(response));
-            }
-        });
-    }
-</script>
+@if(hostingEnvironment.IsDevelopment())
+{
+    <script>
+        function createAdminAccount() {
+            $.post({
+                url: '/Admin/CreateAdminAccount',
+                success() {
+                    window.location.href = "/Users/Home";
+                },
+                error(response) {
+                    alert(response);
+                    alert(JSON.stringify(response));
+                }
+            });
+            return false;
+        }
+    </script>
+}

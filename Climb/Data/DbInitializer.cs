@@ -5,18 +5,18 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Climb.Services;
 
 namespace Climb.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(ClimbContext context, IHostingEnvironment environment, bool delete)
+        public static void Initialize(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService, bool delete)
         {
             if(delete)
             {
                 context.Database.EnsureDeleted();
             }
-            context.Database.EnsureCreated();
 
             if(context.Game.Any())
             {
@@ -30,7 +30,7 @@ namespace Climb.Data
             if(environment.IsDevelopment())
             {
                 var users = CreateDevUsers(context);
-                CreateDevLeagues(context, users);
+                CreateDevLeagues(context, users, leagueService);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Climb.Data
             return users;
         }
 
-        private static void CreateDevLeagues(ClimbContext context, IReadOnlyList<User> users)
+        private static void CreateDevLeagues(ClimbContext context, IReadOnlyList<User> users, ILeagueService leagueService)
         {
             var leagues = new[]
             {
@@ -75,8 +75,7 @@ namespace Climb.Data
             {
                 foreach(var user in users)
                 {
-                    var leagueUser = new LeagueUser {User = user, League = league};
-                    context.LeagueUser.Add(leagueUser);
+                    leagueService.JoinLeague(user, league);
                 }
             }
             context.SaveChanges();

@@ -1,14 +1,14 @@
 ﻿@using Climb.Services
 @model LeagueUserSeason
-@inject ICdnService cdnService
+@inject CdnService cdnService
 @inject ILeagueUserService leagueUserService
 
 <div class="standing-container">
     <span class="standing-rank">@Model.Standing</span>
-    <img class="standing-profilepic" src="@cdnService.GetProfilePic(Model.LeagueUser)"/>
+    <img class="standing-profilepic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.LeagueUser.ProfilePicKey)"/>
 
     <div class="standing-info">
-        @Html.Partial("/Views/Users/Partials/Name.cshtml", Model.LeagueUser.User)
+        @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.LeagueUser)
         <div>
             <span>(@Model.Points of @Model.PotentialMaxPoints)</span>
         </div>
