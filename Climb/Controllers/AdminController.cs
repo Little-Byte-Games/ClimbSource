@@ -1,42 +1,48 @@
-﻿using Climb.Data;
+﻿using Climb.Consts;
+using Climb.Data;
+using Climb.FormModels.Admin;
 using Climb.Models;
 using Climb.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Climb.Consts;
-using Climb.FormModels.Admin;
 
 namespace Climb.Controllers
 {
+    //[Authorize(Roles = AdminRole)]
+    [Authorize(Policy = "RequireAdminRole")]
     public class AdminController : Controller
     {
+        public const string AdminRole = "Admin";
+
         private readonly ClimbContext context;
         private readonly IHostingEnvironment environment;
         private readonly ILeagueService leagueService;
         private readonly IAccountService accountService;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService, IAccountService accountService, SignInManager<ApplicationUser> signInManager)
+        public AdminController(ClimbContext context, IHostingEnvironment environment, ILeagueService leagueService, IAccountService accountService, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.context = context;
             this.environment = environment;
             this.leagueService = leagueService;
             this.accountService = accountService;
             this.signInManager = signInManager;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
         #region Pages
         public IActionResult Index()
         {
-            if(!environment.IsDevelopment())
-            {
-                return NotFound("You're not a site admin!");
-            }
-
             return View();
         }
         #endregion
@@ -100,9 +106,15 @@ namespace Climb.Controllers
             return Ok("Set reminders sent");
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateAdminAccount()
         {
+            if(environment.IsProduction())
+            {
+                return Unauthorized();
+            }
+
             const string username = "admin";
             const string email = "a@a.com";
             const string password = "Abc_123";
@@ -114,9 +126,39 @@ namespace Climb.Controllers
             }
             else
             {
+                //var adminRoleExists = await roleManager.RoleExistsAsync(AdminRole);
+                //if(!adminRoleExists)
+                //{
+                //    var adminRole = new IdentityRole(AdminRole);
+                //    var result = await roleManager.CreateAsync(adminRole);
+                //    if(!result.Succeeded)
+                //    {
+                //        return StatusCode(StatusCodes.Status500InternalServerError, "Could not create Admin role.");
+                //    }
+
+                //    await context.SaveChangesAsync();
+                //}
+
                 try
                 {
-                    await accountService.CreateUser(email, username, password);
+                    var result = await accountService.CreateUser(email, username, password);
+                    if(!result.result.Succeeded)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Could not create admin user.");
+                    }
+
+                    //var roleResult = await userManager.AddToRoleAsync(result.user, AdminRole);
+                    //if(!roleResult.Succeeded)
+                    //{
+                    //    return StatusCode(StatusCodes.Status500InternalServerError, "Could not add admin user to Admin role.");
+                    //}
+
+                    var claimResult = await userManager.AddClaimAsync(result.user, new Claim(ClaimTypes.Role, AdminRole));
+                    if (!claimResult.Succeeded)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Could not give Admin claim to admin user.");
+                    }
+                    await context.SaveChangesAsync();
                 }
                 catch(Exception exception)
                 {

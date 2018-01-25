@@ -237,7 +237,7 @@ namespace UserApp.Controllers
                     ViewData["UsernameTaken"] = $"Username '{model.Username}' is already taken.";
                 }
 
-                var result = await accountService.CreateUser(model.Email, model.Username, model.Password);
+                var result = (await accountService.CreateUser(model.Email, model.Username, model.Password)).result;
                 if(result.Succeeded)
                 {
                     return RedirectToLocal(returnUrl);

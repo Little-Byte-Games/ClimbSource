@@ -1,4 +1,6 @@
-﻿using Climb.Models;
+﻿using System.Security.Claims;
+using Climb.Controllers;
+using Climb.Models;
 using Climb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +53,8 @@ namespace Climb
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc();
+
+            services.AddAuthorization(options => { options.AddPolicy("RequireAdminRole", policy => policy.RequireClaim(ClaimTypes.Role, AdminController.AdminRole)); });
 
             services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
         }

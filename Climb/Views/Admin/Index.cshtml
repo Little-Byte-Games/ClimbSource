@@ -1,52 +1,56 @@
 ﻿@using Climb.Consts
+@using Microsoft.AspNetCore.Hosting
+@inject IHostingEnvironment hostingEnvironment
+
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
-    <meta name="viewport" content="width=device-width"/>
+    <meta name="viewport" content="width=device-width" />
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/js/admin.js"></script>
-    <link href="/css/admin.css" rel="Stylesheet" type="text/css"/>
+    <link href="/css/admin.css" rel="Stylesheet" type="text/css" />
     <title>Index</title>
 </head>
 <body>
-<div id="modal">
-    <div class="modal-content">
-        <span id="closeModal">CLOSE</span>
-        <h3 id="modalAction"></h3>
-        <span id="modal-time"></span>
-        <p id="modalResult"></p>
+    <div id="modal">
+        <div class="modal-content">
+            <span id="closeModal">CLOSE</span>
+            <h3 id="modalAction"></h3>
+            <span id="modal-time"></span>
+            <p id="modalResult"></p>
+        </div>
     </div>
-</div>
 
-<a asp-controller="Users" asp-action="Home">Home</a>
-<h1>Admin</h1>
-<div>
-    <h2>DB</h2>
-    <button onclick="resetDB()">Reset</button>
-</div>
-<div>
-    <h2>League</h2>
-    <button onclick="takeSnapshots()">Take Snapshots</button>
-    <button onclick="sendSetReminders()">Send Set Reminders</button>
-</div>
-<div>
-    <h2>Feature Toggles</h2>
-    <form id="feature-toggle-form" asp-controller="Admin" asp-action="UpdateFeatureToggles" method="post">
-        <div>
-            @Html.CheckBox("Slack", FeatureToggles.Slack)
-            <label>Slack</label>
-        </div>
-        <div>
-            @Html.CheckBox("Challonge", FeatureToggles.Challonge)
-            <label>Challonge</label>
-        </div>
-        <button type="button" onclick="updateFeatureToggles()">Update</button>
-    </form>
-</div>
+    <div>Environment = @hostingEnvironment.EnvironmentName</div>
+
+    <a asp-controller="Users" asp-action="Home">Home</a>
+    <h1>Admin</h1>
+    <div>
+        <h2>DB</h2>
+        <button onclick="resetDB()">Reset</button>
+    </div>
+    <div>
+        <h2>League</h2>
+        <button onclick="takeSnapshots()">Take Snapshots</button>
+        <button onclick="sendSetReminders()">Send Set Reminders</button>
+    </div>
+    <div>
+        <h2>Feature Toggles</h2>
+        <form id="feature-toggle-form" asp-controller="Admin" asp-action="UpdateFeatureToggles" method="post">
+            <div>
+                @Html.CheckBox("Slack", FeatureToggles.Slack)
+                <label>Slack</label>
+            </div>
+            <div>
+                @Html.CheckBox("Challonge", FeatureToggles.Challonge)
+                <label>Challonge</label>
+            </div>
+            <button type="button" onclick="updateFeatureToggles()">Update</button>
+        </form>
+    </div>
 </body>
 </html>

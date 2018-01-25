@@ -1,7 +1,7 @@
 ﻿using Climb.Models;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Climb.Services
 {
@@ -20,7 +20,7 @@ namespace Climb.Services
             this.signInManager = signInManager;
         }
 
-        public async Task<IdentityResult> CreateUser(string email, string username, string password)
+        public async Task<(ApplicationUser user, IdentityResult result)> CreateUser(string email, string username, string password)
         {
             var user = new User { Username = username };
             await context.User.AddAsync(user);
@@ -36,7 +36,7 @@ namespace Climb.Services
                 logger.LogInformation("User created a new account with password.");
             }
 
-            return result;
+            return (applicationUser, result);
         }
     }
 }
