@@ -12,7 +12,7 @@
 <link href="/css/login.css" rel="stylesheet" type="text/css"/>
 <link href="/css/site.css" rel="stylesheet" type="text/css"/>
 
-@if(hostingEnvironment.IsDevelopment())
+@if(!hostingEnvironment.IsProduction())
 {
     <button onclick="createAdminAccount()">Create admin account</button>
 }
@@ -62,7 +62,7 @@
 
 @await Html.PartialAsync("~/Views/Shared/Common.cshtml")
 
-@if(hostingEnvironment.IsDevelopment())
+@if(!hostingEnvironment.IsProduction())
 {
     <script>
         function createAdminAccount() {

@@ -23,10 +23,6 @@ namespace Climb
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var test = Configuration["Test"];
-            Console.WriteLine(test);
-
-
             var connectionString = Configuration.GetConnectionString("defaultConnection");
             if(string.IsNullOrWhiteSpace(connectionString))
             {
