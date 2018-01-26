@@ -287,7 +287,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-Climb/appsettings\.json
-Climb/appsettings\.Development\.json
+Climb/appsettings*.json
 *.min.*
 **/wwwroot/temp/
