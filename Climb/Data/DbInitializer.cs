@@ -27,7 +27,7 @@ namespace Climb.Data
             LoadFromFile(context, context.Character, "Characters");
             LoadFromFile(context, context.Stage, "Stages");
 
-            if(environment.IsDevelopment())
+            if(!environment.IsProduction())
             {
                 var users = CreateDevUsers(context);
                 CreateDevLeagues(context, users, leagueService);
