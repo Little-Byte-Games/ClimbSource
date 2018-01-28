@@ -75,7 +75,7 @@ namespace Climb.Data
             {
                 foreach(var user in users)
                 {
-                    leagueService.JoinLeague(user, league);
+                    leagueService.JoinLeague(user, league).Wait();
                 }
             }
             context.SaveChanges();
