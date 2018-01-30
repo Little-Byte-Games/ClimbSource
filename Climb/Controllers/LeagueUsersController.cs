@@ -85,13 +85,15 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadProfilePic(int id, IFormFile file)
         {
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(lu => lu.ID == id);
+            var leagueUser = await context.LeagueUser
+                .Include(lu => lu.User).AsNoTracking()
+                .SingleOrDefaultAsync(lu => lu.ID == id);
             if(leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
             }
 
-            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
+            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey) && leagueUser.User.ProfilePicKey != leagueUser.ProfilePicKey)
             {
                 await cdnService.DeleteImage(CdnService.ImageTypes.ProfilePic, leagueUser.ProfilePicKey);
             }
