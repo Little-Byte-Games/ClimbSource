@@ -53,6 +53,8 @@ namespace Climb.Services
             return fileKey;
         }
 
+        public abstract Task DeleteImage(ImageTypes imageType, string fileKey);
+
         private bool IsValid(ImageTypes imageType, IFormFile file)
         {
             return file.Length <= imageData[imageType].maxFileSize;

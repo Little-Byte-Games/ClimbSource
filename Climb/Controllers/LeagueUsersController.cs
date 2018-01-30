@@ -53,7 +53,6 @@ namespace Climb.Controllers
         #endregion
 
         #region Page Forms
-        
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Update([Bind("ID,DisplayName,SlackUsername,ChallongeUsername")]LeagueUser leagueUser)
@@ -90,6 +89,11 @@ namespace Climb.Controllers
             if(leagueUser == null)
             {
                 return NotFound($"No league user with ID '{id}' found.");
+            }
+
+            if(!string.IsNullOrWhiteSpace(leagueUser.ProfilePicKey))
+            {
+                await cdnService.DeleteImage(CdnService.ImageTypes.ProfilePic, leagueUser.ProfilePicKey);
             }
 
             leagueUser.ProfilePicKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
