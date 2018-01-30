@@ -71,7 +71,8 @@
                         <input class="input-file" type="file" name="file" accept="image/*"/>
                         <button>Update</button>
                     </form>
-                    <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfilePic].maxFileSize.ToString("N0"))B</span>
+                    <span class="upload-size">Max File Size = @((profilePicRules.maxFileSize / 1024).ToString("N0"))KB</span>
+                    <span class="upload-size">Max Dimensions = @($"{profilePicRules.width}x{profilePicRules.height}")</span>
                 </div>
                 <form class="account-form" asp-controller="LeagueUsers" asp-action="Update" method="post">
                     <input asp-for="@leagueUser.ID"/>
