@@ -17,6 +17,7 @@ namespace Climb.Models
         public int? Player1Score { get; set; }
         public int? Player2Score { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsDeactivated { get; set; }
 
         [InverseProperty("P1Sets")]
         [ForeignKey("Player1ID")]

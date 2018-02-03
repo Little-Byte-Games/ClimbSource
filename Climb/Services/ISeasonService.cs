@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Climb.Models;
+using System;
 using System.Threading.Tasks;
-using Climb.Models;
 
 namespace Climb.Services
 {
@@ -9,6 +9,7 @@ namespace Climb.Services
         Task<Season> Create(League league, DateTime? startDate = null);
         Task<LeagueUserSeason> Join(Season season, int leagueUserID);
         Task JoinAll(Season season);
+        Task Leave(LeagueUserSeason participant);
         Task Start(Season season);
         Task UpdateStandings(int seasonID);
         Task End(int seasonID);

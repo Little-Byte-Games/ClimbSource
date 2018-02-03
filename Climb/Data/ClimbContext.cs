@@ -35,9 +35,12 @@ namespace Climb.Models
 
             modelBuilder.Entity<LeagueUser>()
                 .HasQueryFilter(lu => lu.HasLeft == false);
-            
+
             modelBuilder.Entity<LeagueUserSeason>()
                 .HasQueryFilter(lu => lu.HasLeft == false);
+
+            modelBuilder.Entity<Set>()
+                .HasQueryFilter(s => s.IsDeactivated == false);
 
             modelBuilder.Entity<LeagueUserSeason>()
                 .HasKey(lus => new { lus.LeagueUserID, lus.SeasonID });

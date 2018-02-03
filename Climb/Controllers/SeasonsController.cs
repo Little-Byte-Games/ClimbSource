@@ -183,7 +183,10 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> Leave(int id, int leagueUserID)
         {
-            var season = await context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == id);
+            var season = await context.Season
+                .Include(s => s.Participants)
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == id);
             if (season == null)
             {
                 return NotFound($"No Season with ID {id} found.");
@@ -195,9 +198,8 @@ namespace Climb.Controllers
                 return NotFound($"No Participant with League User ID {leagueUserID} found.");
             }
 
-            participant.HasLeft = true;
-            context.Update(participant);
-            await context.SaveChangesAsync();
+            await seasonService.Leave(participant);
+
             return Ok(participant);
         }
         

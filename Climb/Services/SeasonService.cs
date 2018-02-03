@@ -1,4 +1,5 @@
-﻿using Climb.Core;
+﻿using Climb.Consts;
+using Climb.Core;
 using Climb.Core.Challonge;
 using Climb.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Consts;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -56,6 +56,21 @@ namespace Climb.Services
                 LeagueUserID = m.ID
             }));
             context.Update(season);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task Leave(LeagueUserSeason participant)
+        {
+            participant.HasLeft = true;
+            context.Update(participant);
+
+            var sets = participant.Season.Sets.Where(s => !s.IsComplete && s.IsPlaying(participant.LeagueUserID)).ToList();
+            foreach(var set in sets)
+            {
+                set.IsDeactivated = true;
+            }
+            context.UpdateRange(sets);
+
             await context.SaveChangesAsync();
         }
 
