@@ -4,14 +4,14 @@ using Climb.Models.AccountViewModels;
 using Climb.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 
 namespace UserApp.Controllers
 {
@@ -341,7 +341,7 @@ namespace UserApp.Controllers
                             var season = await seasonService.Create(league);
                             foreach(var member in league.Members)
                             {
-                                await seasonService.Join(season, member);
+                                await seasonService.Join(season, member.ID);
                             }
                             await seasonService.Start(season);
                         }

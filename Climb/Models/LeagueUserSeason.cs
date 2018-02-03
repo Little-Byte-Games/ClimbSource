@@ -10,6 +10,7 @@ namespace Climb.Models
         public int Points { get; set; }
         public int PotentialMaxPoints { get; set; }
         public int ChallongeID { get; set; }
+        public bool HasLeft { get; set; }
 
         [JsonIgnore]
         public LeagueUser LeagueUser { get; set; }

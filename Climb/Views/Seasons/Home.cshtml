@@ -6,41 +6,41 @@
 @{
     ViewData["Title"] = "Season-Home";
     Layout = "_HomeLayout";
-    var returnUrl = Url.Action("Home", "Seasons", new { Model.season.ID });
+    var returnUrl = Url.Action("Home", "Seasons", new {Model.season.ID});
 }
 
 @section Styles
-    {
-    <link href="/css/season.css" type="text/css" rel="stylesheet" />
+{
+    <link href="/css/season.css" type="text/css" rel="stylesheet"/>
 }
 
 @section Scripts
-    {
+{
     <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
 }
 
 @section Body_Banner
-    {
-    <img class="body-banner-image" src="@Model.season.League.Game.BannerPicUrl" />
+{
+    <img class="body-banner-image" src="@Model.season.League.Game.BannerPicUrl"/>
     <h1 class="season-title">@Model.season.DisplayName</h1>
     <h2 class="season-subtitle">@Model.season.League.Name</h2>
 }
 
-@if (FeatureToggles.Challonge)
+@if(FeatureToggles.Challonge)
 {
-    <img src="@Model.BracketUrl" />
+    <img src="@Model.BracketUrl"/>
 }
 
-@if (!Model.season.IsComplete)
+@if(!Model.season.IsComplete)
 {
     <button onclick="endSeason(@Model.season.ID)">End Season</button>
 }
 
 @section User_Content_Left
-    {
+{
     <h3>Standings</h3>
     @{ var i = 0; }
-    @foreach (var participant in Model.season.Participants.OrderBy(lus => lus.Standing))
+    @foreach(var participant in Model.season.Participants.OrderBy(lus => lus.Standing))
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
         <div class="@row">
@@ -48,13 +48,22 @@
         </div>
         ++i;
     }
+
+    @if(Model.season.Participants.Any(p => p.LeagueUserID == Model.leagueUser.ID))
+    {
+        <form id="leave-form" asp-controller="Seasons" asp-action="Leave" method="post">
+            <input type="hidden" name="id" value="@Model.season.ID"/>
+            <input type="hidden" name="leagueUserID" value="@Model.leagueUser.ID"/>
+            <button type="button" onclick="leaveSeason(@Model.season.LeagueID)">Leave</button>
+        </form>
+    }
 }
 
 @section User_Content_Middle
-    {
+{
     <h3>Activity</h3>
     @{ var i = 0; }
-    @foreach (var set in Model.recentSets)
+    @foreach(var set in Model.recentSets)
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
         <div class="@row">
@@ -66,15 +75,15 @@
 }
 
 @section User_Content_Right
-    {
+{
     <h3>Sets</h3>
     @{
         var overdueSets = Model.season.GetOverdueSets();
-        if (overdueSets.Any())
+        if(overdueSets.Any())
         {
             <h4 class="sets-subtitle">Overdue</h4>
             var i = 0;
-            foreach (var set in overdueSets)
+            foreach(var set in overdueSets)
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
@@ -86,11 +95,11 @@
         }
 
         var availableSets = Model.season.GetAvailableSets();
-        if (availableSets.Any())
+        if(availableSets.Any())
         {
             <h4 class="sets-subtitle">Available</h4>
             var i = 0;
-            foreach (var set in Model.season.GetAvailableSets())
+            foreach(var set in Model.season.GetAvailableSets())
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">

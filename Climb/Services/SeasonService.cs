@@ -37,14 +37,15 @@ namespace Climb.Services
             return season;
         }
 
-        public async Task Join(Season season, LeagueUser leagueUser)
+        public async Task<LeagueUserSeason> Join(Season season, int leagueUserID)
         {
-            var leagueUserSeason = new LeagueUserSeason { Season = season, LeagueUser = leagueUser };
+            var leagueUserSeason = new LeagueUserSeason { Season = season, LeagueUserID = leagueUserID };
             await context.AddAsync(leagueUserSeason);
 
             season.Participants.Add(leagueUserSeason);
             context.Update(season);
             await context.SaveChangesAsync();
+            return leagueUserSeason;
         }
 
         public async Task JoinAll(Season season)

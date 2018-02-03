@@ -27,3 +27,17 @@ function endSeason(seasonID) {
 function goToSeason(seasonID) {
     window.location.href = "/Seasons/Home/" + seasonID;
 }
+
+function leaveSeason(leagueID) {
+    var form = $("#leave-form");
+    $.post({
+        url: form.attr("action"),
+        data: form.serialize(),
+        success: () => {
+            location.href = "/Leagues/Home/" + leagueID;
+        },
+        error: () => {
+            alert("Could not leave seasons.");
+        }
+    });
+}
