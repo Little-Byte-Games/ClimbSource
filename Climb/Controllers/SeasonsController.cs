@@ -222,6 +222,7 @@ namespace Climb.Controllers
             {
                 context.Update(participant);
                 participant.HasLeft = false;
+                await context.SaveChangesAsync();
             }
 
             // TODO: create missing sets
