@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace Climb.Models
@@ -56,6 +57,14 @@ namespace Climb.Models
         public LeagueUser GetLeagueUser(User user)
         {
             return Player1?.UserID == user.ID ? Player1 : Player2;
+        }
+
+        public int GetOpponentID(int participantID)
+        {
+            Debug.Assert(IsPlaying(participantID), "Can't get opponent if participant is not even in the set.");
+            Debug.Assert(Player2ID != null, nameof(Player2ID) + " != null");
+            Debug.Assert(Player1ID != null, nameof(Player1ID) + " != null");
+            return Player1ID == participantID ? Player2ID.Value : Player1ID.Value;
         }
     }
 }

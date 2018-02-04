@@ -207,13 +207,16 @@ namespace Climb.Controllers
         public async Task<IActionResult> Join(int id, int leagueUserID)
         {
             var season = await context.Season
-                .Include(s => s.Participants)
                 .IgnoreQueryFilters()
+                .Include(s => s.Participants)
+                .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(season == null)
             {
                 return NotFound($"No Season with ID {id} found.");
             }
+
+            var opponents = new HashSet<int> {leagueUserID};
 
             var participant = season.Participants.FirstOrDefault(lus => lus.LeagueUserID == leagueUserID);
             if (participant == null)
@@ -224,11 +227,39 @@ namespace Climb.Controllers
             {
                 context.Update(participant);
                 participant.HasLeft = false;
-                await context.SaveChangesAsync();
+
+                foreach(var set in season.Sets.Where(s => s.IsPlaying(participant.LeagueUserID)))
+                {
+                    set.IsDeactivated = false;
+                    context.Update(set);
+
+                    opponents.Add(set.GetOpponentID(participant.LeagueUserID));
+                }
             }
 
-            // TODO: create missing sets
+            var newSets = new List<Set>();
+            var newSetCount = 0;
+            foreach(var opponent in season.Participants.Where(lus => lus.HasLeft == false))
+            {
+                if(opponents.Contains(opponent.LeagueUserID))
+                {
+                    continue;
+                }
 
+                ++newSetCount;
+                var set = new Set
+                {
+                    LeagueID = season.LeagueID,
+                    SeasonID = season.ID,
+                    Player1ID = participant.LeagueUserID,
+                    Player2ID = opponent.LeagueUserID,
+                    DueDate = DateTime.UtcNow.AddDays(7 * newSetCount)
+                };
+                newSets.Add(set);
+            }
+
+            await context.AddRangeAsync(newSets);
+            await context.SaveChangesAsync();
 
             return Ok(participant);
         }
