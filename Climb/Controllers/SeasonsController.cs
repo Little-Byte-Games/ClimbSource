@@ -60,24 +60,6 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Join(int id)
-        {
-            var season = await context.Season
-                .Include(s => s.Participants).ThenInclude(user => user.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if(season == null)
-            {
-                return NotFound();
-            }
-
-            var nonparticipants = await context.LeagueUser
-                .Where(u => u.LeagueID == season.LeagueID && season.Participants.All(lus => lus.LeagueUserID != u.ID))
-                .Include(leagueUser => leagueUser.User)
-                .ToListAsync();
-
-            return View(new JoinList(season, nonparticipants));
-        }
-
         public async Task<IActionResult> Start(int id)
         {
             var season = await context.Season.Include(s => s.Sets)
@@ -264,18 +246,5 @@ namespace Climb.Controllers
             return Ok(participant);
         }
         #endregion
-
-        [Obsolete]
-        public class JoinList
-        {
-            public readonly Season season;
-            public readonly IEnumerable<LeagueUser> nonparticipants;
-
-            public JoinList(Season season, IEnumerable<LeagueUser> nonparticipants)
-            {
-                this.season = season;
-                this.nonparticipants = nonparticipants;
-            }
-        }
     }
 }
