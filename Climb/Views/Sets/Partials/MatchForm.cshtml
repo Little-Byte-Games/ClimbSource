@@ -1,4 +1,5 @@
-﻿@using Climb.ViewModels.Matches
+﻿@using System.Diagnostics
+@using Climb.ViewModels.Matches
 @using Climb.ViewModels.Sets
 @using Microsoft.AspNetCore.Hosting
 @model MatchFormViewModel
@@ -23,6 +24,7 @@
                 <div class="match-form-characters pad-right">
                     @foreach(var character in Model.player1Characters)
                     {
+                        Debug.Assert(Model.set.Player1ID != null, "Model.set.Player1ID != null");
                         @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player1ID.Value))
                         ++characterInputCount;
                     }
@@ -36,6 +38,7 @@
                 <div class="match-form-characters pad-right">
                     @foreach(var character in Model.player1Characters)
                     {
+                        Debug.Assert(Model.set.Player2ID != null, "Model.set.Player2ID != null");
                         @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player2ID.Value))
                         ++characterInputCount;
                     }
