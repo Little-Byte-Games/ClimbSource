@@ -44,6 +44,7 @@ namespace Climb.Services
 
             season.Participants.Add(leagueUserSeason);
             context.Update(season);
+
             await context.SaveChangesAsync();
             return leagueUserSeason;
         }
@@ -62,9 +63,8 @@ namespace Climb.Services
         public async Task Leave(LeagueUserSeason participant)
         {
             participant.HasLeft = true;
-            context.Update(participant);
 
-            var sets = participant.Season.Sets.Where(s => !s.IsComplete && s.IsPlaying(participant.LeagueUserID)).ToList();
+            var sets = participant.Season.Sets.Where(s => s.IsPlaying(participant.LeagueUserID)).ToList();
             foreach(var set in sets)
             {
                 set.IsDeactivated = true;
@@ -129,11 +129,6 @@ namespace Climb.Services
             context.UpdateRange(season.Sets);
             context.Update(season);
 
-            foreach(var participant in season.Participants)
-            {
-                UpdatePotentialMaxPoints(participant);
-            }
-
             await context.SaveChangesAsync();
         }
 
@@ -151,8 +146,9 @@ namespace Climb.Services
                 points.Add(leagueUserID, new SeasonStanding(leagueUserID, participant.LeagueUser.Points));
             }
 
-            foreach(var set in season.Sets)
+            foreach(var set in season.Sets.Where(s => !s.IsDeactivated))
             {
+                Debug.Assert(!set.IsDeactivated, "Don't score a deactivated set.");
                 if(set.IsComplete)
                 {
                     Debug.Assert(set.WinnerID != null, "set.WinnerID != null");
@@ -189,7 +185,7 @@ namespace Climb.Services
                 }
             }
 
-            var sortedPoints = points.OrderByDescending(p => p.Value);
+            var sortedPoints = points.OrderByDescending(p => p.Value).ToArray();
 
             var placing = 1;
             var lastTieBreaker = -1m;
@@ -208,7 +204,7 @@ namespace Climb.Services
                 if(lastTieBreaker != participant.Value.tieBreaker)
                 {
                     ++placing;
-                    lastTieBreaker = participant.Key;
+                    lastTieBreaker = participant.Value.tieBreaker;
                 }
             }
 
@@ -216,9 +212,9 @@ namespace Climb.Services
             await context.SaveChangesAsync();
         }
 
-        private void UpdatePotentialMaxPoints(LeagueUserSeason participant)
+        private static void UpdatePotentialMaxPoints(LeagueUserSeason participant)
         {
-            var remainingSets = participant.Season.Sets.Count(s => !s.IsComplete && s.IsPlaying(participant.LeagueUserID));
+            var remainingSets = participant.Season.Sets.Count(s => !s.IsComplete && !s.IsDeactivated && s.IsPlaying(participant.LeagueUserID));
             participant.PotentialMaxPoints = remainingSets * SeasonStanding.WinningPoints + participant.Points;
         }
 

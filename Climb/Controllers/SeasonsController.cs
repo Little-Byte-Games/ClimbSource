@@ -158,6 +158,7 @@ namespace Climb.Controllers
 
             await seasonService.JoinAll(season);
             await seasonService.Start(season);
+            await seasonService.UpdateStandings(season.ID);
 
             return Ok(season);
         }
@@ -166,7 +167,7 @@ namespace Climb.Controllers
         public async Task<IActionResult> Leave(int id, int leagueUserID)
         {
             var season = await context.Season
-                .Include(s => s.Participants)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
                 .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if (season == null)
@@ -181,6 +182,7 @@ namespace Climb.Controllers
             }
 
             await seasonService.Leave(participant);
+            await seasonService.UpdateStandings(season.ID);
 
             return Ok(participant);
         }
@@ -190,7 +192,7 @@ namespace Climb.Controllers
         {
             var season = await context.Season
                 .IgnoreQueryFilters()
-                .Include(s => s.Participants)
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
                 .Include(s => s.Sets)
                 .SingleOrDefaultAsync(s => s.ID == id);
             if(season == null)
@@ -242,6 +244,8 @@ namespace Climb.Controllers
 
             await context.AddRangeAsync(newSets);
             await context.SaveChangesAsync();
+
+            await seasonService.UpdateStandings(season.ID);
 
             return Ok(participant);
         }
