@@ -166,13 +166,13 @@ namespace Climb.Services
             var tieBreaker = TieBreakerFactory.Create();
 
             var standingData = points.Values.ToList();
-            while(standingData.Count > 0)
+            while (standingData.Count > 0)
             {
                 var ties = new List<SeasonStanding>();
                 var currentPoints = standingData[0].GetSeasonPoints();
                 for (int i = standingData.Count - 1; i >= 0; --i)
                 {
-                    if(standingData[i].GetSeasonPoints() == currentPoints)
+                    if (standingData[i].GetSeasonPoints() == currentPoints)
                     {
                         ties.Add(standingData[i]);
                         standingData.RemoveAt(i);
@@ -188,7 +188,6 @@ namespace Climb.Services
             var sortedPoints = points.OrderByDescending(p => p.Value).ToArray();
 
             var placing = 1;
-            var lastTieBreaker = -1m;
             foreach(var participant in sortedPoints)
             {
                 var leagueUserSeason = season.Participants.First(p => p.LeagueUserID == participant.Key);
@@ -201,11 +200,7 @@ namespace Climb.Services
                     await ChallongeController.UpdateBracket(challongeKey, season.ChallongeID, leagueUserSeason.ChallongeID, placing); 
                 }
 
-                if(lastTieBreaker != participant.Value.tieBreaker)
-                {
-                    ++placing;
-                    lastTieBreaker = participant.Value.tieBreaker;
-                }
+                ++placing;
             }
 
             context.UpdateRange(season.Participants);
