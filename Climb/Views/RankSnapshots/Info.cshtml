@@ -1,6 +1,6 @@
 ﻿@model RankSnapshot
 
-<div class="panel panel-default" align="center">
+<div class="panel" align="center">
 	<span>@Model.CreatedDate.ToShortDateString()</span>
 	<br/>
 	@Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.LeagueUser.League)

@@ -60,24 +60,6 @@ namespace Climb.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Join(int id)
-        {
-            var season = await context.Season
-                .Include(s => s.Participants).ThenInclude(user => user.LeagueUser).ThenInclude(u => u.User)
-                .SingleOrDefaultAsync(s => s.ID == id);
-            if(season == null)
-            {
-                return NotFound();
-            }
-
-            var nonparticipants = await context.LeagueUser
-                .Where(u => u.LeagueID == season.LeagueID && season.Participants.All(lus => lus.LeagueUserID != u.ID))
-                .Include(leagueUser => leagueUser.User)
-                .ToListAsync();
-
-            return View(new JoinList(season, nonparticipants));
-        }
-
         public async Task<IActionResult> Start(int id)
         {
             var season = await context.Season.Include(s => s.Sets)
@@ -176,62 +158,97 @@ namespace Climb.Controllers
 
             await seasonService.JoinAll(season);
             await seasonService.Start(season);
+            await seasonService.UpdateStandings(season.ID);
 
             return Ok(season);
         }
-#endregion
-
-        public class JoinList
-        {
-            public readonly Season season;
-            public readonly IEnumerable<LeagueUser> nonparticipants;
-
-            public JoinList(Season season, IEnumerable<LeagueUser> nonparticipants)
-            {
-                this.season = season;
-                this.nonparticipants = nonparticipants;
-            }
-        }
-
+        
         [HttpPost]
-        public async Task<IActionResult> Join(int seasonID, int userID)
+        public async Task<IActionResult> Leave(int id, int leagueUserID)
         {
-            var season = await context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == seasonID);
-            if(season == null)
-            {
-                return NotFound();
-            }
-
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.ID == userID);
-            if(leagueUser == null)
-            {
-                return NotFound();
-            }
-
-            await seasonService.Join(season, leagueUser);
-
-            return RedirectToAction(nameof(Join), new { id = seasonID });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Leave(int seasonID, int userID)
-        {
-            var season = await context.Season.Include(s => s.Participants).SingleOrDefaultAsync(s => s.ID == seasonID);
+            var season = await context.Season
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == id);
             if (season == null)
             {
-                return NotFound();
+                return NotFound($"No Season with ID {id} found.");
             }
 
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.ID == userID && u.LeagueID == season.LeagueID);
-            if (leagueUser == null)
+            var participant = season.Participants.FirstOrDefault(lus => lus.LeagueUserID == leagueUserID);
+            if (participant == null)
             {
-                return NotFound();
+                return NotFound($"No Participant with League User ID {leagueUserID} found.");
             }
 
-            season.Participants.RemoveWhere(lus => lus.LeagueUserID == leagueUser.ID);
-            context.Update(season);
-            await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Join), new { id = seasonID });
+            await seasonService.Leave(participant);
+            await seasonService.UpdateStandings(season.ID);
+
+            return Ok(participant);
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> Join(int id, int leagueUserID)
+        {
+            var season = await context.Season
+                .IgnoreQueryFilters()
+                .Include(s => s.Participants).ThenInclude(lus => lus.LeagueUser)
+                .Include(s => s.Sets)
+                .SingleOrDefaultAsync(s => s.ID == id);
+            if(season == null)
+            {
+                return NotFound($"No Season with ID {id} found.");
+            }
+
+            var opponents = new HashSet<int> {leagueUserID};
+
+            var participant = season.Participants.FirstOrDefault(lus => lus.LeagueUserID == leagueUserID);
+            if (participant == null)
+            {
+                participant = await seasonService.Join(season, leagueUserID);
+            }
+            else if(participant.HasLeft)
+            {
+                context.Update(participant);
+                participant.HasLeft = false;
+
+                foreach(var set in season.Sets.Where(s => s.IsPlaying(participant.LeagueUserID)))
+                {
+                    set.IsDeactivated = false;
+                    context.Update(set);
+
+                    opponents.Add(set.GetOpponentID(participant.LeagueUserID));
+                }
+            }
+
+            var newSets = new List<Set>();
+            var newSetCount = 0;
+            foreach(var opponent in season.Participants.Where(lus => lus.HasLeft == false))
+            {
+                if(opponents.Contains(opponent.LeagueUserID))
+                {
+                    continue;
+                }
+
+                ++newSetCount;
+                var set = new Set
+                {
+                    LeagueID = season.LeagueID,
+                    SeasonID = season.ID,
+                    Player1ID = participant.LeagueUserID,
+                    Player2ID = opponent.LeagueUserID,
+                    DueDate = DateTime.UtcNow.AddDays(7 * newSetCount)
+                };
+                newSets.Add(set);
+            }
+
+            await context.AddRangeAsync(newSets);
+            await context.SaveChangesAsync();
+
+            await seasonService.UpdateStandings(season.ID);
+
+            return Ok(participant);
+        }
+        #endregion
     }
 }
