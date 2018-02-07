@@ -39,21 +39,24 @@
 @section User_Content_Left
 {
     <h3>Standings</h3>
-    @if(Model.season.Participants.Any(p => p.LeagueUserID == Model.leagueUser.ID))
+    @if(Model.leagueUser != null)
     {
-        <form id="leave-form" asp-controller="Seasons" asp-action="Leave" method="post">
-            <input type="hidden" name="id" value="@Model.season.ID"/>
-            <input type="hidden" name="leagueUserID" value="@Model.leagueUser.ID"/>
-            <button type="button" onclick="leaveSeason(@Model.season.LeagueID)">Leave</button>
-        </form>
-    }
-    else
-    {
-        <form id="join-form" asp-controller="Seasons" asp-action="Join" method="post">
-            <input type="hidden" name="id" value="@Model.season.ID"/>
-            <input type="hidden" name="leagueUserID" value="@Model.leagueUser.ID"/>
-            <button type="button" onclick="joinSeason()">Join</button>
-        </form>
+        if(Model.season.Participants.Any(p => p.LeagueUserID == Model.leagueUser.ID))
+        {
+            <form id="leave-form" asp-controller="Seasons" asp-action="Leave" method="post">
+                <input type="hidden" name="id" value="@Model.season.ID"/>
+                <input type="hidden" name="leagueUserID" value="@Model.leagueUser.ID"/>
+                <button type="button" onclick="leaveSeason(@Model.season.LeagueID)">Leave</button>
+            </form>
+        }
+        else
+        {
+            <form id="join-form" asp-controller="Seasons" asp-action="Join" method="post">
+                <input type="hidden" name="id" value="@Model.season.ID"/>
+                <input type="hidden" name="leagueUserID" value="@Model.leagueUser.ID"/>
+                <button type="button" onclick="joinSeason()">Join</button>
+            </form>
+        }
     }
 
     @{ var i = 0; }
