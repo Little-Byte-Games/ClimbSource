@@ -3,9 +3,8 @@
 }
 
 .profile {
+    width: 100%;
     position: absolute;
-    left: 50%;
-    margin-left: -150px;
     top: 75px;
     z-index: 1;
     display: flex;
