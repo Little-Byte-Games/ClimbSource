@@ -34,7 +34,7 @@ namespace Climb.Migrations
                 name: "DisplayName",
                 table: "LeagueUser",
                 maxLength: 20,
-                nullable: false,
+                nullable: true,
                 oldClrType: typeof(string),
                 oldNullable: true);
 
