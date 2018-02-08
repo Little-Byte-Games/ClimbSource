@@ -46,7 +46,7 @@ namespace Climb.Models
 
         public bool IsPlaying(int? leagueUserID)
         {
-            return leagueUserID == Player1ID || leagueUserID == Player2ID;
+            return leagueUserID != null && (leagueUserID == Player1ID || leagueUserID == Player2ID);
         }
 
         public bool IsPlaying(LeagueUser leagueUser)

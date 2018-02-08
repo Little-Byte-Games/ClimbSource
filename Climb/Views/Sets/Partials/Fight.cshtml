@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </div>
-            @if(!Model.set.IsLocked)
+            @if(Model.canSubmit)
             {
                 <div class="submit">
                     <input id="submit-button" type="submit" value="Submit"/>
