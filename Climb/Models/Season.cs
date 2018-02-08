@@ -58,7 +58,7 @@ namespace Climb.Models
 
         public IEnumerable<Set> GetAvailableSets()
         {
-            return Sets.Where(s => !s.IsComplete && s.DueDate >= DateTime.Now);
+            return Sets.Where(s => !s.IsComplete && s.DueDate >= DateTime.Now).OrderBy(s => s.DueDate);
         }
     }
 }
