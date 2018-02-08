@@ -15,6 +15,7 @@ namespace Climb.ViewModels
         public readonly IEnumerable<LeagueUser> nonkingMembers;
         public readonly IEnumerable<LeagueUser> newMembers;
         public readonly string reign;
+        public readonly bool isAdmin;
 
         public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
             : base(user)
@@ -26,6 +27,7 @@ namespace Climb.ViewModels
             king = league.KingID != null ? league.Members.FirstOrDefault(lu => lu.ID == league.KingID) : null;
             nonkingMembers = league.Members.Where(lu => lu.ID != league.KingID && !lu.IsNew && !lu.HasLeft).OrderBy(lu => lu.Rank);
             newMembers = league.Members.Where(lu => lu.IsNew && !lu.HasLeft);
+            isAdmin = league.AdminID == user.ID;
 
             var weeks = league.GetKingReignWeeks();
             if (weeks > 0)

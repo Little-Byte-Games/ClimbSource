@@ -104,8 +104,10 @@
 @section User_Content_Right {
     <h3 align="center">Seasons</h3>
     <div class="season-actions">
-        <button onclick="createSeason(@Model.league.ID)">Create Season</button>
-        <span>or view</span>
+        @if(Model.isAdmin)
+        {
+            <button onclick="createSeason(@Model.league.ID)">Create Season</button>
+        }
         <select id="seasons-dropdown">
             @foreach(var season in Model.league.Seasons)
             {
