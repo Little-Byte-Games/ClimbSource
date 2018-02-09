@@ -104,7 +104,7 @@
 @section User_Content_Right {
     <h3 align="center">Seasons</h3>
     <div class="season-actions">
-        @if(Model.isAdmin)
+        @if(Model.canCreateSeason)
         {
             <button onclick="createSeason(@Model.league.ID)">Create Season</button>
         }
