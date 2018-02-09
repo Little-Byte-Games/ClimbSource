@@ -16,6 +16,7 @@ namespace Climb.ViewModels
         public readonly IEnumerable<LeagueUser> newMembers;
         public readonly string reign;
         public readonly bool canCreateSeason;
+        public readonly LeagueUser viewingLeagueUser;
 
         public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
             : base(user)
@@ -27,6 +28,8 @@ namespace Climb.ViewModels
             king = league.KingID != null ? league.Members.FirstOrDefault(lu => lu.ID == league.KingID) : null;
             nonkingMembers = league.Members.Where(lu => lu.ID != league.KingID && !lu.IsNew && !lu.HasLeft).OrderBy(lu => lu.Rank);
             newMembers = league.Members.Where(lu => lu.IsNew && !lu.HasLeft);
+            viewingLeagueUser = league.Members.FirstOrDefault(lu => lu.UserID == user.ID);
+
 #if DEBUG
             canCreateSeason = true;
 #else
