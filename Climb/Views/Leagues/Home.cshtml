@@ -87,7 +87,7 @@
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
+                @{ var viewModel = new SetCollapsedViewModel(set, Model.viewingLeagueUser, returnUrl); }
                 @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
             </div>
             ++i;
