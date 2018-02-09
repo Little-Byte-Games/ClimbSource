@@ -82,6 +82,11 @@ namespace Climb.Controllers
                 return NotFound($"No User with ID '{id}' found.");
             }
 
+            if(!string.IsNullOrWhiteSpace(user.ProfilePicKey))
+            {
+                await cdnService.DeleteImage(CdnService.ImageTypes.ProfilePic, user.ProfilePicKey);
+            }
+
             var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfilePic, file);
             foreach(var leagueUser in user.LeagueUsers)
             {
@@ -110,6 +115,11 @@ namespace Climb.Controllers
             if(user == null)
             {
                 return NotFound($"No User with ID '{id}' found.");
+            }
+            
+            if(!string.IsNullOrWhiteSpace(user.BannerPicKey))
+            {
+                await cdnService.DeleteImage(CdnService.ImageTypes.ProfileBanner, user.BannerPicKey);
             }
 
             var picKey = await cdnService.UploadImage(CdnService.ImageTypes.ProfileBanner, file);

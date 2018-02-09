@@ -26,9 +26,9 @@ namespace Climb.Services
         {
             var imageDataDict = new Dictionary<ImageTypes, ImageRules>
             {
-                {ImageTypes.ProfilePic, new ImageRules(20 * 1024, 60, 60, "profile-pictures", LeagueUser.MissingPic)},
+                {ImageTypes.ProfilePic, new ImageRules(100 * 1024, 150, 150, "profile-pictures", LeagueUser.MissingPic)},
                 {ImageTypes.ProfileBanner, new ImageRules(3 * 1024 * 1024, 1500, 300, "profile-banners", "/images/user/Banner_Smoke.png")},
-                {ImageTypes.CharacterPic, new ImageRules(10 * 1024, 60, 60, "characters")},
+                {ImageTypes.CharacterPic, new ImageRules(20 * 1024, 64, 64, "characters")},
             };
             imageData = new ReadOnlyDictionary<ImageTypes, ImageRules>(imageDataDict);
         }
@@ -52,6 +52,8 @@ namespace Climb.Services
             await UploadImageInternal(imageFile, imageData[imageType].folder, fileKey);
             return fileKey;
         }
+
+        public abstract Task DeleteImage(ImageTypes imageType, string fileKey);
 
         private bool IsValid(ImageTypes imageType, IFormFile file)
         {

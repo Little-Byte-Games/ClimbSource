@@ -33,22 +33,26 @@
             <img class="profile-pic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.user.ProfilePicKey)" width="50" height="50"/>
             <div>
                 <form id="user-profile-pic-form" asp-controller="Users" asp-action="UploadProfilePic" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="@Model.user.ID"/>
-                    <input type="file" name="file" accept="image/*"/>
-                    <input id="user-profile-pic-submit" type="button" onclick="onUpdateUserProfilePicClick()" value="Update"/>
+                    <input type="hidden" name="id" value="@Model.user.ID" />
+                    <input type="file" name="file" accept="image/*" />
+                    <input id="user-profile-pic-submit" type="button" onclick="onUpdateUserProfilePicClick()" value="Update" />
                 </form>
-                <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfilePic].maxFileSize.ToString("N0"))B</span>
+                @{ var profilePicRules = cdnService.imageData[CdnService.ImageTypes.ProfilePic];}
+                <span class="upload-size">Max File Size = @((profilePicRules.maxFileSize / 1024).ToString("N0"))KB</span>
+                <span class="upload-size">Max Dimensions = @($"{profilePicRules.width}x{profilePicRules.height}")</span>
             </div>
         </div>
         <div class="input">
             <img class="profile-pic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfileBanner, Model.user.BannerPicKey)" width="500" height="100"/>
             <div>
                 <form id="user-profile-banner-form" asp-controller="Users" asp-action="UploadProfileBanner" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="@Model.user.ID"/>
-                    <input type="file" name="file" accept="image/*"/>
-                    <input id="user-profile-banner-submit" type="button" onclick="onUpdateUserProfileBannerClick()" value="Update"/>
+                    <input type="hidden" name="id" value="@Model.user.ID" />
+                    <input type="file" name="file" accept="image/*" />
+                    <input id="user-profile-banner-submit" type="button" onclick="onUpdateUserProfileBannerClick()" value="Update" />
                 </form>
-                <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfileBanner].maxFileSize.ToString("N0"))B</span>
+                @{ var bannerPicRules = cdnService.imageData[CdnService.ImageTypes.ProfileBanner];}
+                <span class="upload-size">Max File Size = @((bannerPicRules.maxFileSize / 1024 / 1024).ToString("N0"))MB</span>
+                <span class="upload-size">Max Dimensions = @($"{bannerPicRules.width}x{bannerPicRules.height}")</span>
             </div>
         </div>
     </div>
@@ -67,7 +71,8 @@
                         <input class="input-file" type="file" name="file" accept="image/*"/>
                         <button>Update</button>
                     </form>
-                    <span class="upload-size">Max File Size = @(cdnService.imageData[CdnService.ImageTypes.ProfilePic].maxFileSize.ToString("N0"))B</span>
+                    <span class="upload-size">Max File Size = @((profilePicRules.maxFileSize / 1024).ToString("N0"))KB</span>
+                    <span class="upload-size">Max Dimensions = @($"{profilePicRules.width}x{profilePicRules.height}")</span>
                 </div>
                 <form class="account-form" asp-controller="LeagueUsers" asp-action="Update" method="post">
                     <input asp-for="@leagueUser.ID"/>

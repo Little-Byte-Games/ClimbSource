@@ -8,7 +8,7 @@
     Layout = "_Layout";
 }
 
-@Html.Partial("/Views/Sets/Partials/Fight.cshtml", SetFightViewModel.Create(Model.data, SetsController.MaxMatchCount))
+@Html.Partial("/Views/Sets/Partials/Fight.cshtml", SetFightViewModel.Create(Model.data, SetsController.MaxMatchCount, Model.user))
 
 @if(ViewData.ContainsKey("ReturnUrl"))
 {

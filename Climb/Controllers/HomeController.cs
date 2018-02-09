@@ -7,35 +7,21 @@ namespace Climb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
         public HomeController(ClimbContext context, SignInManager<ApplicationUser> signInManager)
         {
-            _signInManager = signInManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            if(_signInManager.IsSignedIn(User))
+            if(signInManager.IsSignedIn(User))
             {
                 return RedirectToAction(nameof(UsersController.Home), "Users");
             }
 
             return RedirectToAction("Login", "Account");
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
         }
 
         public IActionResult Error()

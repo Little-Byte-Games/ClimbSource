@@ -1,4 +1,5 @@
-﻿using Climb.Models;
+﻿using System;
+using Climb.Models;
 using Climb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,23 +23,51 @@ namespace Climb
 
         public void ConfigureServices(IServiceCollection services)
         {
-#if DB_MEMORY
-            services.AddDbContext<ClimbContext>(options => options.UseInMemoryDatabase("Test"));
-#elif DB_LOCAL
-            services.AddDbContext<ClimbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("local")));
-#elif DB_AZURE
-            services.AddDbContext<ClimbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
-#endif
+            var connectionString = Configuration.GetConnectionString("defaultConnection");
+            if(string.IsNullOrWhiteSpace(connectionString))
+            {
+                services.AddDbContext<ClimbContext>(options => options.UseInMemoryDatabase("Test"));
+            }
+            else
+            {
+                services.AddDbContext<ClimbContext>(options => options.UseSqlServer(connectionString));
+            }
 
-#if CDN_LOCAL
-            services.AddSingleton<CdnService, FileStorageCdn>();
-#elif CDN_S3
-            services.AddSingleton<CdnService, S3Cdn>();
-#endif
+            var cdnType = Configuration["CDN"];
+            switch(cdnType)
+            {
+                case "S3":
+                    services.AddSingleton<CdnService, S3Cdn>();
+                    break;
+                case "Local":
+                    services.AddSingleton<CdnService, FileStorageCdn>();
+                    break;
+                default:
+                    throw new NotSupportedException("Need to set a CDN type.");
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ClimbContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = ApplicationUser.RequiredChars;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 0;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IUserService, UserService>();

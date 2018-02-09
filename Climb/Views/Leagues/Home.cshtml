@@ -104,8 +104,10 @@
 @section User_Content_Right {
     <h3 align="center">Seasons</h3>
     <div class="season-actions">
-        <button onclick="createSeason(@Model.league.ID)">Create Season</button>
-        <span>or view</span>
+        @if(Model.canCreateSeason)
+        {
+            <button onclick="createSeason(@Model.league.ID)">Create Season</button>
+        }
         <select id="seasons-dropdown">
             @foreach(var season in Model.league.Seasons)
             {
@@ -139,7 +141,7 @@
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, Model.viewingLeagueUser, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;
@@ -155,7 +157,7 @@
             {
                 var row = i % 2 == 0 ? "row-even" : "row-odd";
                 <div class="@row">
-                    @{ var viewModel = new SetCollapsedViewModel(set, null, returnUrl); }
+                    @{ var viewModel = new SetCollapsedViewModel(set, Model.viewingLeagueUser, returnUrl); }
                     @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
                 </div>
                 ++i;

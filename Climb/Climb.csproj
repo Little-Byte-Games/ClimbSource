@@ -10,7 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
-    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0;DB_LOCAL;CDN_LOCAL</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP2_0</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Prod|AnyCPU'">
@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0;DB_LOCAL;CDN_S3</DefineConstants>
+    <DefineConstants>RELEASE;NETCOREAPP2_0</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Prod|AnyCPU'">

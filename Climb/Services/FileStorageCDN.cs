@@ -32,5 +32,15 @@ namespace Climb.Services
                 await imageFile.CopyToAsync(fileStream);
             }
         }
+
+        public override Task DeleteImage(ImageTypes imageType, string fileKey)
+        {
+            var folder = imageData[imageType].folder;
+            var folderPath = Path.Combine(localCdnPath, folder);
+            var filePath = Path.Combine(folderPath, fileKey);
+
+            File.Delete(filePath);
+            return Task.CompletedTask;
+        }
     }
 }

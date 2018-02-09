@@ -27,7 +27,7 @@ namespace Climb.Data
             LoadFromFile(context, context.Character, "Characters");
             LoadFromFile(context, context.Stage, "Stages");
 
-            if(environment.IsDevelopment())
+            if(!environment.IsProduction())
             {
                 var users = CreateDevUsers(context);
                 CreateDevLeagues(context, users, leagueService);
@@ -75,7 +75,7 @@ namespace Climb.Data
             {
                 foreach(var user in users)
                 {
-                    leagueService.JoinLeague(user, league);
+                    leagueService.JoinLeague(user, league).Wait();
                 }
             }
             context.SaveChanges();

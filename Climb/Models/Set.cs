@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace Climb.Models
@@ -17,6 +18,7 @@ namespace Climb.Models
         public int? Player1Score { get; set; }
         public int? Player2Score { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsDeactivated { get; set; }
 
         [InverseProperty("P1Sets")]
         [ForeignKey("Player1ID")]
@@ -44,7 +46,7 @@ namespace Climb.Models
 
         public bool IsPlaying(int? leagueUserID)
         {
-            return leagueUserID == Player1ID || leagueUserID == Player2ID;
+            return leagueUserID != null && (leagueUserID == Player1ID || leagueUserID == Player2ID);
         }
 
         public bool IsPlaying(LeagueUser leagueUser)
@@ -55,6 +57,14 @@ namespace Climb.Models
         public LeagueUser GetLeagueUser(User user)
         {
             return Player1?.UserID == user.ID ? Player1 : Player2;
+        }
+
+        public int GetOpponentID(int participantID)
+        {
+            Debug.Assert(IsPlaying(participantID), "Can't get opponent if participant is not even in the set.");
+            Debug.Assert(Player2ID != null, nameof(Player2ID) + " != null");
+            Debug.Assert(Player1ID != null, nameof(Player1ID) + " != null");
+            return Player1ID == participantID ? Player2ID.Value : Player1ID.Value;
         }
     }
 }

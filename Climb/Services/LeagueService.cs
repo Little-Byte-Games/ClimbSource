@@ -25,7 +25,10 @@ namespace Climb.Services
 
         public async Task<LeagueUser> JoinLeague(User user, League league)
         {
-            var leagueUser = await context.LeagueUser.SingleOrDefaultAsync(u => u.LeagueID == league.ID && u.UserID == user.ID);
+            var leagueUser = await context.LeagueUser
+                .IgnoreQueryFilters()
+                .SingleOrDefaultAsync(u => u.LeagueID == league.ID && u.UserID == user.ID);
+
             if (leagueUser != null)
             {
                 leagueUser.HasLeft = false;

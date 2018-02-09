@@ -28,9 +28,12 @@
         </div>
         <img class="set-player-image" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
     </div>
-    
-    <form asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" method="get">
-        <input type="hidden" name="returnUrl" value="@Model.returnUrl"/>
-        <button class="set-submit">@(Model.set.IsComplete ? "Edit" : "Fight!")</button>
-    </form>
+
+    @if(Model.showButton)
+    {
+        <form asp-controller="Sets" asp-action="Fight" asp-route-id="@Model.set.ID" method="get">
+            <input type="hidden" name="returnUrl" value="@Model.returnUrl"/>
+            <button class="set-submit">@Model.buttonLabel</button>
+        </form>
+    }
 </div>
