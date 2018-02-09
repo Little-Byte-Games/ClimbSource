@@ -36,7 +36,7 @@
                     @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player2Score, Model.index, 2))
                 </div>
                 <div class="match-form-characters pad-right">
-                    @foreach(var character in Model.player1Characters)
+                    @foreach(var character in Model.player2Characters)
                     {
                         Debug.Assert(Model.set.Player2ID != null, "Model.set.Player2ID != null");
                         @Html.Partial("~/Views/Sets/Partials/MatchCharacterInput.cshtml", new MatchCharacterInputModelView(characterInputCount, character, characters, Model.index, Model.set.Player2ID.Value))
