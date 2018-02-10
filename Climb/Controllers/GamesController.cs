@@ -39,7 +39,7 @@ namespace Climb.Controllers
         }
 
         [HttpGet("[controller]/Home/{id:int}")]
-        public async Task<IActionResult> HomeID(int id)
+        public async Task<IActionResult> HomeID([FromRoute]int id)
         {
             var game = await context.Game.SingleOrDefaultAsync(g => g.ID == id);
             if(game != null)
@@ -52,7 +52,7 @@ namespace Climb.Controllers
         }
 
         [HttpGet("[controller]/Home/{url}")]
-        public async Task<IActionResult> Home(string url)
+        public async Task<IActionResult> Home([FromRoute]string url)
         {
             var user = await GetViewUserAsync();
             if (user == null)
