@@ -39,7 +39,7 @@ namespace Climb.Models
 
             foreach(var match in matches)
             {
-                if(match.MatchCharacters.Count < 2)
+                if(match.MatchCharacters == null || match.MatchCharacters.Count < 2)
                 {
                     continue;
                 }
