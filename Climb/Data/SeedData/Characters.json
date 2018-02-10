@@ -406,125 +406,125 @@
         "GameID": 2,
         "PicKey": "sfv_zeku.png"
     },
-    // DBF
+    // DBF http://www.ign.com/wikis/dragon-ball-fighterz/Characters
     {
         "Name": "Android 16",
         "GameID": 3,
-        "PicKey": "dbf_android16.png"
+        "PicKey": "dbf_android16.jpg"
     },
     {
         "Name": "Android 18",
         "GameID": 3,
-        "PicKey": "dbf_android18.png"
+        "PicKey": "dbf_android18.jpg"
     },
     {
         "Name": "Android 21",
         "GameID": 3,
-        "PicKey": "dbf_android21.png"
+        "PicKey": "dbf_android21.jpg"
     },
     {
         "Name": "Beerus",
         "GameID": 3,
-        "PicKey": "dbf_beerus.png"
+        "PicKey": "dbf_beerus.jpg"
     },
     {
         "Name": "Captain Ginyu",
         "GameID": 3,
-        "PicKey": "dbf_captainginyu.png"
+        "PicKey": "dbf_captainginyu.jpg"
     },
     {
         "Name": "Cell",
         "GameID": 3,
-        "PicKey": "dbf_cell.png"
+        "PicKey": "dbf_cell.jpg"
     },
     {
         "Name": "Frieza",
         "GameID": 3,
-        "PicKey": "dbf_frieza.png"
+        "PicKey": "dbf_frieza.jpg"
     },
     {
         "Name": "Gohan (Adult)",
         "GameID": 3,
-        "PicKey": "dbf_gohanadult.png"
+        "PicKey": "dbf_gohanadult.jpg"
     },
     {
         "Name": "Gohan (Teen)",
         "GameID": 3,
-        "PicKey": "dbf_gohanteen.png"
+        "PicKey": "dbf_gohanteen.jpg"
     },
     {
         "Name": "Goku (SS)",
         "GameID": 3,
-        "PicKey": "dbf_gokuss.png"
+        "PicKey": "dbf_gokuss.jpg"
     },
     {
         "Name": "Goku (SSGSS)",
         "GameID": 3,
-        "PicKey": "dbf_gokussgss.png"
+        "PicKey": "dbf_gokussgss.jpg"
     },
     {
         "Name": "Goku Black",
         "GameID": 3,
-        "PicKey": "dbf_gokublack.png"
+        "PicKey": "dbf_gokublack.jpg"
     },
     {
         "Name": "Gotenks",
         "GameID": 3,
-        "PicKey": "dbf_gotenks.png"
+        "PicKey": "dbf_gotenks.jpg"
     },
     {
         "Name": "Hit",
         "GameID": 3,
-        "PicKey": "dbf_hit.png"
+        "PicKey": "dbf_hit.jpg"
     },
     {
         "Name": "Kid Buu",
         "GameID": 3,
-        "PicKey": "dbf_kidbuu.png"
+        "PicKey": "dbf_kidbuu.jpg"
     },
     {
         "Name": "Krillin",
         "GameID": 3,
-        "PicKey": "dbf_krillin.png"
+        "PicKey": "dbf_krillin.jpg"
     },
     {
         "Name": "Majin Buu",
         "GameID": 3,
-        "PicKey": "dbf_majinbuu.png"
+        "PicKey": "dbf_majinbuu.jpg"
     },
     {
         "Name": "Nappa",
         "GameID": 3,
-        "PicKey": "dbf_nappa.png"
+        "PicKey": "dbf_nappa.jpg"
     },
     {
         "Name": "Trunks",
         "GameID": 3,
-        "PicKey": "dbf_trunks.png"
+        "PicKey": "dbf_trunks.jpg"
     },
     {
         "Name": "Piccolo",
         "GameID": 3,
-        "PicKey": "dbf_piccolo.png"
+        "PicKey": "dbf_piccolo.jpg"
     },
     {
         "Name": "Tien Shinhan",
         "GameID": 3,
-        "PicKey": "dbf_tienshinhan.png"
+        "PicKey": "dbf_tienshinhan.jpg"
     },
     {
         "Name": "Vegeta (SS)",
         "GameID": 3,
-        "PicKey": "dbf_vegetass.png"
+        "PicKey": "dbf_vegetass.jpg"
     },
     {
         "Name": "Vegeta (SSGSS)",
         "GameID": 3,
-        "PicKey": "dbf_vegetassgss.png"
+        "PicKey": "dbf_vegetassgss.jpg"
     },
     {
         "Name": "Yamcha",
         "GameID": 3,
-        "PicKey": "dbf_yamcha.png"
+        "PicKey": "dbf_yamcha.jpg"
     }
 ]
