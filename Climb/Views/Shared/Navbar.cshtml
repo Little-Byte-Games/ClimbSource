@@ -20,7 +20,7 @@
                 @foreach(var game in Model.user.LeagueUsers.Select(l => l.League.Game))
                 {
                     <li>
-                        <a asp-controller="Games" asp-action="Home" asp-route-id="@game.ID">@game.Name</a>
+                        <a asp-controller="Games" asp-action="Home" asp-route-url="@game.Url">@game.Name</a>
                     </li>
                 }
                 <li>
