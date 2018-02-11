@@ -139,7 +139,7 @@ namespace Climb.Controllers
                     await leagueService.SendSnapshotUpdate(rankSnapshots, league);
                 }
 
-                return Accepted();
+                return Ok();
             }
 
             return BadRequest("Incorrect key");
@@ -148,8 +148,9 @@ namespace Climb.Controllers
         [HttpPost]
         public async Task<IActionResult> SendSetReminders([FromServices] IHttpContextAccessor contextAccessor)
         {
-            var key = contextAccessor.HttpContext.Request.Headers["key"];
-            if(key == "steve")
+            var sentKey = contextAccessor.HttpContext.Request.Headers["key"];
+            var localKey = configuration.GetSection("Jobs")["SecretKey"];
+            if(sentKey == localKey)
             {
                 var leagues = await context.League
                     .Include(l => l.Seasons).ThenInclude(s => s.Participants).ThenInclude(lu => lu.LeagueUser).ThenInclude(lu => lu.User)
@@ -160,10 +161,10 @@ namespace Climb.Controllers
                     await leagueService.SendSetReminders(league);
                 }
 
-                return Accepted();
+                return Ok();
             }
 
-            return Forbid();
+            return BadRequest("Incorrect key");
         }
 
         [HttpPost]

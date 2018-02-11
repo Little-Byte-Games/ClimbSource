@@ -6,26 +6,26 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace Climb.Jobs
 {
-    public static class LeagueSnapshots
+    public static class SetReminder
     {
-        [FunctionName("LeagueSnapshots")]
-        public static async Task Run([TimerTrigger("0 0 18 * * SUN")]TimerInfo myTimer, TraceWriter log)
+        [FunctionName("SetReminder")]
+        public static async Task Run([TimerTrigger("0 0 18 * * MON,THU")]TimerInfo myTimer, TraceWriter log)
         {
             HttpClient client = new HttpClient();
             var key = Environment.GetEnvironmentVariable("SecretKey");
             client.DefaultRequestHeaders.Add("key", key);
 
             var domain = Environment.GetEnvironmentVariable("Domain");
-            var uri = new Uri($"{domain}/Leagues/TakeAllRankSnapshots");
+            var uri = new Uri($"{domain}/Leagues/SendSetReminders");
 
             var response = await client.PostAsync(uri, null);
             if(response.IsSuccessStatusCode)
             {
-                log.Info($"Snapshots taken at: {DateTime.Now}");
+                log.Info($"Set reminders sent at: {DateTime.Now}");
             }
             else
             {
-                log.Error($"Snapshots failed at: {DateTime.Now} because {response.ReasonPhrase}");
+                log.Error($"Set reminders at: {DateTime.Now} because {response.ReasonPhrase}");
             }
         }
     }
