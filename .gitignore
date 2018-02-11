@@ -290,3 +290,5 @@ __pycache__/
 Climb/appsettings*.json
 *.min.*
 **/wwwroot/temp/
+local.settings.json
+host.json

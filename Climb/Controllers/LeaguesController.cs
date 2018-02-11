@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Climb.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Climb.Controllers
 {
@@ -119,13 +120,16 @@ namespace Climb.Controllers
         #endregion
 
         #region API
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> TakeAllRankSnapshots([FromServices] IHttpContextAccessor contextAccessor)
         {
-            var key = contextAccessor.HttpContext.Request.Headers["key"];
-            if(key == "steve")
+            var sentKey = contextAccessor.HttpContext.Request.Headers["key"];
+            var localKey = configuration.GetSection("Jobs")["SecretKey"];
+            if(sentKey == localKey)
             {
                 var leagues = await context.League
+                    .Include(l => l.Sets).AsNoTracking()
                     .Include(l => l.Members).ThenInclude(lu => lu.RankSnapshots)
                     .Include(l => l.Members).ThenInclude(lu => lu.User)
                     .ToArrayAsync();
@@ -138,7 +142,7 @@ namespace Climb.Controllers
                 return Accepted();
             }
 
-            return Forbid();
+            return BadRequest("Incorrect key");
         }
 
         [HttpPost]
