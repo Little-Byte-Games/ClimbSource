@@ -14,7 +14,9 @@ namespace Climb.Jobs
             HttpClient client = new HttpClient();
             var key = Environment.GetEnvironmentVariable("SecrectKey");
             client.DefaultRequestHeaders.Add("key", key);
-            var uri = new Uri("https://localhost:44304/Leagues/TakeAllRankSnapshots");
+
+            var domain = Environment.GetEnvironmentVariable("Domain");
+            var uri = new Uri($"{domain}/Leagues/TakeAllRankSnapshots");
 
             var response = await client.PostAsync(uri, null);
             if(response.IsSuccessStatusCode)
