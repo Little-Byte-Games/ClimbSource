@@ -9,10 +9,9 @@ namespace Climb.Jobs
     public static class LeagueSnapshots
     {
         [FunctionName("LeagueSnapshots")]
-        public static async Task Run([TimerTrigger("0 0 10 * * SUN")]TimerInfo myTimer, TraceWriter log)
+        public static async Task Run([TimerTrigger("0 0 18 * * SUN")]TimerInfo myTimer, TraceWriter log)
         {
             HttpClient client = new HttpClient();
-            var key = Environment.GetEnvironmentVariable("SecrectKey");
             var key = Environment.GetEnvironmentVariable("SecretKey");
             client.DefaultRequestHeaders.Add("key", key);
 
