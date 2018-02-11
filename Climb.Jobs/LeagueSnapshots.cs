@@ -13,6 +13,7 @@ namespace Climb.Jobs
         {
             HttpClient client = new HttpClient();
             var key = Environment.GetEnvironmentVariable("SecrectKey");
+            var key = Environment.GetEnvironmentVariable("SecretKey");
             client.DefaultRequestHeaders.Add("key", key);
 
             var domain = Environment.GetEnvironmentVariable("Domain");
