@@ -33,7 +33,8 @@ namespace Climb.Models
             }
 
             var matches = await context.Match
-                .Include(m => m.Set).ThenInclude(s => s.League).ThenInclude(l => l.Game)
+                .Include(m => m.MatchCharacters)
+                .Include(m => m.Set).ThenInclude(s => s.League)
                 .Where(m => m.Set.League.GameID == ID && !m.Set.IsBye && m.Set.IsComplete)
                 .ToArrayAsync();
 
