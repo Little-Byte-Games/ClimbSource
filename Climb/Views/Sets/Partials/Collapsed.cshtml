@@ -15,18 +15,17 @@
                 <span class="set-season-separator">|</span>
                 <span>@Model.set.DueDate.ToShortDateString()</span>
             </div>
-            <span>@Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player1) v @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player2)</span>
-            <br/>
-            @if(Model.set.IsComplete)
-            {
-                <span>@(Model.set?.Player1Score??0) - @(Model.set.Player2Score??0)</span>
-            }
-            else
-            {
-                <span>---</span>
-            }
-        </div>
-        <img class="set-player-image" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
+            <div class="set-score">
+                @(Model.set.IsComplete ? $"{Model.set.Player1Score.Value} - {Model.set.Player2Score.Value}" : "---")
+            </div>
+    </div>
+    <img class="set-player-image" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
+            </div>
+
+    <div class="set-fighters">
+        <div class="set-fighters-1">@Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player1)</div>
+        <span class="set-fighters-v">v</span>
+        <div class="set-fighters-2">@Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.set.Player2)</div>
     </div>
 
     @if(Model.showButton)
