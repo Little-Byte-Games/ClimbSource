@@ -8,14 +8,14 @@
 @inject CdnService cdnService
 @inject IHostingEnvironment environment
 
-<link href="/css/fight.css" rel="Stylesheet" type="text/css"/>
+<link href="/css/fight.css" rel="Stylesheet" type="text/css" />
 
 <div class="form-container">
     <div class="form">
         <div class="player-container">
             <div class="player">
                 <div class="player-picture">
-                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player1.ProfilePicKey)"/>
+                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player1.ProfilePicKey)" />
                 </div>
                 <div class="player-info">
                     <div class="player-info-name">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="player-picture">
-                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)"/>
+                    <img class="profile-picture" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.set.Player2.ProfilePicKey)" />
                 </div>
             </div>
         </div>
@@ -50,6 +50,7 @@
             <span>&nbsp;|&nbsp;</span>
             <span>@Model.set.DueDate.ToShortDateString()</span>
         </div>
+        <div>@Model.set.League.Game.SetRules</div>
         <div class="set-count-container">
             <div class="set-count">
                 <span id="player-1-score">0</span>
@@ -60,7 +61,7 @@
             </div>
         </div>
 
-        @if(!Model.set.IsLocked)
+        @if (!Model.set.IsLocked)
         {
             <div class="add-match">
                 <button onclick="addMatch()">Add Match</button>
@@ -68,14 +69,14 @@
         }
 
         <form id="set-form" asp-controller="Sets" asp-action="Submit" method="post">
-            <input type="hidden" name="id" value="@Model.set.ID"/>
+            <input type="hidden" name="id" value="@Model.set.ID" />
             <div class="match-wrapper">
                 <div class="match-container">
                     <div id="matches" class="matches">
-                        @for(int i = 0; i < SetsController.MaxMatchCount; i++)
+                        @for (int i = 0; i < SetsController.MaxMatchCount; i++)
                         {
                             var matchFound = Model.matches[i] != null;
-                            if(environment.IsDevelopment() && i == 0 && !matchFound)
+                            if (environment.IsDevelopment() && i == 0 && !matchFound)
                             {
                                 matchFound = true;
                             }
@@ -87,10 +88,10 @@
                     </div>
                 </div>
             </div>
-            @if(Model.canSubmit)
+            @if (Model.canSubmit)
             {
                 <div class="submit">
-                    <input id="submit-button" type="submit" value="Submit"/>
+                    <input id="submit-button" type="submit" value="Submit" />
                 </div>
             }
         </form>
