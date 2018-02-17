@@ -19,7 +19,7 @@
             <div class="match-form-playerdata">
                 <span class="match-form-player">P1</span>
                 <div class="pad-right">
-                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player1Score, Model.index, 1))
+                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player1Score, Model.index, 1, Model.set.League.Game.MaxMatchPoints))
                 </div>
                 <div class="match-form-characters pad-right">
                     @foreach(var character in Model.player1Characters)
@@ -33,7 +33,7 @@
             <div class="match-form-playerdata">
                 <span class="match-form-player">P2</span>
                 <div class="pad-right">
-                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player2Score, Model.index, 2))
+                    @Html.Partial("~/Views/Sets/Partials/MatchScoreInput.cshtml", new MatchScoreInputViewModel(Model.player2Score, Model.index, 2, Model.set.League.Game.MaxMatchPoints))
                 </div>
                 <div class="match-form-characters pad-right">
                     @foreach(var character in Model.player2Characters)
