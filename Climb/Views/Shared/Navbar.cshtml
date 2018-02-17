@@ -15,17 +15,14 @@
     <h1 class="logo">CLIMB</h1>
     <div class="menu">
         <div class="dropdown">
-            <a asp-controller="Games" asp-action="Index">Games <span>&#9660;</span></a>
+            <span>Seasons &#9660;</span>
             <ul class="dropdown-items">
-                @foreach(var game in Model.user.LeagueUsers.Select(l => l.League.Game))
+                @foreach(var season in Model.activeSeasons)
                 {
                     <li>
-                        <a asp-controller="Games" asp-action="Home" asp-route-url="@game.Url">@game.Name</a>
+                        <a asp-controller="Seasons" asp-action="Home" asp-route-id="@season.ID">@season.League.Name | @season.DisplayName</a>
                     </li>
                 }
-                <li>
-                    <a asp-controller="Games" asp-action="Index">Search Games</a>
-                </li>
             </ul>
         </div>
         <div class="dropdown">
@@ -39,6 +36,20 @@
                 }
                 <li>
                     <a asp-controller="Leagues" asp-action="Index">Search Leagues</a>
+                </li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a asp-controller="Games" asp-action="Index">Games <span>&#9660;</span></a>
+            <ul class="dropdown-items">
+                @foreach(var game in Model.user.LeagueUsers.Select(l => l.League.Game))
+                {
+                    <li>
+                        <a asp-controller="Games" asp-action="Home" asp-route-url="@game.Url">@game.Name</a>
+                    </li>
+                }
+                <li>
+                    <a asp-controller="Games" asp-action="Index">Search Games</a>
                 </li>
             </ul>
         </div>

@@ -14,6 +14,7 @@ namespace Climb.Models
         public DateTime StartDate { get; set; }
         public int ChallongeID { get; set; }
         public string ChallongeUrl { get; set; }
+        public bool IsComplete { get; set; }
 
         [JsonIgnore]
         public League League { get; set; }
@@ -23,7 +24,6 @@ namespace Climb.Models
         public HashSet<Set> Sets { get; set; }
 
         public string DisplayName => $"Season {(Index + 1).ToRomainNumeral()}";
-        public bool IsComplete => Sets != null && Sets.All(s => s.IsComplete);
 
         public SeasonStatus GetStatus()
         {
