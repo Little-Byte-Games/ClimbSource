@@ -227,6 +227,8 @@ namespace Climb.Services
                 }
             }
 
+            season.IsComplete = true;
+
             await context.SaveChangesAsync();
         }
 
