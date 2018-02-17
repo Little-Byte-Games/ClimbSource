@@ -64,7 +64,8 @@
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
         <div class="@row">
-            @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", participant)
+            @{ var viewModel = new StandingViewModel(participant, false);}
+            @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", viewModel)
         </div>
         ++i;
     }

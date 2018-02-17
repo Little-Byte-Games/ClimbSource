@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Set = Climb.Models.Set;
 
@@ -80,6 +81,7 @@ namespace Climb.Controllers
         {
             var set = await context.Set
                 .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
+                .Include(s => s.League)
                 .Include(s => s.Season).ThenInclude(s => s.Participants)
                 .Include(s => s.Player1).ThenInclude(p => p.User)
                 .Include(s => s.Player2).ThenInclude(p => p.User)
@@ -145,10 +147,13 @@ namespace Climb.Controllers
 
         private async Task SendSetCompletedMessage(Set set)
         {
-            var message = $"{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}";
-            message += $"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}";
+            var message = new StringBuilder();
+            message.Append(set.League.Name + " | ");
+            message.Append(set.IsExhibition ? "Exhibition" : set.Season.DisplayName);
+            message.Append($"\n{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}");
+            message.Append($"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}");
             var apiKey = configuration.GetSection("Slack")["Key"];
-            await SlackController.SendGroupMessage(apiKey, message);
+            await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
     }
 }
