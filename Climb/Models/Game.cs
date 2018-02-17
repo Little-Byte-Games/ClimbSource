@@ -20,6 +20,7 @@ namespace Climb.Models
         public int CharactersPerMatch { get; set; }
         public bool RequireStage { get; set; }
         public string SetRules { get; set; }
+        public int MaxMatchPoints { get; set; }
 
         public HashSet<Character> Characters { get; set; }
         public HashSet<Stage> Stages { get; set; }
