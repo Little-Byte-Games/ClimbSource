@@ -1,6 +1,7 @@
 ﻿@using Climb.Services
 @using Climb.ViewModels
 @using Climb.ViewModels.LeagueUsers
+@using Climb.ViewModels.Seasons
 @model CompeteHomeViewModel
 @inject CdnService cdnService
 @inject ILeagueUserService leagueUserService
@@ -49,7 +50,8 @@
         {
             var row = i % 2 == 0 ? "row-even" : "row-odd";
             <div class="@row">
-                @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", seasonUser)
+                @{ var viewModel = new StandingViewModel(seasonUser, true);}
+                @Html.Partial("~/Views/Seasons/Partials/SeasonStanding.cshtml", viewModel)
             </div>
             ++i;
         }

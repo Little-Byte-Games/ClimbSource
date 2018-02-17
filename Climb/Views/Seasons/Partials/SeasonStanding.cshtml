@@ -1,16 +1,26 @@
 ﻿@using Climb.Services
-@model LeagueUserSeason
+@using Climb.ViewModels.Seasons
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model StandingViewModel
 @inject CdnService cdnService
 @inject ILeagueUserService leagueUserService
 
 <div class="standing-container">
-    <span class="standing-rank">@Model.Standing</span>
-    <img class="standing-profilepic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.LeagueUser.ProfilePicKey)"/>
+    <span class="standing-rank">@Model.participant.Standing</span>
+    <img class="standing-profilepic" src="@cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, Model.participant.LeagueUser.ProfilePicKey)"/>
 
     <div class="standing-info">
-        @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.LeagueUser)
+        @if(Model.showSeason)
+        {
+            <div class="season-info">
+                @Html.Partial("/Views/Leagues/Partials/Name.cshtml", Model.participant.Season.League)
+                <span class="set-season-separator">|</span>
+                @Html.Partial("/Views/Seasons/Partials/Name.cshtml", Model.participant.Season)
+            </div>
+        }
+        @Html.Partial("/Views/LeagueUsers/Partials/Name.cshtml", Model.participant.LeagueUser)
         <div>
-            <span>(@Model.Points of @Model.PotentialMaxPoints)</span>
+            <span>(@Model.participant.Points of @Model.participant.PotentialMaxPoints)</span>
         </div>
     </div>
 </div>
