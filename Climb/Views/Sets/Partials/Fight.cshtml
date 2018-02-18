@@ -76,7 +76,7 @@
                         @for (int i = 0; i < SetsController.MaxMatchCount; i++)
                         {
                             var matchFound = Model.matches[i] != null;
-                            if (environment.IsDevelopment() && i == 0 && !matchFound)
+                            if (i == 0 && !matchFound)
                             {
                                 matchFound = true;
                             }
