@@ -49,6 +49,7 @@ namespace Climb.Controllers
                 .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.Season)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters)
+                .Include(s => s.League).ThenInclude(l => l.Sets).ThenInclude(s => s.Matches).ThenInclude(m => m.MatchCharacters)
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages)
                 .Include(s => s.Player1).ThenInclude(lu => lu.User)
                 .Include(s => s.Player2).ThenInclude(lu => lu.User)

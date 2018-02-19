@@ -1,6 +1,7 @@
 ﻿using Climb.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Climb.ViewModels.Matches
 {
@@ -18,19 +19,28 @@ namespace Climb.ViewModels.Matches
         public readonly int stage;
         public readonly Set set;
 
-        public MatchFormViewModel(int index, Set set, Match match)
+        public MatchFormViewModel(int index, Set set, int matchID,
+            int player1Score, int player2Score,
+            List<int> player1Characters, List<int> player2Characters,
+            int stage)
+        {
+            this.index = index;
+            this.set = set;
+            this.matchID = matchID;
+            this.player1Score = player1Score;
+            this.player2Score = player2Score;
+            this.player1Characters = player1Characters;
+            this.player2Characters = player2Characters;
+            this.stage = stage;
+        }
+
+        public static MatchFormViewModel Create(int index, Set set, Match match, Set lastSetP1, Set lastSetP2)
         {
             Debug.Assert(set.Player1ID != null, "set.Player1ID != null");
             Debug.Assert(set.Player2ID != null, "set.Player2ID != null");
 
-            matchID = match?.ID ?? 0;
-            this.index = index;
-            this.set = set;
-            player1Score = match?.Player1Score ?? 0;
-            player2Score = match?.Player2Score ?? 0;
-
-            player1Characters = new List<int>();
-            player2Characters = new List<int>();
+            var player1Characters = new List<int>();
+            var player2Characters = new List<int>();
 
             if(match != null)
             {
@@ -40,18 +50,44 @@ namespace Climb.ViewModels.Matches
                     characterList.Add(matchCharacter.CharacterID);
                 }
             }
-
-            while(player1Characters.Count < set.League.Game.CharactersPerMatch)
+            else
             {
-                player1Characters.Add(NotSelectedValue);
+                GetLastUsedCharacters(lastSetP1, player1Characters, set.Player1ID.Value);
+                GetLastUsedCharacters(lastSetP2, player2Characters, set.Player2ID.Value);
             }
 
-            while(player2Characters.Count < set.League.Game.CharactersPerMatch)
-            {
-                player2Characters.Add(NotSelectedValue);
-            }
+            FillMissingCharacterSlots(set, player1Characters);
+            FillMissingCharacterSlots(set, player2Characters);
 
-            stage = match?.StageID ?? NotSelectedValue;
+            var matchID = match?.ID ?? 0;
+            var player1Score = match?.Player1Score ?? 0;
+            var player2Score = match?.Player2Score ?? 0;
+            var stage = match?.StageID ?? NotSelectedValue;
+
+            return new MatchFormViewModel(index, set, matchID, player1Score, player2Score, player1Characters, player2Characters, stage);
+        }
+
+        private static void GetLastUsedCharacters(Set lastSet, ICollection<int> playerCharacters, int playerID)
+        {
+            if(lastSet != null)
+            {
+                Debug.Assert(lastSet.IsComplete, "Only send completed sets to match form to get last used characters.");
+                foreach(var matchCharacter in lastSet.Matches.First().MatchCharacters)
+                {
+                    if(matchCharacter.LeagueUserID == playerID)
+                    {
+                        playerCharacters.Add(matchCharacter.CharacterID);
+                    }
+                }
+            }
+        }
+
+        private static void FillMissingCharacterSlots(Set set, ICollection<int> playerCharacters)
+        {
+            while(playerCharacters.Count < set.League.Game.CharactersPerMatch)
+            {
+                playerCharacters.Add(NotSelectedValue);
+            }
         }
     }
 }
