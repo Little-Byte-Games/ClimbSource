@@ -72,6 +72,18 @@ namespace Climb.Controllers
             var viewModel = new HomeViewModel(user, game);
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Create()
+        {
+            var user = await GetViewUserAsync();
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("Home")});
+            }
+
+            var viewModel = new GenericViewModel<>();
+            return View();
+        }
         #endregion
 
         [HttpPost]
