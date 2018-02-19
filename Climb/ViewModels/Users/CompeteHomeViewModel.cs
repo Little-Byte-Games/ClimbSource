@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Climb.Models;
+using Climb.Services;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Climb.Models;
-using Climb.Services;
 
 namespace Climb.ViewModels
 {
@@ -22,6 +22,7 @@ namespace Climb.ViewModels
         }
 
         public readonly User homeUser;
+        public readonly IList<Set> playedSets;
         public readonly string profilePicUrl;
         public readonly string profileBannerUrl;
         public readonly HashSet<LeagueUser> possibleExhibitions;
@@ -31,9 +32,10 @@ namespace Climb.ViewModels
 
         public bool IsHome => user == homeUser;
 
-        private CompeteHomeViewModel(User user, User homeUser, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets, IList<LeagueUserSeason> seasons, string profilePicUrl, string profileBannerUrl) : base(user)
+        private CompeteHomeViewModel(User user, User homeUser, IList<Set> playedSets, HashSet<LeagueUser> possibleExhibitions, IList<LeagueUserSet> overdueSets, IList<LeagueUserSet> availableSets, IList<LeagueUserSeason> seasons, string profilePicUrl, string profileBannerUrl) : base(user)
         {
             this.homeUser = homeUser;
+            this.playedSets = playedSets;
             this.possibleExhibitions = possibleExhibitions;
             this.profilePicUrl = profilePicUrl;
             this.profileBannerUrl = profileBannerUrl;
@@ -44,6 +46,11 @@ namespace Climb.ViewModels
 
         public static CompeteHomeViewModel Create(User user, User homeUser, CdnService cdnService)
         {
+            var playedSets = user.LeagueUsers
+                .SelectMany(lu => lu.P1Sets.Union(lu.P2Sets))
+                .Where(s => s.IsComplete)
+                .OrderByDescending(s => s.UpdatedDate).ToList();
+
             var now = DateTime.Now;
             var overdueSets = new List<LeagueUserSet>();
             var availableSets = new List<LeagueUserSet>();
@@ -83,7 +90,7 @@ namespace Climb.ViewModels
             var profilePicUrl = cdnService.GetImageUrl(CdnService.ImageTypes.ProfilePic, homeUser.ProfilePicKey);
             var profileBannerUrl = cdnService.GetImageUrl(CdnService.ImageTypes.ProfileBanner, homeUser.BannerPicKey);
 
-            return new CompeteHomeViewModel(user, homeUser, possibleExhibitions, overdueSets, availableSets, seasonUsers, profilePicUrl, profileBannerUrl);
+            return new CompeteHomeViewModel(user, homeUser, playedSets, possibleExhibitions, overdueSets, availableSets, seasonUsers, profilePicUrl, profileBannerUrl);
         }
 
         public IEnumerable<RankSnapshot> GetSortedRankSnapshots()

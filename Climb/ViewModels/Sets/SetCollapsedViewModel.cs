@@ -1,4 +1,5 @@
 ﻿using Climb.Models;
+using System.Linq;
 
 namespace Climb.ViewModels
 {
@@ -10,13 +11,27 @@ namespace Climb.ViewModels
         public readonly string buttonLabel;
         public readonly bool showButton;
 
-        public SetCollapsedViewModel(Set set, LeagueUser user, string returnUrl = null)
+        private SetCollapsedViewModel(Set set, LeagueUser user, bool showButton, string buttonLabel, string returnUrl = null)
         {
             this.set = set;
             this.user = user;
             this.returnUrl = returnUrl;
+            this.showButton = showButton;
+            this.buttonLabel = buttonLabel;
+        }
 
-            if(set.IsPlaying(user?.ID))
+        public static SetCollapsedViewModel Create(Set set, User user, string returnUrl = null)
+        {
+            var leagueUser = user.LeagueUsers.FirstOrDefault(lu => lu.LeagueID == set.LeagueID);
+            return Create(set, leagueUser, returnUrl);
+        }
+
+        public static SetCollapsedViewModel Create(Set set, LeagueUser leagueUser, string returnUrl = null)
+        {
+            bool showButton = false;
+            string buttonLabel = "Details";
+
+            if(set.IsPlaying(leagueUser?.ID))
             {
                 showButton = true;
                 buttonLabel = set.IsLocked ? "Details" : set.IsComplete ? "Edit" : "Fight";
@@ -27,7 +42,7 @@ namespace Climb.ViewModels
                 buttonLabel = "Details";
             }
 
-            buttonLabel = set.IsPlaying(user) ? set.IsComplete ? "Edit" : "Fight" : "Details";
+            return new SetCollapsedViewModel(set, leagueUser, showButton, buttonLabel, returnUrl);
         }
     }
 }

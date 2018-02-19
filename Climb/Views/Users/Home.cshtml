@@ -60,6 +60,25 @@
 
 @section User_Content_Middle {
     <h3>Activity</h3>
+    @if (Model.playedSets != null)
+    {
+        var i = 0;
+        foreach (var set in Model.playedSets)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @{ var viewModel = SetCollapsedViewModel.Create(set, Model.user, returnUrl); }
+                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+            </div>
+            ++i;
+        }
+    }
+    else
+    {
+        <div align="center">
+            <span>No recent activity</span>
+        </div>
+    }
 }
 
 @section User_Content_Right {
@@ -67,7 +86,7 @@
     <h4>Overdue</h4>
     @foreach (var set in Model.overdueSets)
     {
-        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser, returnUrl);
+        var viewModel = SetCollapsedViewModel.Create(set.set, set.leagueUser, returnUrl);
         @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
     }
     <h4>Available</h4>
@@ -75,7 +94,7 @@
     @foreach (var set in Model.availableSets)
     {
         var row = i % 2 == 0 ? "row-even" : "row-odd";
-        var viewModel = new SetCollapsedViewModel(set.set, set.leagueUser, returnUrl);
+        var viewModel = SetCollapsedViewModel.Create(set.set, set.leagueUser, returnUrl);
         <div class="@row">
             @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
         </div>
