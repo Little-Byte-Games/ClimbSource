@@ -158,7 +158,7 @@ namespace Climb.Controllers
                     .ToArrayAsync();
                 foreach(var league in leagues)
                 {
-                    await leagueService.SendSetReminders(league);
+                    await leagueService.SendSetReminders(league, Url);
                 }
 
                 return Ok();

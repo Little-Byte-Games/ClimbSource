@@ -1,4 +1,7 @@
-﻿using Climb.Models;
+﻿using Climb.Controllers;
+using Climb.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,6 +69,11 @@ namespace Climb.Services
                     ++set.Player2Score;
                 }
             }
+        }
+
+        public string GetSetUrl(Set set, IUrlHelper urlHelper)
+        {
+            return urlHelper.Action(new UrlActionContext {Action = nameof(SetsController.Fight), Values = new {id = set.ID}, Protocol = "https"});
         }
     }
 }

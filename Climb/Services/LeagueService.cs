@@ -1,5 +1,6 @@
 ﻿using Climb.Core;
 using Climb.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MoreLinq;
@@ -15,11 +16,13 @@ namespace Climb.Services
     public class LeagueService : ILeagueService
     {
         private readonly ClimbContext context;
+        private readonly ISetService setService;
         private readonly string apiKey;
 
-        public LeagueService(ClimbContext context, IConfiguration configuration)
+        public LeagueService(ClimbContext context, ISetService setService, IConfiguration configuration)
         {
             this.context = context;
+            this.setService = setService;
             apiKey = configuration.GetSection("Slack")["Key"];
         }
 
@@ -96,7 +99,7 @@ namespace Climb.Services
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
 
-        public async Task SendSetReminders(League league)
+        public async Task SendSetReminders(League league, IUrlHelper urlHelper)
         {
             var currentSeason = league.CurrentSeason;
             if(currentSeason == null)
@@ -120,7 +123,8 @@ namespace Climb.Services
             message.AppendLine($"*{currentSeason.League.Name}:{currentSeason.DisplayName} Sets*");
             foreach (var set in nextSets)
             {
-                message.AppendLine($"{set.Player1.GetSlackName} v {set.Player2.GetSlackName}");
+                var setLink = setService.GetSetUrl(set, urlHelper);
+                message.AppendLine($"{set.Player1.GetSlackName} v {set.Player2.GetSlackName} in {setLink}");
             }
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }

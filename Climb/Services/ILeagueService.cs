@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Climb.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Climb.Models;
 
 namespace Climb.Services
 {
@@ -9,6 +10,6 @@ namespace Climb.Services
         Task<LeagueUser> JoinLeague(User user, League league);
         Task<HashSet<RankSnapshot>> TakeSnapshot(League league);
         Task SendSnapshotUpdate(HashSet<RankSnapshot> snapshots, League league);
-        Task SendSetReminders(League league);
+        Task SendSetReminders(League league, IUrlHelper urlHelper);
     }
 }

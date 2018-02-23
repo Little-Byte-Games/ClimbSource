@@ -89,7 +89,7 @@ namespace Climb.Controllers
             {
                 foreach(var league in leagues)
                 {
-                    await leagueService.SendSetReminders(league);
+                    await leagueService.SendSetReminders(league, Url);
                 }
             }
             catch(Exception exception)
