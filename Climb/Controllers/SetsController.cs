@@ -160,7 +160,7 @@ namespace Climb.Controllers
             message.Append(set.League.Name + " | ");
             message.Append(set.IsExhibition ? "Exhibition" : set.Season.DisplayName);
             message.Append($"\n{set.Player1.GetSlackName} [{set.Player1Score} - {set.Player2Score}] {set.Player2.GetSlackName}");
-            message.Append($"\n{Url.Action(new UrlActionContext {Action = nameof(Fight), Values = new {id = set.ID}, Protocol = "https"})}");
+            message.Append($"\n{setService.GetSetUrl(set, Url)}");
             var apiKey = configuration.GetSection("Slack")["Key"];
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
