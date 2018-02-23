@@ -98,6 +98,14 @@ namespace Climb.Controllers
             }
 
             matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
+            
+            foreach(var match in matches)
+            {
+                if(match.StageID == -1)
+                {
+                    match.StageID = null;
+                }
+            }
 
             try
             {
