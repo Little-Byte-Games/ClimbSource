@@ -56,6 +56,26 @@ namespace Climb.Controllers
             var user = await GetViewUserAsync();
             if(user == null)
             {
+                return UserNotFound();
+            }
+
+            var league = await context.League.AsNoTracking()
+                .Include(l => l.Game).AsNoTracking()
+                .SingleOrDefaultAsync(l => l.ID == id);
+            if(league == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new LeagueHomeViewModel(user, league);
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> PowerRanks(int id)
+        {
+            var user = await GetViewUserAsync();
+            if(user == null)
+            {
                 return NotFound();
             }
 
@@ -71,20 +91,7 @@ namespace Climb.Controllers
                 return NotFound();
             }
 
-            var currentSeason = league.CurrentSeason;
-            var completedSets = currentSeason?.Sets.Where(s => s.IsComplete).OrderByDescending(s => s.UpdatedDate);
-
-            int? seasonID = null;
-            if(currentSeason != null)
-            {
-                seasonID = currentSeason.ID;
-            }
-            else if(league.Seasons?.Count > 0)
-            {
-                seasonID = league.Seasons.Last().ID;
-            }
-
-            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets, seasonID);
+            var viewModel = new LeaguePowerRankViewModel(user, league, configuration);
             return View(viewModel);
         }
 
