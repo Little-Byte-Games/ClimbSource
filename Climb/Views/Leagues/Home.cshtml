@@ -21,6 +21,10 @@
     <h1 class="body-banner-title">@Model.league.Name</h1>
 }
 
+    <div>
+        @Html.Raw(Model.league.HomePage)
+    </div>
+
 @section User_Content_Left {
     <h3 align="center">Power Rankings</h3>
     @{

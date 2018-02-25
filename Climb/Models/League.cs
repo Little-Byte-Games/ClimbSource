@@ -29,6 +29,7 @@ namespace Climb.Models
         public User Admin { get; set; }
         public int? KingID { get; set; }
         public DateTime KingReignStart { get; set; }
+        public string HomePage { get; set; } = "<h1>Hello World!</h1>";
 
         public HashSet<LeagueUser> Members { get; set; }
         public HashSet<Season> Seasons { get; set; }
