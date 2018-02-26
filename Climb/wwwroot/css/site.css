@@ -7,6 +7,10 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+html {
+    overflow-y: scroll;
+}
+
 html, body {
     height: 100%;
 }
