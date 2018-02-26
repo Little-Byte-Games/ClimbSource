@@ -7,10 +7,6 @@
 @{
     ViewData["Title"] = Model.league.Name;
     Layout = "_HomeLayout";
-    var returnUrl = Url.Action("Home", "Leagues", new
-    {
-        Model.league.ID
-    });
 }
 
 @section Styles {
@@ -24,21 +20,19 @@
 }
 
 @section Body_Subnavbar {
-    <a asp-action="Home" asp-route-id="@Model.league.ID">Home</a>
-    <a asp-action="PowerRanks" asp-route-id="@Model.league.ID">Power Ranks</a>
-    <a href="#">Seasons</a>
+    @Html.Partial("~/Views/Leagues/Partials/SubNavbar.cshtml", Model.league)
 }
 
 <div id="homepage">
     @Html.Raw(Model.league.HomePage)
 </div>
 
-<div id="editor" hidden="true">
-    <form id="editor-form" asp-controller="Leagues" asp-action="Update">
-        <input type="hidden" asp-for="@Model.league.ID"/>
+<div id="editor" hidden>
+    <form id="editor-form" asp-controller="Leagues" asp-action="UpdateHomePage">
+        <input type="hidden" name="id" value="@Model.league.ID" />
 
-        <textarea id="editor-input" asp-for="@Model.league.HomePage" onchange="editorUpdate()" form="editor-form">
-            @Model.league.HomePage
+        <textarea id="editor-input" name="homePage" onchange="editorUpdate()" form="editor-form">
+            @Html.Raw(Model.league.HomePage)
         </textarea>
         <button type="button" onclick="updateHomePage()">Save</button>
     </form>
@@ -73,7 +67,7 @@
         function updateHomePage() {
             var form = $("#editor-form");
             $.post({
-                url: "/Leagues/Update",
+                url: form.attr("action"),
                 data: form.serialize(),
                 success: () => {
                     location.reload();

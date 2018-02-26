@@ -1,4 +1,8 @@
-﻿.season-actions {
+﻿#homepage {
+    width: 100%;
+}
+
+.season-actions {
     width: 100%;
     display: flex;
     flex-direction: row;

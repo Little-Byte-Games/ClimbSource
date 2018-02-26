@@ -25,9 +25,7 @@
 }
 
 @section Body_Subnavbar {
-    <a asp-action="Home" asp-route-id="@Model.league.ID">Home</a>
-    <a asp-action="PowerRanks" asp-route-id="@Model.league.ID">Power Ranks</a>
-    <a href="#">Seasons</a>
+    @Html.Partial("~/Views/Leagues/Partials/SubNavbar.cshtml", Model.league)
 }
 
 @section User_Content_Left {

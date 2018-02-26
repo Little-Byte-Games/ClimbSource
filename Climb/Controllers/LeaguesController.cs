@@ -199,6 +199,8 @@ namespace Climb.Controllers
                     return BadRequest($"League with name similar to '{league.Name}' already exists.");
                 }
 
+                league.HomePage = $"<div align='center'>Welcome to {league.Name}!</div>";
+
                 await context.AddAsync(league);
                 await leagueService.JoinLeague(admin, league);
                 await context.SaveChangesAsync();
@@ -210,25 +212,19 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([Bind("ID,HomePage")]League league)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateHomePage(int id, string homePage)
         {
-            var leagueToUpdate = await context.League.SingleOrDefaultAsync(l => l.ID == league.ID);
-            if(leagueToUpdate == null)
+            var league = await context.League.SingleOrDefaultAsync(l => l.ID == id);
+            if(league == null)
             {
-                return NotFound($"No League with ID '{league.ID}' found.");
+                return NotFound($"No League with ID '{id}' found.");
             }
 
-            var updateSuccess = await TryUpdateModelAsync(leagueToUpdate,
-                "league",
-                l => l.HomePage);
-
-            if(updateSuccess)
-            {
-                await context.SaveChangesAsync();
-                return Accepted(league);
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError, "Could not update homepage.");
+            league.HomePage = homePage;
+            context.Update(league);
+            await context.SaveChangesAsync();
+            return Accepted();
         }
         #endregion
 
