@@ -29,13 +29,24 @@
     <a href="#">Seasons</a>
 }
 
-<div>
+<div id="homepage">
     @Html.Raw(Model.league.HomePage)
 </div>
 
-@if(Model.isAdmin)
+<div id="editor" hidden="true">
+    <form id="editor-form" asp-controller="Leagues" asp-action="Update">
+        <input type="hidden" asp-for="@Model.league.ID"/>
+
+        <textarea id="editor-input" asp-for="@Model.league.HomePage" onchange="editorUpdate()" form="editor-form">
+            @Model.league.HomePage
+        </textarea>
+        <button type="button" onclick="updateHomePage()">Save</button>
+    </form>
+</div>
+
+@if (Model.isAdmin)
 {
-    <button>Edit Home Page</button>
+    <button onclick="toggleEditor()">Edit Home Page</button>
 }
 
 @section User_Content_Left
@@ -46,3 +57,31 @@
 
 @section User_Content_Right
 {}
+
+@section Scripts {
+    <script type="text/javascript">
+        function toggleEditor() {
+            var enabled = $("#editor").attr("hidden");
+            $("#editor").attr("hidden", !enabled);
+        }
+
+        function editorUpdate() {
+            var editor = $("#editor-input").val();
+            $("#homepage").html(editor);
+        }
+
+        function updateHomePage() {
+            var form = $("#editor-form");
+            $.post({
+                url: "/Leagues/Update",
+                data: form.serialize(),
+                success: () => {
+                    location.reload();
+                },
+                error: function (response) {
+                    alert("Can't update league home page.\n" + response.responseText);
+                }
+            });
+        }
+    </script>
+}
