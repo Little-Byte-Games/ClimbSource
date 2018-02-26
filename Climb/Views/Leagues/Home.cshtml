@@ -31,7 +31,7 @@
     <form id="editor-form" asp-controller="Leagues" asp-action="UpdateHomePage">
         <input type="hidden" name="id" value="@Model.league.ID" />
 
-        <textarea id="editor-input" name="homePage" onchange="editorUpdate()" form="editor-form">
+        <textarea id="editor-input" name="homePage" onchange="editorUpdate()" onkeyup="editorUpdate()" form="editor-form">
             @Html.Raw(Model.league.HomePage)
         </textarea>
         <button type="button" onclick="updateHomePage()">Save</button>
