@@ -208,6 +208,28 @@ namespace Climb.Controllers
 
             return BadRequest(ModelState.GetErrors());
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Update([Bind("ID,HomePage")]League league)
+        {
+            var leagueToUpdate = await context.League.SingleOrDefaultAsync(l => l.ID == league.ID);
+            if(leagueToUpdate == null)
+            {
+                return NotFound($"No League with ID '{league.ID}' found.");
+            }
+
+            var updateSuccess = await TryUpdateModelAsync(leagueToUpdate,
+                "league",
+                l => l.HomePage);
+
+            if(updateSuccess)
+            {
+                await context.SaveChangesAsync();
+                return Accepted(league);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Could not update homepage.");
+        }
         #endregion
 
         [HttpPost]
