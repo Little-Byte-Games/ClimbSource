@@ -124,7 +124,8 @@ namespace Climb.Services
             foreach (var set in nextSets)
             {
                 var setLink = setService.GetSetUrl(set, urlHelper);
-                message.AppendLine($"{set.Player1.GetSlackName} v {set.Player2.GetSlackName} in {setLink}");
+                var hyperlink = $"<{setLink}|Fight>";
+                message.AppendLine($"{hyperlink} {set.Player1.GetSlackName} v {set.Player2.GetSlackName}");
             }
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
