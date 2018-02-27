@@ -73,7 +73,7 @@ namespace Climb.Services
 
         public string GetSetUrl(Set set, IUrlHelper urlHelper)
         {
-            return urlHelper.Action(new UrlActionContext {Action = nameof(SetsController.Fight), Values = new {id = set.ID}, Protocol = "https"});
+            return urlHelper.Action(new UrlActionContext {Controller = "Sets", Action = nameof(SetsController.Fight), Values = new {id = set.ID}, Protocol = "https"});
         }
     }
 }
