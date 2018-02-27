@@ -109,7 +109,7 @@ namespace Climb.Services
 
             var nextSets = new HashSet<Set>();
             var playersWithSets = new HashSet<int?>();
-            foreach(var set in currentSeason.Sets.Where(s => !s.IsComplete).OrderBy(s => s.DueDate))
+            foreach(var set in currentSeason.Sets.Where(s => !s.IsComplete && !s.IsBye).OrderBy(s => s.DueDate))
             {
                 if(!playersWithSets.Contains(set.Player1ID) || !playersWithSets.Contains(set.Player2ID))
                 {

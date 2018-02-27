@@ -40,7 +40,17 @@ namespace Climb.Controllers
                 id = user.ID;
             }
 
-            var homeUser = context.User.Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons).Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User).Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons).ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User).SingleOrDefault(u => u.ID == id);
+            var homeUser = context.User
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.Seasons)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.P1Sets)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.P2Sets)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.RankSnapshots)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Game)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons)
+                    .ThenInclude(s => s.Sets).ThenInclude(s => s.Player1).ThenInclude(lu => lu.User)
+                .Include(u => u.LeagueUsers).ThenInclude(lu => lu.League).ThenInclude(l => l.Seasons)
+                    .ThenInclude(s => s.Sets).ThenInclude(s => s.Player2).ThenInclude(lu => lu.User)
+                .SingleOrDefault(u => u.ID == id);
             if(homeUser == null)
             {
                 return NotFound($"Could not find User with ID '{id}'.");
