@@ -14,8 +14,8 @@
 
 <div>
     <h4>Game</h4>
-    <hr />
-    <dl class="dl-horizontal">
+    <hr/>
+    <dl>
         <dt>
             @Html.DisplayNameFor(model => model.game.Name)
         </dt>
@@ -23,33 +23,33 @@
             @Html.DisplayFor(model => model.game.Name)
         </dd>
     </dl>
-    <dl class="dl-horizontal">
+    <dl>
         <dt>
             @Html.DisplayNameFor(model => model.game.Characters)
         </dt>
-        @if (environment.IsDevelopment())
+        @if(Model.isAdmin)
         {
             <dd>
                 <form method="post" enctype="multipart/form-data" asp-action="AddCharacter">
-                    <input type="hidden" name="id" value="@Model.game.ID" />
-                    <div class="form-group">
-                        <input type="text" placeholder="Character Name" name="characterName" />
+                    <input type="hidden" name="id" value="@Model.game.ID"/>
+                    <div>
+                        <input type="text" placeholder="Character Name" name="characterName"/>
                     </div>
-                    <div class="form-group">
-                        <input type="file" name="file" accept="image/*" />
+                    <div>
+                        <input type="file" name="file" accept="image/*"/>
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-danger" type="submit">Add</button>
+                    <div>
+                        <button type="submit">Add</button>
                     </div>
                 </form>
             </dd>
         }
         <dd>
             @{ var percentages = await Model.game.GetCharacterUsagePercentagesAsync(context); }
-            @foreach (var character in Model.game.Characters.OrderBy(c => c.Name))
+            @foreach(var character in Model.game.Characters.OrderBy(c => c.Name))
             {
                 <div>
-                    <img src="@cdnService.GetImageUrl(CdnService.ImageTypes.CharacterPic, character.PicKey)" width="25" />
+                    <img src="@cdnService.GetImageUrl(CdnService.ImageTypes.CharacterPic, character.PicKey)" width="25"/>
                     <span>@character</span>
                     <span>Used @percentages[character].Item1.ToString("P1")</span>
                     <span>Win Rate @percentages[character].Item2.ToString("P1")</span>
@@ -57,26 +57,26 @@
             }
         </dd>
     </dl>
-    <dl class="dl-horizontal">
+    <dl>
         <dt>
             @Html.DisplayNameFor(model => model.game.Stages)
         </dt>
-        @if (environment.IsDevelopment())
+        @if(environment.IsDevelopment())
         {
             <dd>
                 <form method="post" asp-action="AddStage">
-                    <input type="hidden" name="id" value="@Model.game.ID" />
-                    <div class="form-group">
-                        <input type="text" placeholder="Stage Name" name="stageName" />
+                    <input type="hidden" name="id" value="@Model.game.ID"/>
+                    <div>
+                        <input type="text" placeholder="Stage Name" name="stageName"/>
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-danger" type="submit">Add</button>
+                    <div>
+                        <button type="submit">Add</button>
                     </div>
                 </form>
             </dd>
         }
         <dd>
-            @foreach (var stage in Model.game.Stages.OrderBy(c => c.Name))
+            @foreach(var stage in Model.game.Stages.OrderBy(c => c.Name))
             {
                 <div>@stage</div>
             }
