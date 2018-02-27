@@ -24,6 +24,7 @@
             scoreUpdated();
 
             $("#submit-button").click(function() {
+                $("#submit-button").prop('disabled', true);
                 $.post({
                     url: "/Sets/Submit",
                     data: $("#set-form").serialize(),
@@ -31,10 +32,13 @@
                         var returnToPage = confirm("Set sumitted!\nReturn to previous page?");
                         if (returnToPage) {
                             document.getElementById('previous-page').click();
+                        } else {
+                            $("#submit-button").prop('disabled', false);
                         }
                     },
                     error: function(response) {
                         alert(response.responseText);
+                        $("#submit-button").prop('disabled', false);
                     }
                 });
                 return false;
