@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -37,6 +38,7 @@ namespace Climb.Models
         public bool IsNew { get; set; } = true;
         [StringLength(20, MinimumLength = 1, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
         [RegularExpression(@"((\S+)( *))*", ErrorMessage = "SlackUsername needs at least 1 non-whitespace character.")]
+        [DisplayName("Slack Member ID")]
         public string SlackUsername { get; set; }
         [StringLength(20, MinimumLength = 1, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
         [RegularExpression(@"((\S+)( *))*", ErrorMessage = "ChallongeUsername needs at least 1 non-whitespace character.")]
@@ -56,7 +58,7 @@ namespace Climb.Models
         public HashSet<RankSnapshot> RankSnapshots { get; set; }
 
         [JsonIgnore]
-        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"<@{SlackUsername}> ({DisplayName})";
+        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"@{SlackUsername} ({DisplayName})";
 
         public int CompareTo(LeagueUser other)
         {
