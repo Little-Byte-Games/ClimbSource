@@ -62,7 +62,7 @@ namespace Climb.Services
 
             CalculateEloDeltas(memberEloDeltas, unlockedSets);
             AssignElo(league, memberEloDeltas);
-            UpdateRanks(memberEloDeltas, league.Members.ToList());
+            UpdateRanks(league.Members.ToList());
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             UpdateKing(league);
@@ -195,19 +195,14 @@ namespace Climb.Services
             memberEloDeltas[member.ID] += deltaElo;
         }
 
-        private static void UpdateRanks(IReadOnlyDictionary<int, int> memberEloDeltas, List<LeagueUser> members)
+        private static void UpdateRanks(IEnumerable<LeagueUser> members)
         {
-            members.Sort();
+            var activeMembers = members.Where(lu => !lu.IsNew).OrderByDescending(lu => lu.Points).ToList();
             var rank = 0;
             var lastPoints = -1;
-            for (var i = 0; i < members.Count; i++)
+            for (var i = 0; i < activeMembers.Count; i++)
             {
-                LeagueUser member = members[i];
-
-                if(!memberEloDeltas.ContainsKey(member.ID) && member.IsNew)
-                {
-                    continue;
-                }
+                LeagueUser member = activeMembers[i];
 
                 if (member.Points != lastPoints)
                 {
