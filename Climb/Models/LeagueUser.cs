@@ -58,7 +58,7 @@ namespace Climb.Models
         public HashSet<RankSnapshot> RankSnapshots { get; set; }
 
         [JsonIgnore]
-        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"@{SlackUsername} ({DisplayName})";
+        public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"<@{SlackUsername}> ({DisplayName})";
 
         public int CompareTo(LeagueUser other)
         {
