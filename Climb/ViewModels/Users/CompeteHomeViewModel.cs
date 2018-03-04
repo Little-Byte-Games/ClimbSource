@@ -46,8 +46,8 @@ namespace Climb.ViewModels
 
         public static CompeteHomeViewModel Create(User user, User homeUser, CdnService cdnService)
         {
-            var playedSets = user.LeagueUsers
-                .SelectMany(lu => lu.P1Sets.Union(lu.P2Sets))
+            var playedSets = homeUser.LeagueUsers
+                .SelectMany(lu => lu.P1Sets?.Union(lu.P2Sets))
                 .Where(s => s.IsComplete)
                 .OrderByDescending(s => s.UpdatedDate).ToList();
 
