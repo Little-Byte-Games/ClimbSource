@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Climb.Consts;
 using Climb.FormModels.Admin;
@@ -134,6 +135,27 @@ namespace Climb.Controllers
             FeatureToggles.Challonge = toggles.Challonge;
 
             return Ok("Feature toggles updated.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SyncSetsPlayed()
+        {
+            var leagues = await context.League
+                .Include(l => l.Members).ThenInclude(lu => lu.P1Sets)
+                .Include(l => l.Members).ThenInclude(lu => lu.P2Sets)
+                .ToListAsync();
+
+            foreach(var league in leagues)
+            {
+                context.UpdateRange(league.Members);
+                foreach(var member in league.Members)
+                {
+                    member.SetsPlayed = member.P1Sets.Union(member.P2Sets).Count(s => s.IsComplete && !s.IsBye);
+                }
+            }
+
+            await context.SaveChangesAsync();
+            return Ok("Sets played updated!");
         }
         #endregion
     }

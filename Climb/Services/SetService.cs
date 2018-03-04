@@ -24,7 +24,15 @@ namespace Climb.Services
 
         public async Task Put(Set set, IList<Match> matches)
         {
+            Debug.Assert(!set.IsBye, "Can't submit a bye set.");
+
             context.Update(set);
+
+            if(set.UpdatedDate == null)
+            {
+                ++set.Player1.SetsPlayed;
+                ++set.Player2.SetsPlayed;
+            }
 
             set.UpdatedDate = DateTime.UtcNow;
             await UpdateMatches(set, matches, context);

@@ -48,5 +48,11 @@
         <button type="button" onclick="updateFeatureToggles()">Update</button>
     </form>
 </div>
+<div>
+    <h2>Sync Sets Played</h2>
+    <form id="sets-played-form" asp-controller="Admin" asp-action="SyncSetsPlayed" method="post">
+        <button type="button" onclick="syncSetsPlayed()">Sync</button>
+    </form>
+</div>
 </body>
 </html>

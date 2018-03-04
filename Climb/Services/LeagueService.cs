@@ -62,7 +62,7 @@ namespace Climb.Services
 
             CalculateEloDeltas(memberEloDeltas, unlockedSets);
             AssignElo(league, memberEloDeltas);
-            UpdateRanks(league.Members.ToList());
+            UpdateRanks(memberEloDeltas, league.Members.ToList());
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             UpdateKing(league);
@@ -135,9 +135,9 @@ namespace Climb.Services
             foreach (var set in unlockedSets)
             {
                 var player1Won = set.WinnerID == set.Player1ID;
-                var newElo = PlayerScoreCalculator.CalculateElo(set.Player1.Points, set.Player2.Points, player1Won);
-                AccumulateEloDelta(memberEloDeltas, set.Player1, newElo.Item1);
-                AccumulateEloDelta(memberEloDeltas, set.Player2, newElo.Item2);
+                var eloDeltas = PlayerScoreCalculator.CalculateElo(set.Player1.Points, set.Player2.Points, player1Won);
+                AccumulateEloDelta(memberEloDeltas, set.Player1, eloDeltas.Item1);
+                AccumulateEloDelta(memberEloDeltas, set.Player2, eloDeltas.Item2);
 
                 set.IsLocked = true;
             }
@@ -150,7 +150,6 @@ namespace Climb.Services
                 if (memberEloDeltas.TryGetValue(member.ID, out var eloDelta))
                 {
                     member.Points += eloDelta;
-                    member.IsNew = false;
                     member.Rank = league.Members.Count;
                 }
             }
@@ -184,20 +183,25 @@ namespace Climb.Services
             return rankSnapshots;
         }
 
-        private static void AccumulateEloDelta(IDictionary<int, int> memberEloDeltas, LeagueUser member, int newElo)
+        private static void AccumulateEloDelta(IDictionary<int, int> memberEloDeltas, LeagueUser member, int eloDelta)
         {
             if (!memberEloDeltas.ContainsKey(member.ID))
             {
                 memberEloDeltas.Add(member.ID, 0);
             }
 
-            var deltaElo = newElo - member.Points;
-            memberEloDeltas[member.ID] += deltaElo;
+            const int inflatedEloMultiplier = 2;
+            if(member.IsNew)
+            {
+                eloDelta *= inflatedEloMultiplier;
+            }
+
+            memberEloDeltas[member.ID] += eloDelta;
         }
 
-        private static void UpdateRanks(IEnumerable<LeagueUser> members)
+        private static void UpdateRanks(IReadOnlyDictionary<int, int> memberEloDeltas, IEnumerable<LeagueUser> members)
         {
-            var activeMembers = members.Where(lu => !lu.IsNew).OrderByDescending(lu => lu.Points).ToList();
+            var activeMembers = members.Where(lu => !lu.IsNew && memberEloDeltas.ContainsKey(lu.ID)).OrderByDescending(lu => lu.Points).ToList();
             var rank = 0;
             var lastPoints = -1;
             for (var i = 0; i < activeMembers.Count; i++)

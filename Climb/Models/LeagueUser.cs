@@ -20,6 +20,7 @@ namespace Climb.Models
         }
 
         private const int StartingPoints = 2000;
+        private const int SetsBeforeRank = 3;
         public const string MissingPic = @"https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQpAB85y5CpzuT3QLLh7dVkrSIWRwQ8gANIH2OHeqph6k2Caa2UFnHgKbwu";
 
         [HiddenInput]
@@ -35,7 +36,6 @@ namespace Climb.Models
         public string ProfilePicKey { get; set; }
         public bool HasLeft { get; set; }
         public int Rank { get; set; }
-        public bool IsNew { get; set; } = true;
         [StringLength(20, MinimumLength = 1, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
         [RegularExpression(@"((\S+)( *))*", ErrorMessage = "SlackUsername needs at least 1 non-whitespace character.")]
         [DisplayName("Slack Member ID")]
@@ -43,6 +43,7 @@ namespace Climb.Models
         [StringLength(20, MinimumLength = 1, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.")]
         [RegularExpression(@"((\S+)( *))*", ErrorMessage = "ChallongeUsername needs at least 1 non-whitespace character.")]
         public string ChallongeUsername { get; set; }
+        public int SetsPlayed { get; set; }
 
         [JsonIgnore]
         public User User { get; set; }
@@ -59,6 +60,7 @@ namespace Climb.Models
 
         [JsonIgnore]
         public string GetSlackName => string.IsNullOrWhiteSpace(SlackUsername) ? DisplayName : $"<@{SlackUsername}> ({DisplayName})";
+        public bool IsNew => SetsPlayed <= SetsBeforeRank;
 
         public int CompareTo(LeagueUser other)
         {

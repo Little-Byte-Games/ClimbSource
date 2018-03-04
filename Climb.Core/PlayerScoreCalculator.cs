@@ -15,10 +15,10 @@ namespace Climb.Core
             var scoreP1 = player1Won ? 1 : 0;
             var scoreP2 = !player1Won ? 1 : 0;
 
-            var eloP1 = player1Elo + kFactor * (scoreP1 - expectedP1);
-            var eloP2 = player2Elo + kFactor * (scoreP2 - expectedP2);
+            var eloDeltaP1 = kFactor * (scoreP1 - expectedP1);
+            var eloDeltaP2 = kFactor * (scoreP2 - expectedP2);
 
-            return ((int)eloP1, (int)eloP2);
+            return ((int)eloDeltaP1, (int)eloDeltaP2);
         }
 
         private static double GetTransformedScore(int winnerScore)

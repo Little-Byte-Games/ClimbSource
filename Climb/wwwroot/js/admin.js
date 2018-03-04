@@ -27,6 +27,20 @@ function displayResult(message) {
     document.getElementById("closeModal").style.display = "block";
 }
 
+function sendRequest(formID) {
+    var form = $(formID);
+    $.post({
+        url: form.attr("action"),
+        data: form.serialize(),
+        success(response) {
+            displayResult(response);
+        },
+        error(response) {
+            displayResult(JSON.stringify(response));
+        }
+    });
+}
+
 $(document).ready(() => {
     document.getElementById("closeModal").onclick = closeModal;
 });
@@ -75,15 +89,10 @@ function sendSetReminders() {
 
 function updateFeatureToggles() {
     openModal("Updating Feature Toggles");
-    var form = $("#feature-toggle-form");
-    $.post({
-        url: form.attr("action"),
-        data: form.serialize(),
-        success(response) {
-            displayResult(response);
-        },
-        error(response) {
-            displayResult(JSON.stringify(response));
-        }
-    });
+    sendRequest("#feature-toggle-form");
+}
+
+function syncSetsPlayed() {
+    openModal("Syncing Sets Played");
+    sendRequest("#sets-played-form");
 }
