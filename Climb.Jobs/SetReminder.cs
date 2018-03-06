@@ -9,7 +9,7 @@ namespace Climb.Jobs
     public static class SetReminder
     {
         [FunctionName("SetReminder")]
-        public static async Task Run([TimerTrigger("0 0 18 * * MON,THU")]TimerInfo myTimer, TraceWriter log)
+        public static async Task Run([TimerTrigger("0 0 18 * * MON,WED,FRI")]TimerInfo myTimer, TraceWriter log)
         {
             HttpClient client = new HttpClient();
             var key = Environment.GetEnvironmentVariable("SecretKey");
