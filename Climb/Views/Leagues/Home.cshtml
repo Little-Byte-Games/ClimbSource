@@ -8,7 +8,10 @@
 @{
     ViewData["Title"] = Model.league.Name;
     Layout = "_HomeLayout";
-    var returnUrl = Url.Action("Home", "Leagues", new {Model.league.ID});
+    var returnUrl = Url.Action("Home", "Leagues", new
+    {
+        Model.league.ID
+    });
 }
 
 @section Styles {
@@ -102,83 +105,41 @@
 }
 
 @section User_Content_Right {
-    <h3 align="center">Seasons</h3>
-    <div class="season-actions">
-        @if(Model.canCreateSeason)
-        {
-            <button onclick="createSeason(@Model.league.ID)">Create Season</button>
-        }
-        <select id="seasons-dropdown">
-            @foreach(var season in Model.league.Seasons)
-            {
-                if(season.ID == Model.selectedSeason.ID)
-                {
-                    <option value="season-@season.ID" selected>@season.DisplayName</option>
-                }
-                else
-                {
-                    <option value="season-@season.ID">@season.DisplayName</option>
-                }
-            }
-        </select>
-    </div>
 
-    <div class="season-info">
-        <span>Total: <span id="seasonStatus.totalSetCount"></span></span>
-        <span>Completed: <span id="seasonStatus.completedCount"></span></span>
-        <span>Available: <span id="seasonStatus.availableCount"></span></span>
-        <span>Overdue: <span id="seasonStatus.overdueCount"></span></span>
-    </div>
+    <h3 align="center">Sets</h3>
 
-    @if(Model.selectedSeason != null)
+    @if(Model.overdueSets?.Any() ?? false)
     {
-        var overdueSets = Model.selectedSeason.GetOverdueSets();
-        if(overdueSets.Any())
+        <h4>Overdue</h4>
+        var i = 0;
+        foreach(var set in Model.overdueSets)
         {
-            <h4>Overdue</h4>
-            var i = 0;
-            foreach(var set in overdueSets)
-            {
-                var row = i % 2 == 0 ? "row-even" : "row-odd";
-                <div class="@row">
-                    @{ var viewModel = SetCollapsedViewModel.Create(set, Model.viewingLeagueUser, returnUrl); }
-                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-                </div>
-                ++i;
-            }
-        }
-
-        var availableSets = Model.selectedSeason.GetAvailableSets();
-        if(availableSets.Any())
-        {
-            <h4>Available</h4>
-            var i = 0;
-            foreach(var set in Model.selectedSeason.GetAvailableSets())
-            {
-                var row = i % 2 == 0 ? "row-even" : "row-odd";
-                <div class="@row">
-                    @{ var viewModel = SetCollapsedViewModel.Create(set, Model.viewingLeagueUser, returnUrl); }
-                    @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
-                </div>
-                ++i;
-            }
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @{ var viewModel = SetCollapsedViewModel.Create(set, Model.viewingLeagueUser, returnUrl); }
+                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+            </div>
+            ++i;
         }
     }
-    else
+
+    @if(Model.availableSets?.Any() ?? false)
     {
-        <span>No seasons</span>
+        <h4>Available</h4>
+        var i = 0;
+        foreach(var set in Model.availableSets)
+        {
+            var row = i % 2 == 0 ? "row-even" : "row-odd";
+            <div class="@row">
+                @{ var viewModel = SetCollapsedViewModel.Create(set, Model.viewingLeagueUser, returnUrl); }
+                @Html.Partial("/Views/Sets/Partials/Collapsed.cshtml", viewModel)
+            </div>
+            ++i;
+        }
     }
 }
 
 @section Scripts {
-    <script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
-    <script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            @{ var seasonID = Model.selectedSeason == null ? -1 : Model.selectedSeason.ID; }
-            if (@seasonID >= 0) {
-                getSeasonStatus(@seasonID);
-            }
-        });
-    </script>
+<script type="text/javascript" src="@Url.Content("/js/season.js")"></script>
+<script type="text/javascript" src="@Url.Content("/js/leagues.js")"></script>
 }
