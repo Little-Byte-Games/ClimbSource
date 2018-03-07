@@ -74,17 +74,7 @@ namespace Climb.Controllers
             var currentSeason = league.CurrentSeason;
             var completedSets = currentSeason?.Sets.Where(s => s.IsComplete).OrderByDescending(s => s.UpdatedDate);
 
-            int? seasonID = null;
-            if(currentSeason != null)
-            {
-                seasonID = currentSeason.ID;
-            }
-            else if(league.Seasons?.Count > 0)
-            {
-                seasonID = league.Seasons.Last().ID;
-            }
-
-            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets, seasonID);
+            var viewModel = new LeagueHomeViewModel(user, league, configuration, completedSets);
             return View(viewModel);
         }
 
