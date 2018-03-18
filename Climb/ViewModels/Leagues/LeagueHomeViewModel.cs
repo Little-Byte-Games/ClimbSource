@@ -10,21 +10,21 @@ namespace Climb.ViewModels
         public readonly League league;
         public readonly IConfiguration configuration;
         public readonly IEnumerable<Set> recentSets;
-        public readonly Season selectedSeason;
         public readonly LeagueUser king;
         public readonly IEnumerable<LeagueUser> nonkingMembers;
         public readonly IEnumerable<LeagueUser> newMembers;
         public readonly string reign;
         public readonly bool canCreateSeason;
         public readonly LeagueUser viewingLeagueUser;
+        public readonly IEnumerable<Set> overdueSets;
+        public readonly IEnumerable<Set> availableSets;
 
-        public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets, int? seasonID)
+        public LeagueHomeViewModel(User user, League league, IConfiguration configuration, IEnumerable<Set> recentSets)
             : base(user)
         {
             this.league = league;
             this.configuration = configuration;
             this.recentSets = recentSets;
-            selectedSeason = seasonID == null ? null : league.Seasons.Single(s => s.ID == seasonID);
             king = league.KingID != null ? league.Members.FirstOrDefault(lu => lu.ID == league.KingID) : null;
             nonkingMembers = league.Members.Where(lu => lu.ID != league.KingID && !lu.IsNew && !lu.HasLeft).OrderBy(lu => lu.Rank);
             newMembers = league.Members.Where(lu => lu.IsNew && !lu.HasLeft);
@@ -44,6 +44,12 @@ namespace Climb.ViewModels
             else
             {
                 reign = $"new reign started on {league.KingReignStart.ToShortDateString()}";
+            }
+
+            if(league.CurrentSeason != null && viewingLeagueUser != null)
+            {
+                overdueSets = league.CurrentSeason.GetOverdueSets().Where(s => s.IsPlaying(viewingLeagueUser.ID));
+                availableSets = league.CurrentSeason.GetAvailableSets().Where(s => s.IsPlaying(viewingLeagueUser.ID));
             }
         }
     }
