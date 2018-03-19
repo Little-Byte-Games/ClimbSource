@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Climb.Requests.Sets;
 using Set = Climb.Models.Set;
 
 namespace Climb.Controllers
@@ -99,7 +100,7 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(int id, List<Match> matches)
+        public async Task<IActionResult> Submit(int id, List<MatchPutRequest> matches)
         {
             var set = await context.Set
                 .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
@@ -116,16 +117,6 @@ namespace Climb.Controllers
             if(set.IsLocked)
             {
                 return BadRequest($"Set {id} is locked.");
-            }
-
-            matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
-            
-            foreach(var match in matches)
-            {
-                if(match.StageID == -1)
-                {
-                    match.StageID = null;
-                }
             }
 
             try
