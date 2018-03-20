@@ -77,6 +77,8 @@ namespace Climb.Controllers
         public async Task<IActionResult> GetSet(int id)
         {
             var set = await context.Set
+                .Include(s => s.Player1).AsNoTracking()
+                .Include(s => s.Player2).AsNoTracking()
                 .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters).AsNoTracking()
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters).AsNoTracking()
                 .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages).AsNoTracking()

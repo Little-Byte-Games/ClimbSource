@@ -53,6 +53,8 @@ namespace Climb.Responses.Sets
         public readonly int gameID;
         public readonly int? player1ID;
         public readonly int? player2ID;
+        public readonly string player1;
+        public readonly string player2;
         public readonly DateTime dueDate;
         public readonly DateTime? updatedDate;
         public readonly int player1Score;
@@ -70,6 +72,8 @@ namespace Climb.Responses.Sets
             gameID = set.League.GameID;
             player1ID = set.Player1ID;
             player2ID = set.Player2ID;
+            player1 = set.Player1.DisplayName;
+            player2 = set.Player2.DisplayName;
             dueDate = set.DueDate;
             updatedDate = set.UpdatedDate;
             player1Score = set.Player1Score ?? 0;
