@@ -40,5 +40,15 @@ namespace Climb.Services
 
             return characterUsage.OrderByDescending(x => x.Value).Take(count).Select(x => x.Key);
         }
+
+        public IEnumerable<Set> GetHistory(LeagueUser leagueUser, int count)
+        {
+            return leagueUser.P1Sets
+                .Where(s => s.WasPlayed)
+                .Union(leagueUser.P2Sets
+                    .Where(s => s.WasPlayed))
+                .OrderByDescending(s => s.DueDate)
+                .Take(count);
+        }
     }
 }

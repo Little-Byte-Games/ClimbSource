@@ -12,12 +12,14 @@ namespace Climb.Controllers
     {
         private readonly ClimbContext context;
         private readonly CdnService cdnService;
+        private readonly ILeagueUserService leagueUserService;
 
-        public LeagueUsersController(ClimbContext context, CdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager)
+        public LeagueUsersController(ClimbContext context, CdnService cdnService, IUserService userService, UserManager<ApplicationUser> userManager, ILeagueUserService leagueUserService)
             : base(userService, userManager)
         {
             this.context = context;
             this.cdnService = cdnService;
+            this.leagueUserService = leagueUserService;
         }
 
         #region API
@@ -49,6 +51,23 @@ namespace Climb.Controllers
             await context.SaveChangesAsync();
 
             return Ok(leagueUser);
+        }
+
+        public async Task<IActionResult> History(int id, int setCount)
+        {
+            var leagueUser = await context.LeagueUser
+                .Include(l => l.P1Sets).ThenInclude(s => s.Player1).AsNoTracking()
+                .Include(l => l.P1Sets).ThenInclude(s => s.Player2).AsNoTracking()
+                .Include(l => l.P2Sets).ThenInclude(s => s.Player1).AsNoTracking()
+                .Include(l => l.P2Sets).ThenInclude(s => s.Player2).AsNoTracking()
+                .FirstOrDefaultAsync(lu => lu.ID == id);
+            if(leagueUser == null)
+            {
+                return NotFound($"No league user with ID '{id}' found.");
+            }
+
+            var sets = leagueUserService.GetHistory(leagueUser, setCount);
+            return Ok(sets);
         }
         #endregion
 
