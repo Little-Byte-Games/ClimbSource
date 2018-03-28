@@ -56,13 +56,13 @@ namespace Climb.Services
         public async Task<HashSet<RankSnapshot>> TakeSnapshot(League league)
         {
             var memberEloDeltas = new Dictionary<int, int>();
-            var unlockedSets = league.Sets.Where(s => !s.IsLocked && s.IsComplete).ToList();
+            var newlyCompletedSets = league.Sets.Where(s => !s.IsLocked && s.WasPlayed).ToList();
             context.UpdateRange(league.Members);
-            context.UpdateRange(unlockedSets);
+            context.UpdateRange(newlyCompletedSets);
 
-            CalculateEloDeltas(memberEloDeltas, unlockedSets);
+            CalculateEloDeltas(memberEloDeltas, newlyCompletedSets);
             AssignElo(league, memberEloDeltas);
-            UpdateRanks(memberEloDeltas, league.Members.ToList());
+            UpdateRanks(league.Members.ToList());
             HashSet<RankSnapshot> rankSnapshots = await CreateSnapshots(league);
 
             UpdateKing(league);
@@ -89,12 +89,12 @@ namespace Climb.Services
 
         public async Task SendSnapshotUpdate(HashSet<RankSnapshot> rankSnapshots, League league)
         {
-            var orderedSnapshots = rankSnapshots.OrderBy(lu => lu.Rank);
+            var orderedSnapshots = rankSnapshots.Where(rs => !rs.LeagueUser.IsNew).OrderBy(rs => rs.Rank);
             var message = new StringBuilder();
             message.AppendLine($"*{league.Name} PR*");
             foreach (var snapshot in orderedSnapshots)
             {
-                message.AppendLine($"{snapshot.Rank} [{snapshot.DisplayDeltaRank}] {snapshot.LeagueUser.GetSlackName}");
+                message.AppendLine($"{snapshot.Rank} [{snapshot.DisplayDeltaRank}] ({snapshot.Points}) {snapshot.LeagueUser.SlackUsername}");
             }
             await SlackController.SendGroupMessage(apiKey, message.ToString());
         }
@@ -199,9 +199,9 @@ namespace Climb.Services
             memberEloDeltas[member.ID] += eloDelta;
         }
 
-        private static void UpdateRanks(IReadOnlyDictionary<int, int> memberEloDeltas, IEnumerable<LeagueUser> members)
+        private static void UpdateRanks(IEnumerable<LeagueUser> members)
         {
-            var activeMembers = members.Where(lu => !lu.IsNew && memberEloDeltas.ContainsKey(lu.ID)).OrderByDescending(lu => lu.Points).ToList();
+            var activeMembers = members.Where(lu => !lu.IsNew).OrderByDescending(lu => lu.Points).ToList();
             var rank = 0;
             var lastPoints = -1;
             for (var i = 0; i < activeMembers.Count; i++)

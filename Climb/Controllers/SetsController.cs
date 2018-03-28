@@ -1,6 +1,7 @@
 ﻿using Climb.Consts;
 using Climb.Core;
 using Climb.Models;
+using Climb.Requests.Sets;
 using Climb.Responses.Sets;
 using Climb.Services;
 using Climb.ViewModels;
@@ -11,10 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Climb.Requests.Sets;
 using Set = Climb.Models.Set;
 
 namespace Climb.Controllers

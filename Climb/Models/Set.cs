@@ -32,7 +32,8 @@ namespace Climb.Models
         [JsonIgnore]
         public League League { get; set; }
 
-        public bool IsComplete => IsBye || (Player1Score != null && Player2Score != null);
+        public bool IsComplete => IsBye || WasPlayed;
+        public bool WasPlayed => Player1Score != null && Player2Score != null;
         [JsonIgnore]
         public string Player1Name => Player1?.User?.Username ?? "BYE";
         [JsonIgnore]

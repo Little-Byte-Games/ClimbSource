@@ -1,3 +1,4 @@
+@using Climb.Extensions
 @using Climb.ViewModels
 @using Microsoft.AspNetCore.Hosting
 @model BaseViewModel
@@ -67,7 +68,7 @@
             </ul>
         </div>
         <div class="dropdown">
-            @if(hostingEnvironment.IsDevelopment())
+            @if(Html.IsDebug())
             {
                 <a asp-controller="Admin" asp-action="Index">Admin</a>
             }
