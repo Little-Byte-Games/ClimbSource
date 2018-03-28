@@ -76,9 +76,9 @@ namespace Climb
             services.AddTransient<ISeasonService, SeasonService>();
             services.AddTransient<ISetService, SetService>();
             services.AddTransient<IAccountService, AccountService>();
-
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+            services.AddCors();
             services.AddMvc();
 
             services.Configure<MvcOptions>(options => { options.Filters.Add(new RequireHttpsAttribute()); });
@@ -110,6 +110,7 @@ namespace Climb
                 }
             });
 
+            app.UseCors(options => options.AllowAnyOrigin());
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseStaticFiles();
             app.UseAuthentication();

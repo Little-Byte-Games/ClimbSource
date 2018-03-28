@@ -33,10 +33,9 @@ namespace Climb.Controllers
         #region Pages
         public IActionResult Index()
         {
-            if(!environment.IsDevelopment())
-            {
-                return NotFound("You're not a site admin!");
-            }
+#if !DEBUG
+            return NotFound("You're not a site admin!");
+#endif
 
             return View();
         }
@@ -66,7 +65,7 @@ namespace Climb.Controllers
                     var rankSnapshots = await leagueService.TakeSnapshot(league);
                     if (FeatureToggles.Slack)
                     {
-                        await leagueService.SendSnapshotUpdate(rankSnapshots, league); 
+                        await leagueService.SendSnapshotUpdate(rankSnapshots, league);
                     }
                 }
             }

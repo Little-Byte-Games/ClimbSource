@@ -1,17 +1,17 @@
 ﻿using Climb.Consts;
 using Climb.Core;
 using Climb.Models;
+using Climb.Requests.Sets;
+using Climb.Responses.Sets;
 using Climb.Services;
 using Climb.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Set = Climb.Models.Set;
@@ -26,14 +26,16 @@ namespace Climb.Controllers
         private readonly IConfiguration configuration;
         private readonly ISeasonService seasonService;
         private readonly ISetService setService;
+        private readonly CdnService cdn;
 
-        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager, ISetService setService)
+        public SetsController(ClimbContext context, IConfiguration configuration, ISeasonService seasonService, IUserService userService, UserManager<ApplicationUser> userManager, ISetService setService, CdnService cdn)
             : base(userService, userManager)
         {
             this.context = context;
             this.configuration = configuration;
             this.seasonService = seasonService;
             this.setService = setService;
+            this.cdn = cdn;
         }
 
         #region Pages
@@ -70,6 +72,27 @@ namespace Climb.Controllers
         #endregion
 
         #region API
+        [Route("[controller]/{id:int}")]
+        public async Task<IActionResult> GetSet(int id)
+        {
+            var set = await context.Set
+                .Include(s => s.Player1).AsNoTracking()
+                .Include(s => s.Player2).AsNoTracking()
+                .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters).AsNoTracking()
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Characters).AsNoTracking()
+                .Include(s => s.League).ThenInclude(l => l.Game).ThenInclude(g => g.Stages).AsNoTracking()
+                .FirstOrDefaultAsync(s => s.ID == id);
+
+            if(set == null)
+            {
+                return BadRequest($"Not set with id '{id}' found.");
+            }
+
+            var response = new SetGetResponse(set, cdn);
+
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdateStandings(int id)
         {
@@ -78,7 +101,7 @@ namespace Climb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(int id, List<Match> matches)
+        public async Task<IActionResult> Submit(int id, List<MatchPutRequest> matches)
         {
             var set = await context.Set
                 .Include(s => s.Matches).ThenInclude(m => m.MatchCharacters)
@@ -95,16 +118,6 @@ namespace Climb.Controllers
             if(set.IsLocked)
             {
                 return BadRequest($"Set {id} is locked.");
-            }
-
-            matches.RemoveAll(m => m.MatchCharacters.Any(mc => mc.CharacterID < 0));
-            
-            foreach(var match in matches)
-            {
-                if(match.StageID == -1)
-                {
-                    match.StageID = null;
-                }
             }
 
             try
