@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Climb.Requests.Sets;
 using Set = Climb.Models.Set;
 
 namespace Climb.Services
@@ -23,7 +22,7 @@ namespace Climb.Services
             this.seasonService = seasonService;
         }
 
-        public async Task Put(Set set, List<MatchPutRequest> matches)
+        public async Task Put(Set set, IList<Match> matches)
         {
             Debug.Assert(!set.IsBye, "Can't submit a bye set.");
 
@@ -39,7 +38,7 @@ namespace Climb.Services
             await UpdateMatches(set, matches, context);
             UpdateSetScore(set);
 
-            if(!set.IsExhibition)
+            if (!set.IsExhibition)
             {
                 Debug.Assert(set.SeasonID != null, "set.SeasonID != null");
                 await seasonService.UpdateStandings(set.SeasonID.Value);
@@ -48,45 +47,18 @@ namespace Climb.Services
             await context.SaveChangesAsync();
         }
 
-        private static async Task UpdateMatches(Set set, List<MatchPutRequest> matches, ClimbContext context)
+        private static async Task UpdateMatches(Set set, IEnumerable<Match> matches, ClimbContext context)
         {
             context.RemoveRange(set.Matches.SelectMany(m => m.MatchCharacters));
             context.RemoveRange(set.Matches);
             set.Matches.Clear();
             await context.SaveChangesAsync();
 
-            for(var i = 0; i < matches.Count; i++)
+            foreach (var match in matches)
             {
-                var matchData = matches[i];
-                var match = new Match
-                {
-                    Set = set,
-                    Index = i,
-                    Player1Score = matchData.p1Score,
-                    Player2Score = matchData.p2Score,
-                    StageID = matchData.stage
-                };
-                match.MatchCharacters = CreateMatchCharacters(set, matchData, match);
-
                 set.Matches.Add(match);
             }
-
             await context.AddRangeAsync(set.Matches);
-        }
-
-        private static List<MatchCharacter> CreateMatchCharacters(Set set, MatchPutRequest matchData, Match match)
-        {
-            return matchData.p1Characters.Select(c => new MatchCharacter
-            {
-                CharacterID = c,
-                Match = match,
-                LeagueUserID = set.Player1ID.Value
-            }).Union(matchData.p2Characters.Select(c => new MatchCharacter
-            {
-                CharacterID = c,
-                Match = match,
-                LeagueUserID = set.Player2ID.Value
-            })).ToList();
         }
 
         private static void UpdateSetScore(Set set)
@@ -94,13 +66,13 @@ namespace Climb.Services
             set.Player1Score = 0;
             set.Player2Score = 0;
 
-            foreach(var match in set.Matches)
+            foreach (var match in set.Matches)
             {
-                if(match.Player1Score > 0 && match.Player1Score > match.Player2Score)
+                if (match.Player1Score > 0 && match.Player1Score > match.Player2Score)
                 {
                     ++set.Player1Score;
                 }
-                else if(match.Player2Score > 0 && match.Player2Score > match.Player1Score)
+                else if (match.Player2Score > 0 && match.Player2Score > match.Player1Score)
                 {
                     ++set.Player2Score;
                 }
