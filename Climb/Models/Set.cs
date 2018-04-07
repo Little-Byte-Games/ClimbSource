@@ -44,6 +44,7 @@ namespace Climb.Models
         public int? WinnerID => Player1Score > Player2Score ? Player1ID : Player1Score < Player2Score ? Player2ID : null;
         [JsonIgnore]
         public int? LoserID => Player1Score > Player2Score ? Player2ID : Player1Score < Player2Score ? Player1ID : null;
+        public bool IsOverdue => !IsComplete && DueDate < DateTime.Now;
 
         public bool IsPlaying(int? leagueUserID)
         {

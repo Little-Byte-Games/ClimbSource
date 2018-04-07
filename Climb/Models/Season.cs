@@ -53,7 +53,7 @@ namespace Climb.Models
 
         public IEnumerable<Set> GetOverdueSets()
         {
-            return Sets.Where(s => !s.IsComplete && s.DueDate < DateTime.Now);
+            return Sets.Where(s => s.IsOverdue);
         }
 
         public IEnumerable<Set> GetAvailableSets()
