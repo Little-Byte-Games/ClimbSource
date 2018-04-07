@@ -21,6 +21,10 @@ namespace Climb.ViewModels.Sets
             this.canSubmit = canSubmit;
             this.lastSetP1 = lastSetP1;
             this.lastSetP2 = lastSetP2;
+
+#if DEBUG
+            this.canSubmit = true;
+#endif
         }
 
         public static SetFightViewModel Create(Set set, int maxMatchCount, User viewer)
