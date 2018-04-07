@@ -406,7 +406,7 @@
         "GameID": 2,
         "PicKey": "sfv_zeku.png"
     },
-    // DBF http://www.ign.com/wikis/dragon-ball-fighterz/Characters
+    // DBF https://www.eventhubs.com/tiers/dragon-ball-fighterz/
     {
         "Name": "Android 16",
         "GameID": 3,
@@ -526,5 +526,15 @@
         "Name": "Yamcha",
         "GameID": 3,
         "PicKey": "dbf_yamcha.jpg"
+    },
+    {
+        "Name": "Broly",
+        "GameID": 3,
+        "PicKey": "dbf_broly.jpg"
+    },
+    {
+        "Name": "Bardock",
+        "GameID": 3,
+        "PicKey": "dbf_bardock.jpg"
     }
 ]

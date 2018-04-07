@@ -109,7 +109,8 @@ namespace Climb.Services
 
             var nextSets = new HashSet<Set>();
             var playersWithSets = new HashSet<int?>();
-            foreach(var set in currentSeason.Sets.Where(s => !s.IsComplete && !s.IsBye).OrderBy(s => s.DueDate))
+            var availableSeasonSets = currentSeason.Sets.Where(s => !s.IsComplete && !s.IsOverdue).OrderBy(s => s.DueDate);
+            foreach(var set in availableSeasonSets)
             {
                 if(!playersWithSets.Contains(set.Player1ID) || !playersWithSets.Contains(set.Player2ID))
                 {
@@ -127,7 +128,9 @@ namespace Climb.Services
                 var hyperlink = $"<{setLink}|Fight>";
                 message.AppendLine($"{hyperlink} {set.Player1.GetSlackName} v {set.Player2.GetSlackName}");
             }
+
             await SlackController.SendGroupMessage(apiKey, message.ToString());
+            await Task.CompletedTask;
         }
 
         private static void CalculateEloDeltas(IDictionary<int, int> memberEloDeltas, IEnumerable<Set> unlockedSets)
