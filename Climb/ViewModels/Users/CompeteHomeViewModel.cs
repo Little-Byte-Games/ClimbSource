@@ -72,7 +72,7 @@ namespace Climb.ViewModels
                         var leagueUserSet = new LeagueUserSet(leagueUser, set);
                         overdueSets.Add(leagueUserSet);
                     }
-                    else if (availableSets.All(s => s.leagueUser != leagueUser))
+                    else
                     {
                         var leagueUserSet = new LeagueUserSet(leagueUser, set);
                         availableSets.Add(leagueUserSet);
