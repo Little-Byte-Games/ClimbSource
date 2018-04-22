@@ -406,6 +406,11 @@
         "GameID": 2,
         "PicKey": "sfv_zeku.png"
     },
+    {
+        "Name": "Falke",
+        "GameID": 2,
+        "PicKey": "sfv_falke.png"
+    },
     // DBF https://www.eventhubs.com/tiers/dragon-ball-fighterz/
     {
         "Name": "Android 16",
