@@ -7,24 +7,18 @@ namespace Climb.ViewModels.Sets
     {
         public readonly Set set;
         public readonly Match[] matches;
-        public readonly bool canSubmit;
         public readonly Set lastSetP1;
         public readonly Set lastSetP2;
 
         public string RankP1 => set.Player1.IsNew ? "-" : "#" + set.Player1.Rank;
         public string RankP2 => set.Player2.IsNew ? "-" : "#" + set.Player2.Rank;
 
-        private SetFightViewModel(Set set, Match[] matches, bool canSubmit, Set lastSetP1, Set lastSetP2)
+        private SetFightViewModel(Set set, Match[] matches, Set lastSetP1, Set lastSetP2)
         {
             this.set = set;
             this.matches = matches;
-            this.canSubmit = canSubmit;
             this.lastSetP1 = lastSetP1;
             this.lastSetP2 = lastSetP2;
-
-#if DEBUG
-            this.canSubmit = true;
-#endif
         }
 
         public static SetFightViewModel Create(Set set, int maxMatchCount, User viewer)
@@ -59,9 +53,7 @@ namespace Climb.ViewModels.Sets
                 matches[match.Index] = match;
             }
 
-            var canSubmit = !set.IsLocked && viewer.LeagueUsers.Any(set.IsPlaying);
-
-            return new SetFightViewModel(set, matches, canSubmit, lastSetP1, lastSetP2);
+            return new SetFightViewModel(set, matches, lastSetP1, lastSetP2);
         }
     }
 }
