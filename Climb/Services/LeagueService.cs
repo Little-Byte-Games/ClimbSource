@@ -121,16 +121,13 @@ namespace Climb.Services
                 }
             }
 
-            while(playersWithSets.Count < currentSeason.Participants.Count)
+            foreach(var set in availableSeasonSets)
             {
-                foreach(var set in availableSeasonSets)
+                if(!playersWithSets.Contains(set.Player1ID) || !playersWithSets.Contains(set.Player2ID))
                 {
-                    if(!playersWithSets.Contains(set.Player1ID) || !playersWithSets.Contains(set.Player2ID))
-                    {
-                        nextSets.Add(set);
-                        playersWithSets.Add(set.Player1ID);
-                        playersWithSets.Add(set.Player2ID);
-                    }
+                    nextSets.Add(set);
+                    playersWithSets.Add(set.Player1ID);
+                    playersWithSets.Add(set.Player2ID);
                 }
             }
 
